@@ -1,7 +1,17 @@
-// ⚠️  IMPORTANT: Change this to your actual WiFi IP address
-// Find it by running: ipconfig (Windows) or ifconfig (Mac/Linux)
-// Example: 'http://192.168.1.105:8000'
-export const API_BASE_URL = 'http://192.168.43.153:8000';
+// ─────────────────────────────────────────────
+// API Configuration
+// ─────────────────────────────────────────────
+// Set your WiFi IP in mobile/.env file:
+// EXPO_PUBLIC_API_URL=http://192.168.43.153:8000
+//
+// Find your IP:
+// Windows: ipconfig
+// Mac/Linux: ifconfig
+// ─────────────────────────────────────────────
+
+export const API_BASE_URL = 
+    process.env.EXPO_PUBLIC_API_URL || 
+    'http://192.168.43.153:8000';
 
 export const COLORS = {
     dark: '#1B4332',
