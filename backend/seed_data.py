@@ -28,38 +28,46 @@ def seed_database():
             print("Database already has data — skipping seed.")
             return
 
-        print("Seeding database for Nava Raipur...")
+        print("Seeding database for Nava Raipur (4 Zones)...")
 
         # ── Zones ──────────────────────────────────────────────
         zone1 = Zone(
-            name="Nava Raipur Core",
-            description="Covering Sector 24, Mantralaya, Sector 27, and Central Park area",
-            center_lat=21.1614,   # Approx near Mantralaya
+            name="Zone 1 (North)",
+            description="Covering Sector 24, Mantralaya, Sector 27",
+            center_lat=21.1614,   
             center_lng=81.7869,
             radius_km=5.0,
         )
         zone2 = Zone(
-            name="Educational Hub",
-            description="Covering IIIT Naya Raipur, Hidayatullah Law University, and IIM Raipur",
+            name="Zone 2 (South)",
+            description="Covering IIIT Naya Raipur, Hidayatullah Law University",
             center_lat=21.1490,
             center_lng=81.7650,
             radius_km=6.0,
         )
         zone3 = Zone(
-            name="Raipur Connectivity",
+            name="Zone 3 (East)",
             description="Covering the route towards Swami Vivekananda Airport",
             center_lat=21.1850,
             center_lng=81.7300,
             radius_km=8.0,
         )
+        zone4 = Zone(
+            name="Zone 4 (West)",
+            description="Covering Western Ring Road and Telibandha Lake End",
+            center_lat=21.2266,
+            center_lng=81.6600,
+            radius_km=8.0,
+        )
         
-        db.add_all([zone1, zone2, zone3])
+        db.add_all([zone1, zone2, zone3, zone4])
         db.commit()
         db.refresh(zone1)
         db.refresh(zone2)
         db.refresh(zone3)
+        db.refresh(zone4)
 
-        zones = [zone1, zone2, zone3]
+        zones = [zone1, zone2, zone3, zone4]
 
         # ── Users ──────────────────────────────────────────────
         users = []
@@ -74,7 +82,7 @@ def seed_database():
         )
         users.append(admin)
 
-        # 3 Sub-Admins (One per zone)
+        # 4 Sub-Admins (One per zone)
         for i, zone in enumerate(zones, 1):
             subadmin = User(
                 email=f"subadmin{i}@smartwaste.com",
@@ -86,27 +94,27 @@ def seed_database():
             )
             users.append(subadmin)
 
-        # 5 SHG Workers
-        for i in range(1, 6):
+        # 8 SHG Workers (2 per zone)
+        for i in range(1, 9):
             shg = User(
                 email=f"shg{i}@smartwaste.com",
                 hashed_password=hash_password("SHG@123"),
                 full_name=f"SHG Worker {i}",
                 role="shg",
-                zone_id=zones[i % 3].id, # distribute among zones
+                zone_id=zones[i % 4].id, 
                 is_active=True,
             )
             users.append(shg)
 
-        # 3 Collectors
+        # 4 Collectors (1 per zone)
         collectors = []
-        for i in range(1, 4):
+        for i in range(1, 5):
             collector = User(
                 email=f"collector{i}@smartwaste.com",
                 hashed_password=hash_password("Col@123"),
                 full_name=f"Truck Driver {i}",
                 role="collector",
-                zone_id=zones[i % 3].id,
+                zone_id=zones[(i - 1) % 4].id,
                 is_active=True,
             )
             users.append(collector)
@@ -120,38 +128,42 @@ def seed_database():
             db.refresh(c)
 
         # ── Bins ──────────────────────────────────────────────
-        # Landmarks and variations around Nava Raipur (Base Lat: 21.226676, base Lng: 81.785756)
-        # Using a few specific coordinates resembling the area mapping.
+        # Landmarks and variations mapping strictly to 4 zones
         
         bin_locations = [
+            # Zone 1 (North)
             {"label": "Mantralaya North Gate", "lat": 21.1610, "lng": 81.7865, "zone": zone1, "address": "Mahanadi Bhawan, Sector 19"},
             {"label": "Sector 24 Commercial Complex", "lat": 21.1450, "lng": 81.7900, "zone": zone1, "address": "Sector 24, Nava Raipur"},
             {"label": "Central Park Entrance", "lat": 21.1550, "lng": 81.7850, "zone": zone1, "address": "Central Park, Sector 24"},
             {"label": "Sector 27 Residential Area", "lat": 21.1680, "lng": 81.7920, "zone": zone1, "address": "Block B, Sector 27"},
             {"label": "Sathya Sai Hospital Gate", "lat": 21.1510, "lng": 81.7800, "zone": zone1, "address": "Sector 2, Nava Raipur"},
             {"label": "Purkhouti Muktangan Tourist Spot", "lat": 21.1444, "lng": 81.7880, "zone": zone1, "address": "Sector 24"},
-            {"label": "Sector 29 Market", "lat": 21.1710, "lng": 81.7950, "zone": zone1, "address": "Main Market, Sector 29"},
             
+            # Zone 2 (South)
             {"label": "IIIT Naya Raipur Campus", "lat": 21.1495, "lng": 81.7655, "zone": zone2, "address": "Sector 24, Near IIIT"},
             {"label": "Hidayatullah Law University", "lat": 21.1555, "lng": 81.7600, "zone": zone2, "address": "HNLU Campus Gate"},
             {"label": "IIM Raipur Main Road", "lat": 21.1400, "lng": 81.7580, "zone": zone2, "address": "IIM Raipur Campus, Sector 15"},
             {"label": "Sector 15 Student Hostel", "lat": 21.1420, "lng": 81.7610, "zone": zone2, "address": "Student Quarters, Sector 15"},
             {"label": "Sector 17 Food Court", "lat": 21.1580, "lng": 81.7680, "zone": zone2, "address": "Sector 17 Eateries"},
-            {"label": "Sports Complex Hub", "lat": 21.1510, "lng": 81.7700, "zone": zone2, "address": "Nava Raipur Sports Complex"},
             {"label": "Library Avenue", "lat": 21.1480, "lng": 81.7630, "zone": zone2, "address": "Sector 24 Library Area"},
             
+            # Zone 3 (East)
             {"label": "Airport VIP Road", "lat": 21.1850, "lng": 81.7300, "zone": zone3, "address": "VIP Road Crossing"},
             {"label": "Swami Vivekananda Airport T1", "lat": 21.1800, "lng": 81.7350, "zone": zone3, "address": "Terminal 1 Gate"},
-            {"label": "Ram Mandir Square", "lat": 21.1900, "lng": 81.7200, "zone": zone3, "address": "VIP Road, Ram Mandir"},
-            {"label": "Serikhedi Junction", "lat": 21.2000, "lng": 81.7450, "zone": zone3, "address": "Serikhedi Highway Point"},
             {"label": "Mana Camp Settlement", "lat": 21.1750, "lng": 81.7250, "zone": zone3, "address": "Mana Camp Area"},
-            {"label": "Pachpedi Naka Gateway", "lat": 21.2100, "lng": 81.6800, "zone": zone3, "address": "Ring Road No 1 Crossing"},
-            {"label": "Telibandha Lake End", "lat": 21.2266, "lng": 81.6600, "zone": zone3, "address": "Marine Drive, Telibandha"},
             {"label": "Sector 4 VIP Gateway", "lat": 21.1905, "lng": 81.7550, "zone": zone3, "address": "Sector 4 Entrance"},
-            {"label": "Sector 16 Mall Road", "lat": 21.1820, "lng": 81.7500, "zone": zone3, "address": "Sector 16 Central"}
+            {"label": "Sector 16 Mall Road", "lat": 21.1820, "lng": 81.7500, "zone": zone3, "address": "Sector 16 Central"},
+            
+            # Zone 4 (West)
+            {"label": "Ram Mandir Square", "lat": 21.1900, "lng": 81.7200, "zone": zone4, "address": "VIP Road, Ram Mandir"},
+            {"label": "Serikhedi Junction", "lat": 21.2000, "lng": 81.7450, "zone": zone4, "address": "Serikhedi Highway Point"},
+            {"label": "Pachpedi Naka Gateway", "lat": 21.2100, "lng": 81.6800, "zone": zone4, "address": "Ring Road No 1 Crossing"},
+            {"label": "Telibandha Lake End", "lat": 21.2266, "lng": 81.6600, "zone": zone4, "address": "Marine Drive, Telibandha"},
+            {"label": "Shastri Market Crossing", "lat": 21.2350, "lng": 81.6400, "zone": zone4, "address": "City West Core, Shastri Market"},
+            {"label": "Amanaka Bus Stand", "lat": 21.2450, "lng": 81.6100, "zone": zone4, "address": "Amanaka West Junction"}
         ]
 
-        # Ensure we have 20-25 bins total
+        # Ensure we have a decent number of bins
         db_bins = []
         for i, b_data in enumerate(bin_locations):
             # Assign varying statuses
@@ -196,11 +208,11 @@ def seed_database():
             db.refresh(b)
 
         # ── Routes ──────────────────────────────────────────────
-        # Create 2 active routes for today for Collector 1 and Collector 2
+        # Create active routes for today for Collector 1 and Collector 3 (representing different zones)
         today = date.today()
         
-        # Route 1 - Zone 1 Core Route for Collector 1
-        route1_bins = [b for b in db_bins if b.zone_id == zone1.id][:6] # Take 6 bins
+        # Route 1 - Zone 1 North Route for Collector 1
+        route1_bins = [b for b in db_bins if b.zone_id == zone1.id][:5] # Take 5 bins
         route1 = Route(
             name="Zone 1 Morning Collection",
             collector_id=collectors[0].id,
@@ -225,14 +237,14 @@ def seed_database():
             )
             route1_stops.append(stop)
 
-        # Route 2 - Zone 2 Educational Hub for Collector 2
-        route2_bins = [b for b in db_bins if b.zone_id == zone2.id][:5] # Take 5 bins
+        # Route 2 - Zone 3 East Express for Collector 3
+        route2_bins = [b for b in db_bins if b.zone_id == zone3.id][:4] # Take 4 bins
         route2 = Route(
-            name="Education Hub Express",
-            collector_id=collectors[1].id,
-            zone_id=zone2.id,
+            name="East Airport Express",
+            collector_id=collectors[2].id,
+            zone_id=zone3.id,
             date=today,
-            total_distance_km=5.2,
+            total_distance_km=6.2,
             estimated_duration_min=65,
             status=RouteStatus.in_progress, # Set as in progress
             optimized=True
@@ -308,7 +320,7 @@ def seed_database():
         db.add_all(recyclers)
         db.commit()
 
-        print("✓ Nava Raipur database seed complete!")
+        print("✓ Nava Raipur database seed complete with 4 Zones!")
 
     except Exception as e:
         db.rollback()
