@@ -1,7 +1,8 @@
 """
-Seed the database with initial data.
+Seed the database with initial data for Atal Nagar-Nava Raipur.
 Only inserts data if the database is empty (no existing zones).
 """
+import random
 from datetime import date, datetime, timezone
 import bcrypt
 from geoalchemy2.shape import from_shape
@@ -18,7 +19,6 @@ def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
-
 def seed_database():
     db = SessionLocal()
     try:
@@ -28,246 +28,293 @@ def seed_database():
             print("Database already has data — skipping seed.")
             return
 
-        print("Seeding database...")
+        print("Seeding database for Nava Raipur...")
 
         # ── Zones ──────────────────────────────────────────────
         zone1 = Zone(
-            name="Raipur North",
-            description="Northern Raipur including Shankar Nagar, Pandri, and Civil Lines",
-            center_lat=21.1364,
-            center_lng=81.7842,
-            radius_km=12.0,
+            name="Nava Raipur Core",
+            description="Covering Sector 24, Mantralaya, Sector 27, and Central Park area",
+            center_lat=21.1614,   # Approx near Mantralaya
+            center_lng=81.7869,
+            radius_km=5.0,
         )
         zone2 = Zone(
-            name="Raipur South",
-            description="Southern Raipur including Telibandha, Tatibandh, and Gudhiyari",
-            center_lat=21.2200,
-            center_lng=81.6350,
-            radius_km=10.0,
+            name="Educational Hub",
+            description="Covering IIIT Naya Raipur, Hidayatullah Law University, and IIM Raipur",
+            center_lat=21.1490,
+            center_lng=81.7650,
+            radius_km=6.0,
         )
-        db.add_all([zone1, zone2])
-        db.flush()
-        print(f"  ✓ 2 zones created (IDs: {zone1.id}, {zone2.id})")
+        zone3 = Zone(
+            name="Raipur Connectivity",
+            description="Covering the route towards Swami Vivekananda Airport",
+            center_lat=21.1850,
+            center_lng=81.7300,
+            radius_km=8.0,
+        )
+        
+        db.add_all([zone1, zone2, zone3])
+        db.commit()
+        db.refresh(zone1)
+        db.refresh(zone2)
+        db.refresh(zone3)
+
+        zones = [zone1, zone2, zone3]
 
         # ── Users ──────────────────────────────────────────────
+        users = []
+        
+        # 1 Admin
         admin = User(
             email="admin@smartwaste.com",
-            full_name="System Admin",
             hashed_password=hash_password("Admin@123"),
-            phone="9876543210",
+            full_name="System Admin",
             role="admin",
             is_active=True,
         )
+        users.append(admin)
 
-        sub_admin1 = User(
-            email="subadmin1@smartwaste.com",
-            full_name="North Zone Manager",
-            hashed_password=hash_password("Sub@123"),
-            phone="9876543211",
-            role="sub_admin",
-            zone_id=zone1.id,
-            is_active=True,
-        )
-        sub_admin2 = User(
-            email="subadmin2@smartwaste.com",
-            full_name="South Zone Manager",
-            hashed_password=hash_password("Sub@123"),
-            phone="9876543212",
-            role="sub_admin",
-            zone_id=zone2.id,
-            is_active=True,
-        )
+        # 3 Sub-Admins (One per zone)
+        for i, zone in enumerate(zones, 1):
+            subadmin = User(
+                email=f"subadmin{i}@smartwaste.com",
+                hashed_password=hash_password("Sub@123"),
+                full_name=f"{zone.name} Manager",
+                role="sub_admin",
+                zone_id=zone.id,
+                is_active=True,
+            )
+            users.append(subadmin)
 
-        shg1 = User(
-            email="shg1@smartwaste.com",
-            full_name="SHG Worker Lakshmi",
-            hashed_password=hash_password("SHG@123"),
-            phone="9876543213",
-            role="shg",
-            zone_id=zone1.id,
-            is_active=True,
-        )
-        shg2 = User(
-            email="shg2@smartwaste.com",
-            full_name="SHG Worker Meena",
-            hashed_password=hash_password("SHG@123"),
-            phone="9876543214",
-            role="shg",
-            zone_id=zone1.id,
-            is_active=True,
-        )
-        shg3 = User(
-            email="shg3@smartwaste.com",
-            full_name="SHG Worker Sunita",
-            hashed_password=hash_password("SHG@123"),
-            phone="9876543215",
-            role="shg",
-            zone_id=zone2.id,
-            is_active=True,
-        )
+        # 5 SHG Workers
+        for i in range(1, 6):
+            shg = User(
+                email=f"shg{i}@smartwaste.com",
+                hashed_password=hash_password("SHG@123"),
+                full_name=f"SHG Worker {i}",
+                role="shg",
+                zone_id=zones[i % 3].id, # distribute among zones
+                is_active=True,
+            )
+            users.append(shg)
 
-        collector1 = User(
-            email="collector1@smartwaste.com",
-            full_name="Collector Ramesh",
-            hashed_password=hash_password("Col@123"),
-            phone="9876543216",
-            role="collector",
-            zone_id=zone1.id,
-            is_active=True,
-        )
-        collector2 = User(
-            email="collector2@smartwaste.com",
-            full_name="Collector Suresh",
-            hashed_password=hash_password("Col@123"),
-            phone="9876543217",
-            role="collector",
-            zone_id=zone2.id,
-            is_active=True,
-        )
+        # 3 Collectors
+        collectors = []
+        for i in range(1, 4):
+            collector = User(
+                email=f"collector{i}@smartwaste.com",
+                hashed_password=hash_password("Col@123"),
+                full_name=f"Truck Driver {i}",
+                role="collector",
+                zone_id=zones[i % 3].id,
+                is_active=True,
+            )
+            users.append(collector)
+            collectors.append(collector)
 
-        all_users = [admin, sub_admin1, sub_admin2, shg1, shg2, shg3, collector1, collector2]
-        db.add_all(all_users)
-        db.flush()
-        print(f"  ✓ 8 users created (admin, 2 sub-admins, 3 SHG, 2 collectors)")
+        db.add_all(users)
+        db.commit()
 
-        # ── Bins (15 bins with real Raipur, CG GPS coordinates) ──
-        bins_data = [
-            # Zone 1 — Raipur North
-            ("BIN-N01", 21.2514, 81.6296, "Shankar Nagar Chowk", zone1.id, BinStatus.empty, 0),
-            ("BIN-N02", 21.2470, 81.6340, "Pandri Market", zone1.id, BinStatus.low, 20),
-            ("BIN-N03", 21.2550, 81.6250, "Civil Lines", zone1.id, BinStatus.medium, 50),
-            ("BIN-N04", 21.2490, 81.6210, "Jaistambh Chowk", zone1.id, BinStatus.high, 78),
-            ("BIN-N05", 21.2600, 81.6310, "Budha Talab", zone1.id, BinStatus.full, 95),
-            ("BIN-N06", 21.2530, 81.6380, "Purani Basti", zone1.id, BinStatus.overflow, 100),
-            ("BIN-N07", 21.2450, 81.6270, "Fafadih Chowk", zone1.id, BinStatus.medium, 45),
-            ("BIN-N08", 21.2580, 81.6200, "Mowa", zone1.id, BinStatus.low, 15),
-            # Zone 2 — Raipur South
-            ("BIN-S01", 21.2200, 81.6350, "Telibandha Lake", zone2.id, BinStatus.empty, 5),
-            ("BIN-S02", 21.2150, 81.6400, "Tatibandh", zone2.id, BinStatus.high, 80),
-            ("BIN-S03", 21.2100, 81.6300, "Gudhiyari", zone2.id, BinStatus.full, 92),
-            ("BIN-S04", 21.2250, 81.6280, "VIP Estate", zone2.id, BinStatus.medium, 55),
-            ("BIN-S05", 21.2180, 81.6450, "Amanaka", zone2.id, BinStatus.overflow, 100),
-            ("BIN-S06", 21.2300, 81.6320, "Magneto Mall Area", zone2.id, BinStatus.low, 25),
-            ("BIN-S07", 21.2050, 81.6370, "Sunder Nagar", zone2.id, BinStatus.empty, 0),
+        # Refresh collectors to get their IDs
+        for c in collectors:
+            db.refresh(c)
+
+        # ── Bins ──────────────────────────────────────────────
+        # Landmarks and variations around Nava Raipur (Base Lat: 21.226676, base Lng: 81.785756)
+        # Using a few specific coordinates resembling the area mapping.
+        
+        bin_locations = [
+            {"label": "Mantralaya North Gate", "lat": 21.1610, "lng": 81.7865, "zone": zone1, "address": "Mahanadi Bhawan, Sector 19"},
+            {"label": "Sector 24 Commercial Complex", "lat": 21.1450, "lng": 81.7900, "zone": zone1, "address": "Sector 24, Nava Raipur"},
+            {"label": "Central Park Entrance", "lat": 21.1550, "lng": 81.7850, "zone": zone1, "address": "Central Park, Sector 24"},
+            {"label": "Sector 27 Residential Area", "lat": 21.1680, "lng": 81.7920, "zone": zone1, "address": "Block B, Sector 27"},
+            {"label": "Sathya Sai Hospital Gate", "lat": 21.1510, "lng": 81.7800, "zone": zone1, "address": "Sector 2, Nava Raipur"},
+            {"label": "Purkhouti Muktangan Tourist Spot", "lat": 21.1444, "lng": 81.7880, "zone": zone1, "address": "Sector 24"},
+            {"label": "Sector 29 Market", "lat": 21.1710, "lng": 81.7950, "zone": zone1, "address": "Main Market, Sector 29"},
+            
+            {"label": "IIIT Naya Raipur Campus", "lat": 21.1495, "lng": 81.7655, "zone": zone2, "address": "Sector 24, Near IIIT"},
+            {"label": "Hidayatullah Law University", "lat": 21.1555, "lng": 81.7600, "zone": zone2, "address": "HNLU Campus Gate"},
+            {"label": "IIM Raipur Main Road", "lat": 21.1400, "lng": 81.7580, "zone": zone2, "address": "IIM Raipur Campus, Sector 15"},
+            {"label": "Sector 15 Student Hostel", "lat": 21.1420, "lng": 81.7610, "zone": zone2, "address": "Student Quarters, Sector 15"},
+            {"label": "Sector 17 Food Court", "lat": 21.1580, "lng": 81.7680, "zone": zone2, "address": "Sector 17 Eateries"},
+            {"label": "Sports Complex Hub", "lat": 21.1510, "lng": 81.7700, "zone": zone2, "address": "Nava Raipur Sports Complex"},
+            {"label": "Library Avenue", "lat": 21.1480, "lng": 81.7630, "zone": zone2, "address": "Sector 24 Library Area"},
+            
+            {"label": "Airport VIP Road", "lat": 21.1850, "lng": 81.7300, "zone": zone3, "address": "VIP Road Crossing"},
+            {"label": "Swami Vivekananda Airport T1", "lat": 21.1800, "lng": 81.7350, "zone": zone3, "address": "Terminal 1 Gate"},
+            {"label": "Ram Mandir Square", "lat": 21.1900, "lng": 81.7200, "zone": zone3, "address": "VIP Road, Ram Mandir"},
+            {"label": "Serikhedi Junction", "lat": 21.2000, "lng": 81.7450, "zone": zone3, "address": "Serikhedi Highway Point"},
+            {"label": "Mana Camp Settlement", "lat": 21.1750, "lng": 81.7250, "zone": zone3, "address": "Mana Camp Area"},
+            {"label": "Pachpedi Naka Gateway", "lat": 21.2100, "lng": 81.6800, "zone": zone3, "address": "Ring Road No 1 Crossing"},
+            {"label": "Telibandha Lake End", "lat": 21.2266, "lng": 81.6600, "zone": zone3, "address": "Marine Drive, Telibandha"},
+            {"label": "Sector 4 VIP Gateway", "lat": 21.1905, "lng": 81.7550, "zone": zone3, "address": "Sector 4 Entrance"},
+            {"label": "Sector 16 Mall Road", "lat": 21.1820, "lng": 81.7500, "zone": zone3, "address": "Sector 16 Central"}
         ]
 
-        bin_objects = []
-        for label, lat, lng, addr, z_id, status, fill in bins_data:
-            b = Bin(
-                label=label,
-                location=from_shape(Point(lng, lat), srid=4326),
-                latitude=lat,
-                longitude=lng,
-                address=addr,
-                zone_id=z_id,
+        # Ensure we have 20-25 bins total
+        db_bins = []
+        for i, b_data in enumerate(bin_locations):
+            # Assign varying statuses
+            rand_val = random.randint(0, 100)
+            if rand_val < 15:
+                fill_lvl = random.randint(0, 10)
+                status = BinStatus.empty
+            elif rand_val < 35:
+                fill_lvl = random.randint(11, 40)
+                status = BinStatus.low
+            elif rand_val < 60:
+                fill_lvl = random.randint(41, 70)
+                status = BinStatus.medium
+            elif rand_val < 80:
+                fill_lvl = random.randint(71, 90)
+                status = BinStatus.high
+            elif rand_val < 95:
+                fill_lvl = random.randint(91, 100)
+                status = BinStatus.full
+            else:
+                fill_lvl = 100
+                status = BinStatus.overflow
+                
+            db_bin = Bin(
+                label=b_data["label"],
+                latitude=b_data["lat"],
+                longitude=b_data["lng"],
+                address=b_data["address"],
+                zone_id=b_data["zone"].id,
+                capacity_kg=250.0,
+                fill_level=fill_lvl,
                 status=status,
-                fill_level=fill,
-                capacity_kg=50.0,
+                location=from_shape(Point(b_data["lng"], b_data["lat"]), srid=4326),
+                last_collected=None,
             )
-            bin_objects.append(b)
+            db_bins.append(db_bin)
+            
+        db.add_all(db_bins)
+        db.commit()
 
-        db.add_all(bin_objects)
-        db.flush()
-        print(f"  ✓ 15 bins created (8 North, 7 South)")
+        for b in db_bins:
+            db.refresh(b)
 
-        # ── Route for collector1 → today with 5 stops ──────────
+        # ── Routes ──────────────────────────────────────────────
+        # Create 2 active routes for today for Collector 1 and Collector 2
         today = date.today()
-        route = Route(
-            name=f"North Zone Collection — {today.isoformat()}",
-            collector_id=collector1.id,
+        
+        # Route 1 - Zone 1 Core Route for Collector 1
+        route1_bins = [b for b in db_bins if b.zone_id == zone1.id][:6] # Take 6 bins
+        route1 = Route(
+            name="Zone 1 Morning Collection",
+            collector_id=collectors[0].id,
             zone_id=zone1.id,
             date=today,
-            status=RouteStatus.planned,
             total_distance_km=8.5,
             estimated_duration_min=90,
-            optimized=1,
+            status=RouteStatus.planned,
+            optimized=True
         )
-        db.add(route)
-        db.flush()
-
-        # Pick first 5 North-zone bins for the route stops
-        north_bins = [b for b in bin_objects if b.zone_id == zone1.id][:5]
-        for seq, stop_bin in enumerate(north_bins, start=1):
-            stop = RouteStop(
-                route_id=route.id,
-                bin_id=stop_bin.id,
-                sequence=seq,
-                status="pending",
-            )
-            db.add(stop)
-
+        db.add(route1)
         db.commit()
-        print(f"  ✓ 1 route created with 5 stops for collector1")
-        
-        # ── Recyclers ──────────────────────────────────────────
+        db.refresh(route1)
+
+        route1_stops = []
+        for idx, route_bin in enumerate(route1_bins, 1):
+            stop = RouteStop(
+                route_id=route1.id,
+                bin_id=route_bin.id,
+                sequence=idx,
+                status="pending"
+            )
+            route1_stops.append(stop)
+
+        # Route 2 - Zone 2 Educational Hub for Collector 2
+        route2_bins = [b for b in db_bins if b.zone_id == zone2.id][:5] # Take 5 bins
+        route2 = Route(
+            name="Education Hub Express",
+            collector_id=collectors[1].id,
+            zone_id=zone2.id,
+            date=today,
+            total_distance_km=5.2,
+            estimated_duration_min=65,
+            status=RouteStatus.in_progress, # Set as in progress
+            optimized=True
+        )
+        db.add(route2)
+        db.commit()
+        db.refresh(route2)
+
+        route2_stops = []
+        for idx, route_bin in enumerate(route2_bins, 1):
+            stop = RouteStop(
+                route_id=route2.id,
+                bin_id=route_bin.id,
+                sequence=idx,
+                # Simulate the first bin as collected
+                status="collected" if idx == 1 else "pending", 
+                waste_collected_kg=random.uniform(15.0, 45.0) if idx == 1 else None,
+                actual_arrival=datetime.now(timezone.utc) if idx == 1 else None
+            )
+            route2_stops.append(stop)
+
+        db.add_all(route1_stops + route2_stops)
+        db.commit()
+
+        # ── Recyclers ──────────────────────────────────────────────
         recyclers = [
             Recycler(
-                name="Sharma Plastics Raipur",
-                contact_person="Rajesh Sharma",
+                name="Siltara Green Plastics",
+                contact_person="Ramesh Kumar",
                 phone="9876543210",
-                address="Near Industrial Estate, Bhanpuri",
-                latitude=21.2514,
-                longitude=81.6296,
-                accepted_types=["plastic", "mixed"],
-                price_per_kg=12.00,
-                min_quantity_kg=50.0,
-                zone_id=zone1.id,
-                is_active=True
+                email="contact@siltaragreen.in",
+                address="Phase 1, Siltara Industrial Area, Raipur",
+                accepted_types="PET, HDPE",
+                price_per_kg=12.50,
+                status="approved",
+                rating=4.5
             ),
             Recycler(
-                name="GreenCycle Chhattisgarh",
-                contact_person="Priya Verma",
-                phone="9765432109",
-                address="Ring Road No. 1, Telibandha",
-                latitude=21.2344,
-                longitude=81.6512,
-                accepted_types=["all"],
-                price_per_kg=15.00,
-                min_quantity_kg=25.0,
-                zone_id=zone1.id,
-                is_active=True
+                name="Bhanpuri Metal & Scraps",
+                contact_person="Anita Desai",
+                phone="9876543211",
+                email="sales@bhanpuriscraps.com",
+                address="Near Transport Nagar, Bhanpuri",
+                accepted_types="Metal, Glass, PVC",
+                price_per_kg=22.00,
+                status="approved",
+                rating=4.2
             ),
             Recycler(
-                name="Raipur Kabadiwala Network",
-                contact_person="Suresh Patel",
-                phone="9654321098",
-                address="Bhatagaon Bypass Area",
-                latitude=21.2601,
-                longitude=81.6189,
-                accepted_types=["plastic"],
-                price_per_kg=8.50,
-                min_quantity_kg=100.0,
-                zone_id=zone2.id,
-                is_active=True
+                name="Urla Eco Recyclers",
+                contact_person="Vikram Singh",
+                phone="9876543212",
+                email="info@urlaeco.com",
+                address="Urla Industrial Estate, Raipur",
+                accepted_types="Mixed Plastic, e-Waste",
+                price_per_kg=9.75,
+                status="approved",
+                rating=4.8
             ),
             Recycler(
-                name="EcoPlas Industries",
-                contact_person="Amit Gupta",
-                phone="9543210987",
-                address="Tatibandh Industrial Area",
-                latitude=21.2198,
-                longitude=81.6445,
-                accepted_types=["all"],
-                price_per_kg=18.00,
-                min_quantity_kg=10.0,
-                zone_id=zone2.id,
-                is_active=True
+                name="Nava Raipur Paper Mills",
+                contact_person="Sunita Sharma",
+                phone="9876543213",
+                email="purchasing@navapaper.in",
+                address="Sector 30 Industrial Zone, Nava Raipur",
+                accepted_types="Cardboard, Paper, Organic",
+                price_per_kg=6.00,
+                status="approved",
+                rating=3.9
             )
         ]
+        
         db.add_all(recyclers)
-        db.flush()
-        print(f"  ✓ {len(recyclers)} recyclers created")
         db.commit()
 
-        print("Seed data inserted successfully!")
+        print("✓ Nava Raipur database seed complete!")
 
     except Exception as e:
         db.rollback()
-        print(f"Error seeding database: {e}")
-        raise
+        print(f"Error during seeding: {e}")
     finally:
         db.close()
-
 
 if __name__ == "__main__":
     seed_database()

@@ -343,6 +343,8 @@ export default function AdminDashboard() {
                                     <select value={form.zone_id} onChange={(e) => setForm({ ...form, zone_id: parseInt(e.target.value) })} className="px-3 py-2 border rounded-xl text-sm">
                                         <option value={1}>Zone 1 - North</option>
                                         <option value={2}>Zone 2 - South</option>
+                                        <option value={3}>Zone 3 - East</option>
+                                        <option value={4}>Zone 4 - West</option>
                                     </select>
                                     <input value={form.capacity_kg} onChange={(e) => setForm({ ...form, capacity_kg: e.target.value })} placeholder="Capacity (kg)" className="px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" />
                                 </div>
@@ -469,6 +471,8 @@ export default function AdminDashboard() {
                                     <select value={form.zone_id} onChange={(e) => setForm({ ...form, zone_id: parseInt(e.target.value) })} className="px-3 py-2 border rounded-xl text-sm">
                                         <option value={1}>Zone 1 - North</option>
                                         <option value={2}>Zone 2 - South</option>
+                                        <option value={3}>Zone 3 - East</option>
+                                        <option value={4}>Zone 4 - West</option>
                                     </select>
                                 </div>
                                 <button onClick={handleAdd} className="w-full py-2.5 bg-sw-mid text-white font-medium rounded-xl hover:bg-sw-dark transition-colors">Create User</button>
@@ -606,9 +610,11 @@ export default function AdminDashboard() {
                         {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
                         Generate for All Zones
                     </button>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                         <button onClick={() => handleGenerate(1)} disabled={generating} className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors">Zone 1 (North)</button>
                         <button onClick={() => handleGenerate(2)} disabled={generating} className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors">Zone 2 (South)</button>
+                        <button onClick={() => handleGenerate(3)} disabled={generating} className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors">Zone 3 (East)</button>
+                        <button onClick={() => handleGenerate(4)} disabled={generating} className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors">Zone 4 (West)</button>
                     </div>
                 </div>
                 {result && (
@@ -713,7 +719,7 @@ export default function AdminDashboard() {
                             <input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="Email" className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid" />
                             <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Address *" className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid md:col-span-2" />
                             <select value={form.zone_id} onChange={(e) => setForm({ ...form, zone_id: parseInt(e.target.value) })} className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid">
-                                <option value={1}>Zone 1</option><option value={2}>Zone 2</option>
+                                <option value={1}>Zone 1</option><option value={2}>Zone 2</option><option value={3}>Zone 3</option><option value={4}>Zone 4</option>
                             </select>
                             <input value={form.price_per_kg} onChange={(e) => setForm({ ...form, price_per_kg: e.target.value })} type="number" placeholder="Price/kg (₹) *" className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid" />
                             <input value={form.min_quantity_kg} onChange={(e) => setForm({ ...form, min_quantity_kg: e.target.value })} type="number" placeholder="Min Qty (kg) *" className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid" />
