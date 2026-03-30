@@ -31,3 +31,10 @@ export const getStats = async () => {
     return res.data;
 };
 
+export const updateLocation = async (lat, lng) => {
+    const res = await client.post('/collector/location/update', {
+        latitude: lat,
+        longitude: lng
+    });
+    return res.data;
+};

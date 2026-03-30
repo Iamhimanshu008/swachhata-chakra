@@ -16,6 +16,9 @@ from models.report import BinReport
 from schemas.bin import PublicBinRead
 from services.image_analyzer import DEFAULT_ANALYSIS, analyze_bin_image
 from services.report_utils import build_report_notes
+from models.collector_location import CollectorLocation
+from models.user import User
+from models.route import Route, RouteStop
 
 router = APIRouter(prefix="/api/public", tags=["Public"])
 
@@ -136,56 +139,51 @@ from datetime import datetime, date
 @router.get("/live-status")
 def get_live_collection_status(db: Session = Depends(get_db)):
     """
-    Returns live collection status. For demo purposes, we compute this 
-    by looking at bins collected today. If no bins collected today, we return
-    a simulated progress.
+    Returns live collection status based on real CollectorLocation GPS pings.
     """
-    bins = db.query(Bin).all()
-    total_bins = len(bins)
+    active_locations = db.query(CollectorLocation, User).join(User, CollectorLocation.collector_id == User.id).all()
     
+    results = []
     today = date.today()
     
-    # Find bins collected today
-    collected_bins = []
-    for b in bins:
-        if b.last_collected and b.last_collected.date() == today:
-            collected_bins.append(b)
-            
-    # Sort to find the most recently collected
-    collected_bins.sort(key=lambda x: x.last_collected, reverse=True)
-    
-    if len(collected_bins) > 0:
-        last_bin = collected_bins[0]
-        collected_count = len(collected_bins)
-        last_collection = {
-            "bin_name": last_bin.label,
-            "time": last_bin.last_collected.isoformat()
-        }
-        # Simulate collector location slightly offset from the last bin
-        collector_location = {
-            "lat": last_bin.latitude + 0.001,
-            "lng": last_bin.longitude + 0.001
-        }
-    else:
-        # Mock data if no collections today yet
-        collected_count = total_bins // 4 if total_bins >= 4 else 0
-        last_collection = {
-            "bin_name": "BIN-S04" if total_bins > 0 else "None",
-            "time": datetime.now().isoformat()
-        }
-        collector_location = {
-            "lat": 21.2514, # default raipur
-            "lng": 81.6296
-        }
+    for loc, user in active_locations:
+        # Find their active route for today
+        route = db.query(Route).filter(
+            Route.collector_id == user.id,
+            Route.date == today
+        ).first()
         
-    pct = int((collected_count / total_bins * 100) if total_bins > 0 else 0)
-
-    return {
-        "zone": "Raipur Central",
-        "collector": "Ramesh",
-        "total_bins": total_bins,
-        "collected_today": collected_count,
-        "last_collection": last_collection,
-        "route_completion_pct": pct,
-        "collector_location": collector_location
-    }
+        current_bin_name = "None"
+        eta_minutes = 0
+        distance_meters = 0
+        
+        if route:
+            # Get next pending stop
+            next_stop = db.query(RouteStop, Bin).join(Bin, RouteStop.bin_id == Bin.id).filter(
+                RouteStop.route_id == route.id,
+                RouteStop.status == "pending"
+            ).order_by(RouteStop.sequence.asc()).first()
+            
+            if next_stop:
+                stop_obj, bin_obj = next_stop
+                current_bin_name = bin_obj.label
+                
+                # Simple logic: assume 20km/h speed. 
+                from services.route_optimizer import haversine_distance
+                dist_m = haversine_distance(loc.latitude, loc.longitude, bin_obj.latitude, bin_obj.longitude)
+                distance_meters = int(dist_m)
+                dist_km = dist_m / 1000.0
+                eta_minutes = int(round((dist_km / 20.0) * 60))
+        
+        results.append({
+            "collector_id": user.id,
+            "name": user.full_name,
+            "latitude": loc.latitude,
+            "longitude": loc.longitude,
+            "current_bin": current_bin_name,
+            "eta_minutes": eta_minutes,
+            "distance_meters": distance_meters,
+            "updated_at": loc.updated_at.isoformat() if loc.updated_at else None
+        })
+        
+    return results

@@ -1,12 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
     View, Text, ScrollView, TouchableOpacity,
     StyleSheet, RefreshControl, ActivityIndicator, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import * as Location from 'expo-location';
 import useStore from '../../store';
-import { getTodayRoute } from '../../api/collectorApi';
+import { getTodayRoute, updateLocation } from '../../api/collectorApi';
 import RouteCard from '../../components/RouteCard';
 import StatusBadge from '../../components/StatusBadge';
 import { COLORS } from '../../config';
@@ -47,6 +48,42 @@ export default function HomeScreen({ navigation }) {
         ]);
     };
 
+    const [isTracking, setIsTracking] = useState(false);
+
+    useEffect(() => {
+        let interval;
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission denied', 'Location access needed for live tracking');
+                return;
+            }
+            
+            setIsTracking(true);
+            
+            // Set up 10 second polling
+            interval = setInterval(async () => {
+                try {
+                    let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+                    await updateLocation(location.coords.latitude, location.coords.longitude);
+                } catch (e) {
+                    console.log('Location update failed', e);
+                }
+            }, 10000);
+            
+            // Do an immediate update
+            try {
+                let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+                await updateLocation(location.coords.latitude, location.coords.longitude);
+            } catch (e) {}
+        })();
+        
+        return () => {
+            if (interval) clearInterval(interval);
+            setIsTracking(false);
+        };
+    }, []);
+
     const getHour = () => new Date().getHours();
     const greeting = getHour() < 12 ? 'Good morning' : getHour() < 17 ? 'Good afternoon' : 'Good evening';
 
@@ -74,6 +111,7 @@ export default function HomeScreen({ navigation }) {
                         <Text style={styles.greeting}>{greeting},</Text>
                         <Text style={styles.name}>{user?.full_name?.split(' ')[0] || 'Collector'} 👋</Text>
                         <Text style={styles.date}>{new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
+                        {isTracking && <Text style={{ fontSize: 13, color: '#16A34A', marginTop: 6, fontWeight: '700' }}>📍 Sharing location</Text>}
                     </View>
                     <TouchableOpacity onPress={doLogout} style={styles.logoutBtn}>
                         <Text style={styles.logoutText}>🚪 Logout</Text>

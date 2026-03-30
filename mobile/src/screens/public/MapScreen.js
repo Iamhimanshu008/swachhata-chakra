@@ -3,12 +3,13 @@ import {
     View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator,
 } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
-import { getBins } from '../../api/publicApi';
+import { getBins, getLiveStatus } from '../../api/publicApi';
 import BinPin from '../../components/BinPin';
 import { COLORS, RAIPUR_COORDS } from '../../config';
 
 export default function PublicMapScreen({ navigation }) {
     const [bins, setBins] = useState([]);
+    const [collectors, setCollectors] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,6 +17,16 @@ export default function PublicMapScreen({ navigation }) {
             .then(data => setBins(Array.isArray(data) ? data : []))
             .catch(() => {})
             .finally(() => setLoading(false));
+            
+        const fetchStatus = () => {
+            getLiveStatus().then(data => {
+                setCollectors(Array.isArray(data) ? data : []);
+            }).catch(() => {});
+        };
+        
+        fetchStatus();
+        const interval = setInterval(fetchStatus, 15000);
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -38,6 +49,29 @@ export default function PublicMapScreen({ navigation }) {
                                 >
                                     <Text style={styles.reportBtnText}>Report This Bin</Text>
                                 </TouchableOpacity>
+                            </View>
+                        </Callout>
+                    </Marker>
+                ))}
+
+                {(collectors || []).map((col) => (
+                    <Marker
+                        key={`collector-${col.collector_id}`}
+                        coordinate={{ latitude: col.latitude, longitude: col.longitude }}
+                        zIndex={999}
+                    >
+                        <Text style={{fontSize: 28}}>🚚</Text>
+                        <Callout tooltip>
+                            <View style={styles.callout}>
+                                <Text style={styles.calloutTitle}>{col.name}</Text>
+                                <Text style={styles.calloutSub}>Heading to: {col.current_bin}</Text>
+                                <Text style={styles.calloutSub}>ETA: {col.eta_minutes} mins</Text>
+                                {col.distance_meters > 0 && (
+                                    <Text style={styles.calloutAddress}>Collector is {col.distance_meters} meters away</Text>
+                                )}
+                                {col.distance_meters === 0 && (
+                                    <Text style={styles.calloutAddress}>Collector is active</Text>
+                                )}
                             </View>
                         </Callout>
                     </Marker>

@@ -18,3 +18,8 @@ export const getReportStatus = async (id) => {
     const res = await client.get(`/public/report/${id}/status`);
     return res.data;
 };
+
+export const getLiveStatus = async () => {
+    const res = await client.get('/public/live-status');
+    return res.data;
+};

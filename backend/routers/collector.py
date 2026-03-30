@@ -18,6 +18,7 @@ from models.report import BinReport
 from models.route import Route, RouteStatus, RouteStop
 from models.user import User
 from models.zone import Zone
+from models.collector_location import CollectorLocation
 from services.auth_service import require_role
 from services.report_utils import urgency_from_fill_level
 
@@ -342,3 +343,33 @@ def get_collector_stats(
         "kg_this_month": round(float(kg_this_month), 2),
         "avg_kg_per_collection": round(average, 2),
     }
+
+class LocationUpdateRequest(BaseModel):
+    latitude: float
+    longitude: float
+
+@router.post("/location/update")
+def update_location(
+    payload: LocationUpdateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("collector")),
+):
+    location = db.query(CollectorLocation).filter(CollectorLocation.collector_id == current_user.id).first()
+    if location:
+        location.latitude = payload.latitude
+        location.longitude = payload.longitude
+    else:
+        location = CollectorLocation(
+            collector_id=current_user.id,
+            latitude=payload.latitude,
+            longitude=payload.longitude
+        )
+        db.add(location)
+    
+    try:
+        db.commit()
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Failed to update location")
+        
+    return {"message": "Location updated"}
