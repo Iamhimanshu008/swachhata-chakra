@@ -6,8 +6,6 @@ from database import Base
 
 class BinStatus(str, enum.Enum):
     empty = "empty"
-    partial = "partial"
-    critical = "critical"
     inactive = "inactive"
     low = "low"
     medium = "medium"

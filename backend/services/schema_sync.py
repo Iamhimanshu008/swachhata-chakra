@@ -115,6 +115,12 @@ SCHEMA_STATEMENTS = [
     ALTER TABLE IF EXISTS users
       ADD COLUMN IF NOT EXISTS expo_push_token VARCHAR(255);
     """,
+    """
+    UPDATE bins SET status = 'high' WHERE status = 'partial';
+    """,
+    """
+    UPDATE bins SET status = 'full' WHERE status = 'critical';
+    """,
 ]
 
 

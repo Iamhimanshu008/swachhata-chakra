@@ -301,7 +301,7 @@ def _build_dashboard_data(db: Session) -> dict:
 
     bins = db.query(Bin).all()
     active_bins = 0
-    distribution = {"empty": 0, "partial": 0, "full": 0, "critical": 0}
+    distribution = {"empty": 0, "high": 0, "full": 0, "inactive": 0}
     for bin_obj in bins:
         normalized = normalize_bin_status(bin_obj.status, bin_obj.fill_level)
         if normalized != "inactive":
@@ -368,6 +368,23 @@ def _build_dashboard_data(db: Session) -> dict:
             }
         )
 
+    # Waste type distribution from verified/AI-analysed bin reports
+    waste_type_rows = (
+        db.query(
+            func.coalesce(func.nullif(func.trim(BinReport.waste_type), ""), "unknown").label("wtype"),
+            func.count(BinReport.id).label("cnt"),
+        )
+        .group_by(
+            func.coalesce(func.nullif(func.trim(BinReport.waste_type), ""), "unknown")
+        )
+        .order_by(func.count(BinReport.id).desc())
+        .all()
+    )
+    waste_type_distribution = [
+        {"name": row.wtype.capitalize(), "value": int(row.cnt)}
+        for row in waste_type_rows
+    ]
+
     return {
         "total_plastic_kg": round(total_plastic_kg, 2),
         "fuel_saved_liters": fuel_saved_liters,
@@ -378,6 +395,7 @@ def _build_dashboard_data(db: Session) -> dict:
         "daily_collections": daily_collections,
         "zone_performance": zone_performance,
         "bin_status_distribution": distribution,
+        "waste_type_distribution": waste_type_distribution,
     }
 
 

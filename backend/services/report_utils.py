@@ -12,11 +12,11 @@ def enum_value(value: Any) -> Any:
 def status_from_fill_level(fill_level: int | None) -> str:
     level = max(0, min(100, int(fill_level or 0)))
     if level >= 80:
-        return "critical"
-    if level >= 60:
         return "full"
+    if level >= 60:
+        return "high"
     if level >= 30:
-        return "partial"
+        return "high"
     return "empty"
 
 
@@ -36,13 +36,13 @@ def normalize_bin_status(status: Any, fill_level: int | None = None) -> str:
     mapping = {
         "inactive": "inactive",
         "empty": "empty",
-        "low": "partial",
-        "medium": "partial",
-        "partial": "partial",
+        "low": "high",
+        "medium": "high",
+        "partial": "high",
         "high": "full",
         "full": "full",
-        "overflow": "critical",
-        "critical": "critical",
+        "overflow": "full",
+        "critical": "full",
     }
     if normalized in mapping:
         return mapping[normalized]
