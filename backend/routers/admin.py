@@ -30,31 +30,32 @@ from schemas.user import UserCreate, UserUpdate
 from services.auth_service import hash_password, require_role
 from services.report_utils import normalize_bin_status
 from services.route_optimizer import create_route_for_zone
+from models.settings import SystemSettings
 
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
 HEADER_FILL = PatternFill(fill_type="solid", fgColor="2D6A4F")
 HEADER_FONT = Font(color="FFFFFF", bold=True)
 
-# In-memory settings store (persists for server lifetime)
-_admin_settings: dict = {}
 
-
-def _get_settings() -> AdminSettings:
+def _get_settings(db: Session) -> AdminSettings:
+    """Read settings from DB, falling back to app config defaults."""
     from config import settings as app_settings
 
+    rows = {row.key: row.value for row in db.query(SystemSettings).all()}
+
+    def _val(db_key: str, default_attr: str) -> float:
+        raw = rows.get(db_key)
+        if raw is not None:
+            return float(raw)
+        return float(getattr(app_settings, default_attr))
+
     return AdminSettings(
-        geofence_radius_meters=_admin_settings.get("geofence_radius_meters", app_settings.GEOFENCE_RADIUS_METERS),
-        ai_confidence_threshold=_admin_settings.get("ai_confidence_threshold", app_settings.AI_CONFIDENCE_THRESHOLD),
-        bin_collection_threshold_percent=_admin_settings.get(
-            "bin_collection_threshold_percent",
-            app_settings.BIN_COLLECTION_THRESHOLD_PERCENT,
-        ),
-        spam_window_minutes=_admin_settings.get("spam_window_minutes", app_settings.SPAM_WINDOW_MINUTES),
-        default_truck_capacity_kg=_admin_settings.get(
-            "default_truck_capacity_kg",
-            app_settings.DEFAULT_TRUCK_CAPACITY_KG,
-        ),
+        geofence_radius_meters=_val("geofence_radius_meters", "GEOFENCE_RADIUS_METERS"),
+        ai_confidence_threshold=_val("ai_confidence_threshold", "AI_CONFIDENCE_THRESHOLD"),
+        bin_collection_threshold_percent=_val("bin_collection_threshold_percent", "BIN_COLLECTION_THRESHOLD_PERCENT"),
+        spam_window_minutes=_val("spam_window_minutes", "SPAM_WINDOW_MINUTES"),
+        default_truck_capacity_kg=_val("default_truck_capacity_kg", "DEFAULT_TRUCK_CAPACITY_KG"),
     )
 
 
@@ -725,21 +726,38 @@ def export_csv(
 
 # Settings
 @router.get("/settings", response_model=AdminSettings)
-def get_settings(current_user: User = Depends(require_role("admin"))):
-    return _get_settings()
+def get_settings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin")),
+):
+    return _get_settings(db)
 
 
 @router.put("/settings", response_model=AdminSettings)
 def update_settings(
     data: AdminSettings,
+    db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),
 ):
-    _admin_settings["geofence_radius_meters"] = data.geofence_radius_meters
-    _admin_settings["ai_confidence_threshold"] = data.ai_confidence_threshold
-    _admin_settings["bin_collection_threshold_percent"] = data.bin_collection_threshold_percent
-    _admin_settings["spam_window_minutes"] = data.spam_window_minutes
-    _admin_settings["default_truck_capacity_kg"] = data.default_truck_capacity_kg
-    return _get_settings()
+    updates = {
+        "geofence_radius_meters": data.geofence_radius_meters,
+        "ai_confidence_threshold": data.ai_confidence_threshold,
+        "bin_collection_threshold_percent": data.bin_collection_threshold_percent,
+        "spam_window_minutes": data.spam_window_minutes,
+        "default_truck_capacity_kg": data.default_truck_capacity_kg,
+    }
+    for key, value in updates.items():
+        row = db.query(SystemSettings).filter(SystemSettings.key == key).first()
+        if row:
+            row.value = str(value)
+        else:
+            db.add(SystemSettings(key=key, value=str(value)))
+    try:
+        db.commit()
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to save settings: {exc}") from exc
+    return _get_settings(db)
 
 @router.get('/routes')
 def get_admin_routes(db: Session = Depends(get_db), current_user: User = Depends(require_role('admin'))):
