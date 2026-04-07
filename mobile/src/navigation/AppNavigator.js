@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import Constants from 'expo-constants';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, ActivityIndicator } from 'react-native';
 import useStore from '../store';
 import LoginScreen from '../screens/LoginScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import CollectorNavigator from './CollectorNavigator';
 import SHGNavigator from './SHGNavigator';
 import PublicNavigator from './PublicNavigator';
@@ -32,8 +34,10 @@ export default function AppNavigator() {
     useEffect(() => {
         if (!token || !user) return;
 
-        // Register device & setup listeners
-        registerForPushNotifications();
+        // Register device & setup listeners only if not in Expo Go
+        if (Constants.appOwnership !== 'expo') {
+            registerForPushNotifications();
+        }
 
         const cleanup = setupNotificationListeners(
             // On notification received in foreground
@@ -71,6 +75,7 @@ export default function AppNavigator() {
             {!token ? (
                 <>
                     <Stack.Screen name="Login" component={LoginScreen} />
+                    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
                     <Stack.Screen name="PublicStack" component={PublicNavigator} />
                 </>
             ) : user?.role === 'collector' ? (
@@ -78,7 +83,11 @@ export default function AppNavigator() {
             ) : user?.role === 'shg' ? (
                 <Stack.Screen name="SHGTabs" component={SHGNavigator} />
             ) : (
-                <Stack.Screen name="Login" component={LoginScreen} />
+                <>
+                    <Stack.Screen name="Login" component={LoginScreen} />
+                    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+                    <Stack.Screen name="PublicStack" component={PublicNavigator} />
+                </>
             )}
         </Stack.Navigator>
     );

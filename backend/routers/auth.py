@@ -4,6 +4,7 @@ Auth router: login, current user, and device registration endpoints.
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
+from typing import Optional
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -22,17 +23,29 @@ class RegisterDeviceRequest(BaseModel):
     expo_push_token: str
 
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+    role: Optional[str] = None
+
+
 @router.post("/login", response_model=Token)
 def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    payload: LoginRequest,
     db: Session = Depends(get_db),
 ):
     """Authenticate user and return JWT token."""
-    user = db.query(User).filter(User.email == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
+    user = db.query(User).filter(User.email == payload.email).first()
+    if not user or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    if payload.role and user.role != payload.role:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Role mismatch. Required: {payload.role}, Found: {user.role}",
             headers={"WWW-Authenticate": "Bearer"},
         )
     if not user.is_active:
@@ -40,6 +53,7 @@ def login(
 
     access_token = create_access_token(data={"sub": str(user.id)})
     return Token(access_token=access_token, token_type="bearer")
+
 
 
 @router.get("/me", response_model=UserRead)
@@ -58,4 +72,11 @@ def register_device(
     current_user.expo_push_token = payload.expo_push_token
     db.commit()
     return {"success": True, "message": "Device registered for push notifications."}
+
+@router.post("/forgot-password")
+async def forgot_password(data: dict, db: Session = Depends(get_db)):
+    email = data.get("email")
+    user = db.query(User).filter(User.email == email).first()
+    # Don't reveal if email exists or not (security)
+    return {"message": "If this email exists, a reset link has been sent."}
 

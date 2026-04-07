@@ -1,25 +1,54 @@
-# Environment variables - KABHI PUSH MAT KARNA
+# ─── Environment variables ── KABHI PUSH MAT KARNA ──
 .env
-*.env
+.env.*
+!.env.example
 
-# Python
+# ─── Python ──────────────────────────────────────────
 __pycache__/
 *.pyc
 backend/__pycache__/
 
-# Node
+# ─── Node ────────────────────────────────────────────
 node_modules/
 web/node_modules/
 mobile/node_modules/
 
-# Build files
+# ─── Build files ─────────────────────────────────────
 web/dist/
 *.log
 
-# Database
+# ─── Android build artifacts & keys ──────────────────
+*.apk
+*.aab
+*.jks
+*.keystore
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/.gradle/
+mobile/android/.kotlin/
+mobile/android/jdk-*/
+mobile/android/jdk17.zip
+mobile/android/build_log*.txt
+mobile/android/build_err*.txt
+mobile/android/build_error_log*.txt
+
+# ─── Expo ────────────────────────────────────────────
+mobile/.expo/
+
+# ─── Database ────────────────────────────────────────
 *.db
 *.sqlite
 
-# Docker volumes
+# ─── Docker volumes ──────────────────────────────────
 pgdata/
 uploads/
+
+# ─── IDE ─────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── Misc temp files ────────────────────────────────
+db_out.txt
+*.hprof

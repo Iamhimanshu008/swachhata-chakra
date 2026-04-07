@@ -9,10 +9,6 @@ import useStore from '../store';
 import { login as loginApi, getMe } from '../api/authApi';
 import { COLORS } from '../config';
 
-const DEMO_ACCOUNTS = {
-    'collector1@smartwaste.com': { password: 'Col@123', name: 'Collector 1' },
-    'collector2@smartwaste.com': { password: 'Col@123', name: 'Collector 2' },
-};
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -21,10 +17,10 @@ export default function LoginScreen({ navigation }) {
     const [loading, setLoading] = useState(false);
     const { login } = useStore();
 
-    const performLogin = async (emailToUse, passwordToUse) => {
+    const performLogin = async (emailToUse, passwordToUse, roleToUse) => {
         setLoading(true);
         try {
-            const tokenData = await loginApi(emailToUse, passwordToUse);
+            const tokenData = await loginApi(emailToUse, passwordToUse, roleToUse);
             const { access_token } = tokenData;
             await login(null, access_token);
             const user = await getMe();
@@ -44,15 +40,7 @@ export default function LoginScreen({ navigation }) {
             Alert.alert('Error', 'Please enter email and password');
             return;
         }
-        performLogin(email, password);
-    };
-
-    const handleDemoLogin = () => {
-        if (role === 'collector') {
-            performLogin('collector1@smartwaste.com', 'Col@123');
-        } else {
-            performLogin('shg1@smartwaste.com', 'SHG@123');
-        }
+        performLogin(email, password, role);
     };
 
     return (
@@ -116,6 +104,15 @@ export default function LoginScreen({ navigation }) {
                             secureTextEntry
                         />
 
+                        <TouchableOpacity 
+                            onPress={() => navigation.navigate('ForgotPassword')}
+                            style={{ alignSelf: 'flex-end', marginBottom: 16, marginTop: -8 }}
+                        >
+                            <Text style={{ color: '#2D6A4F', fontSize: 13, fontWeight: '600' }}>
+                                Forgot Password?
+                            </Text>
+                        </TouchableOpacity>
+
                         <TouchableOpacity
                             style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
                             onPress={handleLogin}
@@ -127,12 +124,7 @@ export default function LoginScreen({ navigation }) {
                             }
                         </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={styles.demoBtn}
-                            onPress={handleDemoLogin}
-                        >
-                            <Text style={styles.demoBtnText}>Use Demo Account</Text>
-                        </TouchableOpacity>
+
                     </View>
 
                     {/* Guest access */}
