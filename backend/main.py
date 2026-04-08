@@ -50,16 +50,29 @@ async def lifespan(app: FastAPI):
     sync_database_schema(engine)
     print("✓ Tables created successfully!")
 
-    # Seed data if database is empty
+    # Seed data — run exactly once (tracked via seed_metadata table)
+    with engine.connect() as conn:
+        conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS seed_metadata (
+                key VARCHAR(100) PRIMARY KEY,
+                seeded_at TIMESTAMP DEFAULT NOW()
+            );
+        """))
+        conn.commit()
+
     db = SessionLocal()
     try:
-        if db.query(User).first() is None:
+        result = db.execute(text("SELECT key FROM seed_metadata WHERE key = 'initial_seed'")).fetchone()
+        if result is None:
             from seed_data import seed_database
             seed_database()
-            print("✓ Seed data loaded!")
+            db.execute(text("INSERT INTO seed_metadata (key) VALUES ('initial_seed')"))
+            db.commit()
+            print("✓ Seed data loaded (first-time setup)!")
         else:
-            print("✓ Database already seeded.")
+            print("✓ Seed already done — skipping.")
     except Exception as e:
+        db.rollback()
         print(f"  Seed data info: {e}")
     finally:
         db.close()
