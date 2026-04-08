@@ -1,38 +1,58 @@
 """
 Storage service: Handle image uploads to MinIO (S3 compatible) storage.
+Falls back to local file storage when MinIO is not configured (e.g. Render).
 """
 import json
 import logging
 import os
 import uuid
-import boto3
-from botocore.client import Config
-from botocore.exceptions import ClientError
 from fastapi import HTTPException
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# MinIO Configuration
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "http://minio:9000")
-MINIO_ACCESS_KEY = os.environ["MINIO_ACCESS_KEY"]
-MINIO_SECRET_KEY = os.environ["MINIO_SECRET_KEY"]
+# MinIO Configuration — use .get() so missing keys don't crash the app
+MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "")
+MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY", "")
+MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY", "")
 BUCKET_NAME = "smartwaste-photos"
-PUBLIC_URL_PREFIX = os.getenv("MINIO_PUBLIC_URL", "http://localhost:9000")
+PUBLIC_URL_PREFIX = os.environ.get("MINIO_PUBLIC_URL", "http://localhost:9000")
 
-# Initialize boto3 client
-s3_client = boto3.client(
-    "s3",
-    endpoint_url=MINIO_ENDPOINT,
-    aws_access_key_id=MINIO_ACCESS_KEY,
-    aws_secret_access_key=MINIO_SECRET_KEY,
-    config=Config(signature_version="s3v4"),
-)
+# Upload directory for local fallback
+UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "uploads")
+
+# Initialize boto3 client only if MinIO credentials are provided
+s3_client = None
+
+if MINIO_ACCESS_KEY and MINIO_SECRET_KEY and MINIO_ENDPOINT:
+    try:
+        import boto3
+        from botocore.client import Config
+        from botocore.exceptions import ClientError
+
+        s3_client = boto3.client(
+            "s3",
+            endpoint_url=MINIO_ENDPOINT,
+            aws_access_key_id=MINIO_ACCESS_KEY,
+            aws_secret_access_key=MINIO_SECRET_KEY,
+            config=Config(signature_version="s3v4"),
+        )
+        logger.info("✅ MinIO client initialized successfully")
+    except Exception as e:
+        s3_client = None
+        logger.warning(f"⚠️ MinIO client init failed: {e}")
+else:
+    logger.info("⚠️ MinIO not configured — using local file storage fallback")
 
 
 def _init_bucket():
     """Ensure the bucket exists and has a public read policy."""
+    if s3_client is None:
+        return
+
+    from botocore.exceptions import ClientError
+
     try:
         s3_client.head_bucket(Bucket=BUCKET_NAME)
         logger.info(f"Bucket '{BUCKET_NAME}' already exists.")
@@ -66,16 +86,33 @@ def _init_bucket():
 try:
     _init_bucket()
 except Exception as e:
-    logger.warning(f"Could not initialize MinIO bucket on startup. Make sure MinIO is running. Error: {e}")
+    logger.warning(f"Could not initialize MinIO bucket on startup: {e}")
 
 
 def upload_image(file_bytes: bytes, filename: str, content_type: str = "image/jpeg") -> str:
     """
     Upload an image to MinIO and return its public URL.
+    Falls back to local file storage when MinIO is not available.
     """
     if not filename:
         ext = ".jpg" if "jpeg" in content_type else ".png"
         filename = f"{uuid.uuid4().hex}{ext}"
+
+    # ── Fallback: save to local uploads/ directory ──
+    if s3_client is None:
+        os.makedirs(UPLOAD_DIR, exist_ok=True)
+        local_path = os.path.join(UPLOAD_DIR, filename)
+        try:
+            with open(local_path, "wb") as f:
+                f.write(file_bytes)
+            logger.info(f"Saved locally: {local_path}")
+            return f"/uploads/{filename}"
+        except Exception as e:
+            logger.error(f"Local file save failed: {e}")
+            raise HTTPException(status_code=500, detail="File storage error.")
+
+    # ── Primary: upload to MinIO ──
+    from botocore.exceptions import ClientError
 
     try:
         s3_client.put_object(
@@ -85,9 +122,6 @@ def upload_image(file_bytes: bytes, filename: str, content_type: str = "image/jp
             ContentType=content_type,
         )
         
-        # Return direct URL
-        # For mobile physical devices, MINIO_PUBLIC_URL in .env might need 
-        # to be set to your local network IP (e.g. http://192.168.1.X:9000).
         return f"{PUBLIC_URL_PREFIX}/{BUCKET_NAME}/{filename}"
         
     except ClientError as e:
