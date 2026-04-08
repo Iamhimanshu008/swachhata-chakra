@@ -1,8 +1,12 @@
 import axios from 'axios';
 import useStore from '../store';
 
+// Production: VITE_API_URL points to Render backend (e.g. https://smartwaste-ai-xxx.onrender.com/api)
+// Development: falls back to '/api' which Vite proxies to the Docker backend
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 const client = axios.create({
-    baseURL: '/api',
+    baseURL: API_BASE,
     headers: {
         'Content-Type': 'application/json',
     },
