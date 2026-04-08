@@ -11,7 +11,7 @@
 
 export const API_BASE_URL = 
     process.env.EXPO_PUBLIC_API_URL || 
-    'http://192.168.43.195:8000';
+    'https://smartwaste-ai-f0i9.onrender.com';
 
 export const COLORS = {
     dark: '#1B4332',

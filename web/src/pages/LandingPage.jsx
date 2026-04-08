@@ -4,7 +4,7 @@ import {
     BarChart3, Smartphone, Globe, ChevronRight, Zap, Github,
 } from 'lucide-react';
 
-const APK_DOWNLOAD_URL = '#apk-download';
+const APK_DOWNLOAD_URL = '/SmartWaste-AI.apk';
 
 /* ──────────── Reusable Glass Card ──────────── */
 function GlassCard({ children, className = '' }) {
@@ -131,6 +131,7 @@ export default function LandingPage() {
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
                             <a
                                 href={APK_DOWNLOAD_URL}
+                                download="SmartWaste-AI.apk"
                                 className="group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-base shadow-xl shadow-green-500/25 hover:shadow-green-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
                             >
                                 <Download className="w-5 h-5 group-hover:animate-bounce" />
@@ -287,6 +288,7 @@ export default function LandingPage() {
                             </div>
                             <a
                                 href={APK_DOWNLOAD_URL}
+                                download="SmartWaste-AI.apk"
                                 className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg shadow-green-500/20 hover:shadow-green-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 whitespace-nowrap"
                             >
                                 <Download className="w-5 h-5" />
