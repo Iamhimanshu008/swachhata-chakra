@@ -1,13 +1,10 @@
 import client from './client';
 
 export const login = async (email, password) => {
-    // Explicitly encode to avoid any object casting issues
-    const formData = `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
-
-    const authResponse = await client.post('/auth/login', formData, {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
+    // Backend expects JSON body with { email, password } (LoginRequest model)
+    const authResponse = await client.post('/auth/login', {
+        email,
+        password,
     });
     
     // Fetch the user object since the login only returns token
