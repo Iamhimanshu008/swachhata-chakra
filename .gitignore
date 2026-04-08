@@ -1,0 +1,33 @@
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Android build artifacts & caches
+android/app/build/
+android/build/
+android/.gradle/
+android/.kotlin/
+android/build_log*.txt
+android/build_err*.txt
+android/build_error_log*.txt
+android/jdk-*/
+android/jdk17.zip
+
+# iOS build artifacts
+ios/Pods/
+ios/build/
+
+# Misc
+*.apk
+*.aab
+*.jks
+*.keystore
+*.hprof
