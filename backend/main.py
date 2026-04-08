@@ -35,6 +35,16 @@ async def lifespan(app: FastAPI):
             print(f"  Waiting for database... (attempt {attempt}/{max_retries})")
             time.sleep(2)
 
+    # Enable PostGIS extension (required on Neon — Docker image has it pre-installed)
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis_topology;"))
+            conn.commit()
+        print("✓ PostGIS extensions enabled")
+    except Exception as e:
+        print(f"⚠️ PostGIS extension note: {e}")
+
     # Create all tables
     Base.metadata.create_all(bind=engine)
     sync_database_schema(engine)
