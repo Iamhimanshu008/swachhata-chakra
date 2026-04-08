@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     plugins: [react()],
+    // Vercel deployment fix for top-level await
+    build: {
+        target: 'esnext'
+    },
     server: {
         host: '0.0.0.0',
         port: 5173,
