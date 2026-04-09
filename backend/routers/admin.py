@@ -666,18 +666,79 @@ def generate_routes(
 
     if zone_id is not None:
         route_data = generated_routes[0]
+        route_id = route_data["route_id"]
+
+        # Fetch the saved route stops with bin coordinates
+        from models.route import RouteStop
+        from models.bin import Bin
+        stops = (
+            db.query(RouteStop, Bin)
+            .join(Bin, RouteStop.bin_id == Bin.id)
+            .filter(RouteStop.route_id == route_id)
+            .order_by(RouteStop.sequence.asc())
+            .all()
+        )
+        stops_data = [
+            {
+                "sequence": stop.sequence,
+                "bin_id": bin_obj.id,
+                "label": bin_obj.label,
+                "address": bin_obj.address or "",
+                "lat": bin_obj.latitude,
+                "lng": bin_obj.longitude,
+                "fill_level": bin_obj.fill_level,
+                "status": getattr(bin_obj.status, "value", str(bin_obj.status)),
+            }
+            for stop, bin_obj in stops
+        ]
+
+        # Fetch collector name
+        from models.route import Route
+        route_obj = db.query(Route).filter(Route.id == route_id).first()
+        collector_name = None
+        if route_obj and route_obj.collector:
+            collector_name = route_obj.collector.full_name
+
         return {
-            "route_id": route_data["route_id"],
+            "route_id": route_id,
             "total_distance_km": route_data["total_distance_km"],
             "estimated_duration_min": route_data["estimated_minutes"],
             "bins_count": route_data["stops_count"],
             "zone_name": route_data["zone_name"],
+            "collector": collector_name,
+            "stops": stops_data,
         }
+
+    all_stops_data = []
+    for route_data in generated_routes:
+        route_id = route_data["route_id"]
+        from models.route import RouteStop
+        from models.bin import Bin
+        stops = (
+            db.query(RouteStop, Bin)
+            .join(Bin, RouteStop.bin_id == Bin.id)
+            .filter(RouteStop.route_id == route_id)
+            .order_by(RouteStop.sequence.asc())
+            .all()
+        )
+        for stop, bin_obj in stops:
+            all_stops_data.append({
+                "sequence": stop.sequence,
+                "bin_id": bin_obj.id,
+                "label": bin_obj.label,
+                "address": bin_obj.address or "",
+                "lat": bin_obj.latitude,
+                "lng": bin_obj.longitude,
+                "fill_level": bin_obj.fill_level,
+                "status": getattr(bin_obj.status, "value", str(bin_obj.status)),
+                "zone_name": route_data["zone_name"],
+            })
 
     return {
         "message": "Routes generated successfully",
         "routes_created": generated_routes,
         "count": len(generated_routes),
+        "stops": all_stops_data,
     }
 
 

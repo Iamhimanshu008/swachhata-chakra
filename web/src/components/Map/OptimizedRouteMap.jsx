@@ -1,153 +1,128 @@
-import React from 'react';
-import { Plus, Minus, Navigation, Map as MapIcon, Truck, Trash2 } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
 
-const OptimizedRouteMap = () => {
-  return (
-    <div className="relative w-full h-[450px] bg-[#f0f4f1] rounded-xl border-4 border-white shadow-lg overflow-hidden group">
-      
-      {/* 
-        Simulated Map Background 
-        Using a combination of grid patterns and SVG paths to resemble roads/terrain 
-      */}
-      <div 
-        className="absolute inset-0 opacity-30 pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(#1B4332 1px, transparent 1px)',
-          backgroundSize: '24px 24px'
-        }}
-      />
-      <svg className="absolute inset-0 w-full h-full opacity-20 pointer-events-none" preserveAspectRatio="none">
-         {/* City Blocks Simulation */}
-         <rect x="10%" y="10%" width="20%" height="20%" rx="8" fill="#52B788" />
-         <rect x="40%" y="15%" width="30%" height="15%" rx="8" fill="#52B788" />
-         <rect x="75%" y="8%" width="15%" height="30%" rx="8" fill="#52B788" />
-         
-         <rect x="15%" y="40%" width="25%" height="25%" rx="8" fill="#52B788" />
-         <rect x="50%" y="35%" width="35%" height="20%" rx="8" fill="#52B788" />
-         
-         <rect x="5%" y="75%" width="40%" height="15%" rx="8" fill="#52B788" />
-         <rect x="60%" y="65%" width="30%" height="25%" rx="8" fill="#52B788" />
-
-         {/* Roads */}
-         <path d="M 0,150 Q 200,180 300,100 T 800,200" fill="none" stroke="#2D6A4F" strokeWidth="12" strokeLinecap="round" />
-         <path d="M 100,0 Q 150,250 50,350 T 400,450" fill="none" stroke="#2D6A4F" strokeWidth="10" strokeLinecap="round" />
-      </svg>
-
-      {/* The Optimized Route Line */}
-      <svg 
-        className="absolute inset-0 w-full h-full pointer-events-none z-10" 
-        viewBox="0 0 800 450" 
-        preserveAspectRatio="xMidYMid slice"
-      >
-        {/* Background glow for route */}
-        <path 
-          d="M 180,140 Q 350,120 450,250 T 650,320" 
-          fill="none" 
-          stroke="#95D5B2" 
-          strokeWidth="12" 
-          strokeLinecap="round" 
-          className="opacity-40 animate-pulse"
-        />
-        {/* Main Solid Route Line */}
-        <path 
-          d="M 180,140 Q 350,120 450,250 T 650,320" 
-          fill="none" 
-          stroke="#1B4332"  // dark green line representing optimized route
-          strokeWidth="4" 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-        />
-      </svg>
-
-      {/* --- Markers --- */}
-      {/* 1. Base Depot (Start) */}
-      <div className="absolute z-20 top-[140px] left-[180px] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        <div className="relative group cursor-pointer transition-transform hover:scale-110">
-            <div className="absolute -inset-2 bg-green-200 rounded-full opacity-60 animate-ping" />
-            <div className="bg-green-800 text-white p-2.5 rounded-full shadow-lg border-2 border-white ring-4 ring-green-100 mb-1.5 z-10 flex items-center justify-center">
-                <Truck size={22} className="fill-current" />
-            </div>
-        </div>
-        <div className="bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-md text-xs font-bold text-green-900 shadow-sm border border-green-100 flex items-center gap-1">
-            🏢 Base Depot
-        </div>
-      </div>
-
-      {/* 2. Waste Bin 1 */}
-      <div className="absolute z-20 top-[250px] left-[450px] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        <div className="bg-green-600 text-white w-9 h-9 rounded-full shadow-lg border-[3px] border-white flex items-center justify-center hover:scale-110 transition-transform cursor-pointer relative group pointer-events-auto mb-1.5 z-10">
-          <span className="font-bold text-sm">1</span>
-        </div>
-        <div className="bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-md text-xs font-bold text-green-800 shadow-sm border border-green-100">
-            🗑️ Waste Bin 1
-        </div>
-      </div>
-
-      {/* 3. Waste Bin 2 */}
-      <div className="absolute z-20 top-[320px] left-[650px] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        <div className="bg-green-600 text-white w-9 h-9 rounded-full shadow-lg border-[3px] border-white flex items-center justify-center hover:scale-110 transition-transform cursor-pointer relative group pointer-events-auto mb-1.5 z-10">
-          <span className="font-bold text-sm">2</span>
-        </div>
-        <div className="bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-md text-xs font-bold text-green-800 shadow-sm border border-green-100">
-            🗑️ Waste Bin 2
-        </div>
-      </div>
-
-      {/* --- Legend (Top Right) --- */}
-      <div className="absolute top-5 right-5 z-30 bg-white/85 backdrop-blur-md border border-white p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
-        <h4 className="text-xs font-bold text-green-900 uppercase tracking-widest mb-3 flex items-center gap-1.5 border-b border-green-100 pb-2">
-          <MapIcon size={14} className="text-green-700" /> Route Legend
-        </h4>
-        <div className="flex flex-col gap-3 text-sm text-green-900">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-7 h-7 bg-green-800 text-white rounded-[8px] shadow-sm flex-shrink-0 text-sm">🏢</span>
-            <span className="font-semibold">Base Depot</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-7 h-7 bg-green-600 text-white rounded-full flex-shrink-0 text-xs shadow-sm font-bold border-2 border-white">🗑️</span>
-            <span className="font-semibold">Waste Bin</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-1.5 bg-green-800 rounded-full flex-shrink-0 shadow-sm"></div>
-            <span className="font-semibold">Active Route</span>
-          </div>
-        </div>
-      </div>
-
-      {/* --- Map Controls (Bottom Right) --- */}
-      <div className="absolute bottom-5 right-5 z-30 flex flex-col gap-2">
-        <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-md border border-green-50 overflow-hidden flex flex-col">
-          <button 
-            className="p-2.5 text-green-800 hover:bg-green-50 hover:text-green-900 transition-colors border-b border-green-50 focus:outline-none" 
-            title="Zoom In"
-          >
-            <Plus size={20} strokeWidth={2.5}/>
-          </button>
-          <button 
-            className="p-2.5 text-green-800 hover:bg-green-50 hover:text-green-900 transition-colors focus:outline-none" 
-            title="Zoom Out"
-          >
-            <Minus size={20} strokeWidth={2.5}/>
-          </button>
-        </div>
-        <button 
-          className="bg-white/90 backdrop-blur-md p-2.5 rounded-xl shadow-md border border-green-50 text-green-800 hover:text-white hover:bg-green-700 transition-colors focus:outline-none" 
-          title="Re-center Map"
-        >
-          <Navigation size={20} strokeWidth={2.5} className="mr-[1px] mt-[1px]" />
-        </button>
-      </div>
-
-      {/* Top Left Title Overlay (Added detail) */}
-      <div className="absolute top-5 left-5 z-30">
-        <div className="bg-green-800 text-white px-3 py-2 rounded-lg shadow-[0_4px_12px_rgb(22,101,52,0.3)] flex items-center gap-2.5 border border-green-700/50">
-           <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgb(74,222,128)]"></div>
-           <span className="text-sm font-bold tracking-wide">Live Optimizing...</span>
-        </div>
-      </div>
-
-    </div>
-  );
+const STATUS_COLORS = {
+  full: '#ef4444',
+  high: '#f97316',
+  medium: '#eab308',
+  low: '#22c55e',
+  empty: '#94a3b8',
 };
 
-export default OptimizedRouteMap;
+function getFillColor(stop) {
+  const level = stop.fill_level || 0;
+  const status = stop.status || '';
+  if (status === 'full' || level >= 90) return STATUS_COLORS.full;
+  if (level >= 70) return STATUS_COLORS.high;
+  if (level >= 50) return STATUS_COLORS.medium;
+  if (level >= 20) return STATUS_COLORS.low;
+  return STATUS_COLORS.empty;
+}
+
+export default function OptimizedRouteMap({ stops = [], isLive = false }) {
+  const hasStops = stops.length > 0;
+
+  // Normalize coordinates to SVG viewport (800 x 500)
+  const PAD = 60;
+  const W = 800, H = 500;
+
+  let points = [];
+  if (hasStops) {
+    const lats = stops.map(s => s.lat);
+    const lngs = stops.map(s => s.lng);
+    const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+    const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+    const latRange = maxLat - minLat || 0.01;
+    const lngRange = maxLng - minLng || 0.01;
+
+    points = stops.map(s => ({
+      ...s,
+      x: PAD + ((s.lng - minLng) / lngRange) * (W - PAD * 2),
+      // Invert Y: higher lat = higher on screen
+      y: H - PAD - ((s.lat - minLat) / latRange) * (H - PAD * 2),
+    }));
+  }
+
+  // Depot: centroid or fixed fallback
+  const depotX = hasStops ? (points.reduce((a, p) => a + p.x, 0) / points.length) : W / 2;
+  const depotY = hasStops ? Math.min(...points.map(p => p.y)) - 40 : 80;
+
+  // Build polyline path: depot → stops in sequence → depot
+  const allPoints = hasStops
+    ? [{ x: depotX, y: depotY }, ...points, { x: depotX, y: depotY }]
+    : [];
+  const polyline = allPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x},${p.y}`).join(' ');
+
+  return (
+    <div className="relative w-full h-full bg-[#e8f4ea] rounded-xl overflow-hidden border border-green-200">
+      {/* Live indicator */}
+      <div className="absolute top-3 left-3 z-10 flex items-center gap-2 bg-green-800 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow">
+        <span className={`w-2 h-2 rounded-full ${isLive ? 'bg-green-300 animate-pulse' : 'bg-gray-400'}`} />
+        {isLive ? 'Live Optimizing...' : 'Route Visualizer'}
+      </div>
+
+      {/* Legend */}
+      <div className="absolute top-3 right-3 z-10 bg-white/90 rounded-lg shadow p-2 text-xs space-y-1">
+        <div className="font-semibold text-gray-700 mb-1">ROUTE LEGEND</div>
+        <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm bg-green-800 inline-block"/> Base Depot</div>
+        <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-gray-500 inline-block"/> Waste Bin</div>
+        <div className="flex items-center gap-2"><span className="w-6 h-0.5 bg-green-900 inline-block"/> Active Route</div>
+      </div>
+
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full">
+        {/* Background grid */}
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#c8e6c9" strokeWidth="0.5"/>
+          </pattern>
+        </defs>
+        <rect width={W} height={H} fill="url(#grid)" />
+
+        {/* Route polyline */}
+        {hasStops && (
+          <path
+            d={polyline}
+            fill="none"
+            stroke="#1b5e20"
+            strokeWidth="2.5"
+            strokeDasharray="8 4"
+            strokeLinecap="round"
+            opacity="0.8"
+          />
+        )}
+
+        {/* Depot marker */}
+        <g transform={`translate(${depotX}, ${depotY})`}>
+          <rect x="-18" y="-18" width="36" height="36" rx="6" fill="#1b5e20" />
+          <text textAnchor="middle" dominantBaseline="middle" fontSize="16" fill="white">🏭</text>
+          <text x="0" y="28" textAnchor="middle" fontSize="10" fill="#1b5e20" fontWeight="bold">Base Depot</text>
+        </g>
+
+        {/* Bin markers */}
+        {points.map((p, i) => (
+          <g key={p.bin_id} transform={`translate(${p.x}, ${p.y})`}>
+            {/* Connecting line label */}
+            <circle r="18" fill={getFillColor(p)} opacity="0.15" />
+            <circle r="14" fill={getFillColor(p)} />
+            <text textAnchor="middle" dominantBaseline="middle" fontSize="11" fill="white" fontWeight="bold">
+              {i + 1}
+            </text>
+            {/* Bin label */}
+            <text x="0" y="26" textAnchor="middle" fontSize="9" fill="#374151" fontWeight="500">
+              {p.label?.length > 14 ? p.label.slice(0, 14) + '…' : p.label}
+            </text>
+            <text x="0" y="37" textAnchor="middle" fontSize="8" fill="#6b7280">
+              {p.fill_level}%
+            </text>
+          </g>
+        ))}
+
+        {/* Empty state */}
+        {!hasStops && (
+          <text x={W/2} y={H/2} textAnchor="middle" fontSize="14" fill="#6b7280">
+            Generate a route to see the optimized path
+          </text>
+        )}
+      </svg>
+    </div>
+  );
+}

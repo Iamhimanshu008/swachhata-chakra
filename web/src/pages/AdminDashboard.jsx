@@ -741,8 +741,8 @@ export default function AdminDashboard() {
                             {result.error ? result.error : (
                                 <div>
                                     <p className="font-semibold mb-1">✓ Route Generated!</p>
-                                    <p>Collector: {result.collector || 'N/A'}</p>
-                                    <p className="font-mono-data">Bins: {result.bins_count || 0} | Distance: {result.total_distance_km || 0} km | Time: {result.estimated_duration_min || 0} min</p>
+                                    <p>Collector: {result.collector || 'Unassigned'} | Zone: {result.zone_name || 'All Zones'}</p>
+                                    <p className="font-mono-data">Bins: {result.bins_count || (result.stops?.length) || 0} | Distance: {result.total_distance_km || 0} km | Time: {result.estimated_duration_min || 0} min</p>
                                 </div>
                             )}
                         </div>
@@ -761,7 +761,10 @@ export default function AdminDashboard() {
                     <h3 className="font-semibold text-gray-900 mb-4 font-display flex items-center gap-2">
                         <MapPin className="text-sw-mid" size={18} /> Optimized Route Visualizer
                     </h3>
-                    <OptimizedRouteMap />
+                    <OptimizedRouteMap 
+                        stops={result?.stops || []} 
+                        isLive={generating} 
+                    />
                 </div>
             </div>
         );
