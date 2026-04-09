@@ -75,6 +75,14 @@ def optimize_routes(
         or b.get("id") in force_include_ids
     ]
 
+    # ── Diagnostic logging ──────────────────────────────────────
+    print(f"[RouteOptimizer] Total bins in zone: {len(bins_data)}")
+    print(f"[RouteOptimizer] Collection threshold: {threshold}%")
+    print(f"[RouteOptimizer] Truck capacity: {truck_capacity_kg} kg")
+    print(f"[RouteOptimizer] Eligible bins: {len(eligible_bins)}")
+    for b in eligible_bins:
+        print(f"  → Bin {b.get('id')} ({b.get('label')}): fill={b.get('fill_level')}%, status={b.get('status')}")
+
     if not eligible_bins:
         return {
             "route": [],
@@ -97,9 +105,13 @@ def optimize_routes(
 
     # Estimate waste weight at each stop
     demands = [0]  # depot has 0 demand
+    total_demand = 0
     for b in eligible_bins:
         weight = b.get("capacity_kg", 50.0) * b.get("fill_level", 50) / 100.0
         demands.append(int(weight))
+        total_demand += int(weight)
+
+    print(f"[RouteOptimizer] Total estimated demand: {total_demand} kg vs capacity: {int(truck_capacity_kg)} kg")
 
     # Identify urgent bins (full/overflow/high) — high penalty for dropping
     urgent_indices = set()
@@ -143,12 +155,14 @@ def optimize_routes(
 
     # Penalty for dropping non-urgent nodes (allow skipping low-priority)
     # Urgent bins get very high penalty (must visit)
+    # Penalty for dropping nodes — set extremely high so solver MUST visit all bins
+    # Previous low penalty (10,000) allowed the solver to skip bins cheaply
     for node in range(1, num_locations):
         index = manager.NodeToIndex(node)
         if node in urgent_indices:
-            routing.AddDisjunction([index], 1_000_000)  # Very high penalty
+            routing.AddDisjunction([index], 10_000_000)  # Must visit
         else:
-            routing.AddDisjunction([index], 10_000)  # Lower penalty
+            routing.AddDisjunction([index], 5_000_000)   # Very strong preference to visit
 
     # Search parameters
     search_params = pywrapcp.DefaultRoutingSearchParameters()
@@ -164,6 +178,7 @@ def optimize_routes(
     solution = routing.SolveWithParameters(search_params)
 
     if not solution:
+        print(f"[RouteOptimizer] VRP solver found NO solution — using fallback sort")
         # Fallback: return bins sorted by fill level descending
         sorted_bins = sorted(eligible_bins, key=lambda x: x.get("fill_level", 0), reverse=True)
         total_dist = 0
@@ -191,6 +206,15 @@ def optimize_routes(
         previous_index = index
         index = solution.Value(routing.NextVar(index))
         total_distance += routing.GetArcCostForVehicle(previous_index, index, 0)
+
+    # Log how many bins the solver actually included
+    dropped_count = len(eligible_bins) - len(route_order)
+    print(f"[RouteOptimizer] VRP solution: {len(route_order)}/{len(eligible_bins)} bins included, {dropped_count} dropped")
+    if dropped_count > 0:
+        included_ids = {b["id"] for b in route_order}
+        for b in eligible_bins:
+            if b["id"] not in included_ids:
+                print(f"  ⚠ DROPPED: Bin {b['id']} ({b['label']}), fill={b['fill_level']}%, status={b['status']}")
 
     total_distance_km = round(total_distance / 1000, 2)
     # Estimate: ~20 km/h average in urban Raipur + 5 min per stop
