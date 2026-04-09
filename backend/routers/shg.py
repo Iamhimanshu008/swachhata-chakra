@@ -125,11 +125,15 @@ def submit_shg_report(
     db.add(bin_report)
 
     db.commit()
+    db.refresh(bin_obj)
     db.refresh(report)
 
     return {
         "report_id": report.id,
-        "message": f"Report submitted! Bin marked as {fill_level}% full.",
+        "bin_id": bin_obj.id,
+        "bin_status": bin_obj.status.value if hasattr(bin_obj.status, 'value') else str(bin_obj.status),
+        "bin_fill_level": bin_obj.fill_level,
+        "message": f"Report submitted! Bin marked as {fill_level}% full ({bin_obj.status.value}).",
     }
 
 
