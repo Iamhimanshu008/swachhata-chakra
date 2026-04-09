@@ -212,6 +212,9 @@ def create_route_for_zone(
     force_include_bin_ids: Optional[List[int]] = None,
     route_name_prefix: str = "AI Route",
 ) -> Dict[str, Any]:
+    # Force SQLAlchemy to re-read from DB — prevents stale cached bin data
+    db.expire_all()
+
     zone = db.query(Zone).filter(Zone.id == zone_id).first()
     if not zone:
         raise ValueError("Zone not found")
@@ -264,24 +267,34 @@ def create_route_for_zone(
         }
 
     today = date.today()
-    route = (
+
+    # Cancel ALL existing planned/in_progress routes for this zone today
+    # (regardless of collector — prevents stale routes from persisting)
+    old_routes = (
         db.query(Route)
         .filter(
             Route.zone_id == zone_id,
-            Route.collector_id == collector.id,
             Route.date == today,
+            Route.status.in_([RouteStatus.planned, RouteStatus.in_progress]),
         )
-        .first()
+        .all()
     )
-
-    if route:
-        db.query(RouteStop).filter(RouteStop.route_id == route.id).delete()
-        route.name = f"{route_name_prefix} - {zone.name} - {today.isoformat()}"
-        route.status = RouteStatus.planned
-        route.total_distance_km = result["total_distance_km"]
-        route.estimated_duration_min = result["estimated_duration_min"]
-        route.optimized = True
+    for old_route in old_routes:
+        if old_route.collector_id == collector.id:
+            # Same collector — reuse this route object
+            db.query(RouteStop).filter(RouteStop.route_id == old_route.id).delete()
+            old_route.name = f"{route_name_prefix} - {zone.name} - {today.isoformat()}"
+            old_route.status = RouteStatus.planned
+            old_route.total_distance_km = result["total_distance_km"]
+            old_route.estimated_duration_min = result["estimated_duration_min"]
+            old_route.optimized = True
+            route = old_route
+            break
+        else:
+            # Different collector's old route — mark as cancelled
+            old_route.status = RouteStatus.cancelled
     else:
+        # No reusable route found — create new
         route = Route(
             name=f"{route_name_prefix} - {zone.name} - {today.isoformat()}",
             collector_id=collector.id,

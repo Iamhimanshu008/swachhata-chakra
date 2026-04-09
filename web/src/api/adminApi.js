@@ -62,7 +62,12 @@ export const getRoutes = async () => {
 
 export const generateRoutes = async (zoneId) => {
     const params = zoneId ? `?zone_id=${zoneId}` : '';
-    const res = await client.post(`/admin/routes/generate${params}`);
+    const res = await client.post(`/admin/routes/generate${params}`, null, {
+        headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+        },
+    });
     return res.data;
 };
 
