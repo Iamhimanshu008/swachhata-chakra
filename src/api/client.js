@@ -1,9 +1,11 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_BASE_URL } from '../config';
 import useStore from '../store';
+
+const BASE_URL = 'https://smartwaste-ai-f0i9.onrender.com/api';
+
 const client = axios.create({
-    baseURL: `${API_BASE_URL}/api`,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': 'true',
