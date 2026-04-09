@@ -32,6 +32,7 @@ from services.report_utils import normalize_bin_status
 from services.route_optimizer import create_route_for_zone
 from models.settings import SystemSettings
 from models.recycler import Recycler, RecyclerBid, BidStatus
+from services.notification_service import save_and_send_notification
 
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
@@ -650,6 +651,21 @@ def generate_routes(
             if result["route_optimized"]:
                 db.commit()
                 generated_routes.append(result)
+
+                # Notify the assigned collector about new route
+                try:
+                    route_obj = db.query(Route).filter(Route.id == result["route_id"]).first()
+                    if route_obj and route_obj.collector_id:
+                        save_and_send_notification(
+                            db=db,
+                            user_id=route_obj.collector_id,
+                            title="New Route Assigned 🚛",
+                            body=f"You have a new route with {result['stops_count']} bins in {result['zone_name']} ({result['total_distance_km']} km).",
+                            data={"type": "route_assigned", "route_id": result["route_id"]},
+                        )
+                        db.commit()
+                except Exception:
+                    pass  # Never block route generation
             else:
                 db.rollback()
                 if zone_id is not None:
