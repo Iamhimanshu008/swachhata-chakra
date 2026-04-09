@@ -9,9 +9,7 @@
 // Mac/Linux: ifconfig
 // ─────────────────────────────────────────────
 
-export const API_BASE_URL = 
-    process.env.EXPO_PUBLIC_API_URL || 
-    'https://smartwaste-ai-f0i9.onrender.com';
+export const API_BASE_URL = 'https://smartwaste-ai-f0i9.onrender.com';
 
 export const COLORS = {
     dark: '#1B4332',
