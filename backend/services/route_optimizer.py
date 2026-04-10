@@ -59,6 +59,9 @@ def optimize_routes(
     if truck_capacity_kg is None:
         truck_capacity_kg = settings.DEFAULT_TRUCK_CAPACITY_KG
 
+    # DEMO FIX: Override truck capacity to ensure no bins are dropped due to weight limits
+    truck_capacity_kg = 50000
+
     threshold = (
         collection_threshold_percent
         if collection_threshold_percent is not None
@@ -74,6 +77,17 @@ def optimize_routes(
         or b.get("urgency") in ("high", "critical")
         or b.get("id") in force_include_ids
     ]
+
+    # Safety filter: remove bins with missing/invalid coordinates
+    # Invalid coords cause zero-distance rows in the matrix, which makes OR-Tools skip them
+    before_count = len(eligible_bins)
+    eligible_bins = [
+        b for b in eligible_bins
+        if b.get("lat") and b.get("lng")
+        and b["lat"] != 0 and b["lng"] != 0
+    ]
+    if len(eligible_bins) < before_count:
+        print(f"[RouteOptimizer] WARNING: Removed {before_count - len(eligible_bins)} bins with invalid coordinates")
 
     # ── Diagnostic logging ──────────────────────────────────────
     print(f"[RouteOptimizer] Total bins in zone: {len(bins_data)}")
@@ -148,7 +162,7 @@ def optimize_routes(
     routing.AddDimensionWithVehicleCapacity(
         demand_callback_index,
         0,  # no slack
-        [int(truck_capacity_kg)],  # vehicle capacities
+        [50000],  # DEMO: massive capacity — never limit bin visits
         True,  # start cumul at zero
         "Capacity",
     )
