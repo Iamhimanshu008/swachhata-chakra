@@ -6,12 +6,15 @@ export const getBins = async () => {
     return res.data;
 };
 
-export const submitReport = async (formData) => {
-    const res = await client.post('/public/report', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        timeout: 60000,
-    });
-    return res.data;
+export const submitPublicReport = async (formData) => {
+  const response = await client.post('/public/report', formData, {
+    headers: {
+      'Content-Type': undefined,  // Let axios auto-set with boundary
+    },
+    timeout: 90000,  // Image uploads need more time
+    transformRequest: (data) => data,  // Prevent axios from re-serializing FormData
+  });
+  return response.data;
 };
 
 export const getReportStatus = async (id) => {
