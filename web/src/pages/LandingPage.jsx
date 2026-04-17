@@ -4,7 +4,9 @@ import {
     BarChart3, Smartphone, Globe, ChevronRight, Zap, Github,
 } from 'lucide-react';
 
-const APK_DOWNLOAD_URL = '/SmartWaste-AI.apk';
+const APK_URL = import.meta.env.VITE_APK_DOWNLOAD_URL || 
+  "https://github.com/Iamhimanshu008/smartwaste-ai/releases/download/v2.0.0/SmartWasteAI-v2.0.0.apk";
+const APK_DOWNLOAD_URL = APK_URL;
 
 /* ──────────── Reusable Glass Card ──────────── */
 function GlassCard({ children, className = '' }) {
@@ -129,15 +131,22 @@ export default function LandingPage() {
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                            <a
-                                href={APK_DOWNLOAD_URL}
-                                download="SmartWaste-AI.apk"
-                                className="group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-base shadow-xl shadow-green-500/25 hover:shadow-green-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
-                            >
-                                <Download className="w-5 h-5 group-hover:animate-bounce" />
-                                Download Mobile App
-                                <span className="text-xs font-medium px-2 py-0.5 bg-white/20 rounded-md">.APK</span>
-                            </a>
+                            <div className="flex flex-col items-center">
+                                <a
+                                  href={APK_URL}
+                                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.523 15.341a4.88 4.88 0 0 1-1.98.42c-.94 0-1.72-.28-2.34-.84v3.36H11.1V9.621h2.1v.78c.6-.6 1.44-.9 2.46-.9 2.04 0 3.36 1.44 3.36 3.48 0 .9-.18 1.68-.54 2.34h.04zm-2.16-4.14c-.9 0-1.56.66-1.56 1.74s.66 1.74 1.56 1.74 1.56-.66 1.56-1.74-.66-1.74-1.56-1.74z"/>
+                                  </svg>
+                                  Download Android App
+                                </a>
+                                <p style={{fontSize:'11px', color:'#9ca3af', marginTop:'4px', textAlign:'center'}}>
+                                  v2.0.0 • Free • Android 8.0+
+                                </p>
+                            </div>
                             <Link
                                 to="/login"
                                 className="flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-base text-white border-2 border-white/15 hover:border-green-400/40 hover:bg-white/5 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
