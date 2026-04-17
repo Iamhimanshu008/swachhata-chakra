@@ -6,7 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import { getBins, submitReport } from '../../api/publicApi';
+import { getBins, submitPublicReport } from '../../api/publicApi';
 import { haversineDistance, isWithinRadius } from '../../utils/geofence';
 import { COLORS } from '../../config';
 
@@ -69,6 +69,14 @@ export default function ReportScreen({ route, navigation }) {
         return () => { if (resetTimerRef.current) clearTimeout(resetTimerRef.current); };
     }, []);
 
+    const handleImageResult = (res) => {
+        if (res.canceled) return;
+        if (!res.assets || res.assets.length === 0) return;
+        const asset = res.assets[0];
+        if (!asset || !asset.uri) return;
+        setPhoto(asset);
+    };
+
     const takePhoto = async () => {
         try {
             const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -77,7 +85,7 @@ export default function ReportScreen({ route, navigation }) {
                 return;
             }
             const res = await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.75 });
-            if (!res.canceled) setPhoto(res.assets[0]);
+            handleImageResult(res);
         } catch (err) {
             console.log('Camera error:', err);
             Alert.alert('Camera Error', 'Could not open camera. Please check app permissions in Settings.');
@@ -92,7 +100,7 @@ export default function ReportScreen({ route, navigation }) {
                 return;
             }
             const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.75 });
-            if (!res.canceled) setPhoto(res.assets[0]);
+            handleImageResult(res);
         } catch (err) {
             console.log('Gallery error:', err);
             Alert.alert('Gallery Error', 'Could not open gallery. Please check app permissions in Settings.');
@@ -107,11 +115,15 @@ export default function ReportScreen({ route, navigation }) {
     };
 
     const handleSubmit = async () => {
+        if (!photo || !photo.uri) {
+            Alert.alert('Photo Required', 'Please take or select a photo first');
+            return;
+        }
         if (locStatus === 'failed') {
             Alert.alert('Location required', 'Please enable GPS/location services to report a bin.');
             return;
         }
-        if (!selectedBin || !photo || locStatus !== 'found') return;
+        if (!selectedBin || locStatus !== 'found') return;
         
         if (!distanceToBin || distanceToBin > 50) {
             Alert.alert(
@@ -128,21 +140,21 @@ export default function ReportScreen({ route, navigation }) {
             formData.append('bin_id', selectedBin.id);
             formData.append('image', {
                 uri: photo.uri,
-                type: 'image/jpeg',
-                name: 'report.jpg',
+                type: photo.mimeType || 'image/jpeg',
+                name: photo.fileName || 'report.jpg',
             });
             formData.append('latitude', String(location.latitude));
             formData.append('longitude', String(location.longitude));
             formData.append('description', description.trim());
 
-            const res = await submitReport(formData);
+            const res = await submitPublicReport(formData);
             setResult(res);
             resetTimerRef.current = setTimeout(resetForm, 4000);
         } catch (err) {
             const detail = err.response?.data?.detail;
             const msg = typeof detail === 'object'
                 ? (detail.rejection_reason || JSON.stringify(detail))
-                : (detail || 'Submission failed. Please try again.');
+                : (detail || err.message || 'Submission failed. Please try again.');
             Alert.alert('Submission Failed', msg);
         }
         setSubmitting(false);

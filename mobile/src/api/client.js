@@ -2,15 +2,14 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useStore from '../store';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:8000";
+const BASE_URL = (process.env.EXPO_PUBLIC_API_URL || "http://localhost:8000") + "/api";
 
 const client = axios.create({
     baseURL: BASE_URL,
     headers: {
-        'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': 'true',
     },
-    timeout: 15000,
+    timeout: 60000,
 });
 
 // Request interceptor: attach JWT token from AsyncStorage or Zustand
