@@ -70,17 +70,33 @@ export default function ReportScreen({ route, navigation }) {
     }, []);
 
     const takePhoto = async () => {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') { Alert.alert('Permission denied', 'Camera access is required.'); return; }
-        const res = await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.75 });
-        if (!res.canceled) setPhoto(res.assets[0]);
+        try {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission Required', 'Camera access is needed to take a photo of the bin.');
+                return;
+            }
+            const res = await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.75 });
+            if (!res.canceled) setPhoto(res.assets[0]);
+        } catch (err) {
+            console.log('Camera error:', err);
+            Alert.alert('Camera Error', 'Could not open camera. Please check app permissions in Settings.');
+        }
     };
 
     const pickPhoto = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') { Alert.alert('Permission denied', 'Gallery access is required.'); return; }
-        const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.75 });
-        if (!res.canceled) setPhoto(res.assets[0]);
+        try {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission Required', 'Gallery access is needed to select a photo.');
+                return;
+            }
+            const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.75 });
+            if (!res.canceled) setPhoto(res.assets[0]);
+        } catch (err) {
+            console.log('Gallery error:', err);
+            Alert.alert('Gallery Error', 'Could not open gallery. Please check app permissions in Settings.');
+        }
     };
 
     const resetForm = () => {

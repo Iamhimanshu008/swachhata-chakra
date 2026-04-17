@@ -1,12 +1,41 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform,
 } from 'react-native';
-import MapView, { Marker, Callout, UrlTile } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { getBins, getLiveStatus } from '../../api/publicApi';
 import BinPin from '../../components/BinPin';
 import { COLORS, RAIPUR_COORDS } from '../../config';
+
+// Error boundary to catch native MapView crashes
+class MapErrorBoundary extends React.Component {
+    state = { hasError: false };
+    static getDerivedStateFromError() { return { hasError: true }; }
+    componentDidCatch(error, info) {
+        console.log('MapView native crash caught:', error, info);
+    }
+    render() {
+        if (this.state.hasError) {
+            return this.props.fallback || null;
+        }
+        return this.props.children;
+    }
+}
+
+// Lazy-load react-native-maps to prevent crash if native module is broken
+let MapView, Marker, Callout, UrlTile, PROVIDER_GOOGLE;
+let mapsAvailable = false;
+try {
+    const maps = require('react-native-maps');
+    MapView = maps.default;
+    Marker = maps.Marker;
+    Callout = maps.Callout;
+    UrlTile = maps.UrlTile;
+    PROVIDER_GOOGLE = maps.PROVIDER_GOOGLE;
+    mapsAvailable = true;
+} catch (e) {
+    console.log('react-native-maps failed to load:', e);
+}
 
 export default function PublicMapScreen({ navigation }) {
     const [bins, setBins] = useState([]);
@@ -51,8 +80,8 @@ export default function PublicMapScreen({ navigation }) {
         return () => clearInterval(interval);
     }, []);
 
-    // Fallback UI if MapView fails to render (e.g. missing API key)
-    if (mapError) {
+    // Fallback UI if MapView native module is unavailable or fails to render
+    if (!mapsAvailable || mapError) {
         return (
             <View style={styles.container}>
                 <View style={styles.errorContainer}>
@@ -107,7 +136,15 @@ export default function PublicMapScreen({ navigation }) {
                 </View>
             )}
 
+            <MapErrorBoundary fallback={
+                <View style={styles.errorContainer}>
+                    <Text style={styles.errorEmoji}>🗺️</Text>
+                    <Text style={styles.errorTitle}>Map Crashed</Text>
+                    <Text style={styles.errorSub}>The map component encountered an error. You can still report bins below.</Text>
+                </View>
+            }>
             <MapView
+                provider={PROVIDER_GOOGLE}
                 style={[styles.map, !mapReady && { opacity: 0 }]}
                 initialRegion={RAIPUR_COORDS}
                 showsUserLocation={locationGranted}
@@ -170,6 +207,7 @@ export default function PublicMapScreen({ navigation }) {
                     </Marker>
                 ))}
             </MapView>
+            </MapErrorBoundary>
 
             <View style={styles.header} pointerEvents="none">
                 <View style={styles.headerCard}>
@@ -216,7 +254,7 @@ export default function PublicMapScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    map: { flex: 1 },
+    map: { flex: 1, width: '100%', height: '100%' },
     mapPlaceholder: { ...StyleSheet.absoluteFillObject, backgroundColor: COLORS.dark, justifyContent: 'center', alignItems: 'center', zIndex: 1 },
     mapPlaceholderText: { color: COLORS.accent, fontSize: 14, marginTop: 12, fontWeight: '600' },
     header: { position: 'absolute', top: 52, left: 16, right: 16 },

@@ -1,4 +1,4 @@
-package com.himanshushekhar.smartwaste
+package com.smartwaste.ai
 
 import android.os.Build
 import android.os.Bundle

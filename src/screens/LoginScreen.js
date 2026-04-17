@@ -21,10 +21,10 @@ export default function LoginScreen({ navigation }) {
         setLoading(true);
         try {
             const tokenData = await loginApi(emailToUse, passwordToUse, roleToUse);
-            const { access_token } = tokenData;
-            await login(null, access_token);
+            const { access_token, refresh_token } = tokenData;
+            await login(null, access_token, refresh_token);
             const user = await getMe();
-            await login(user, access_token);
+            await login(user, access_token, refresh_token);
             // Global state drives AppNavigator, so we don't need manual navigation replace
         } catch (err) {
             const detail = err.response?.data?.detail;
@@ -130,7 +130,33 @@ export default function LoginScreen({ navigation }) {
                     {/* Guest access */}
                     <TouchableOpacity
                         style={styles.guestBtn}
-                        onPress={() => navigation.navigate('PublicStack', { screen: 'PublicMap' })}
+                        onPress={async () => {
+                            try {
+                                // Pre-request location permission before map loads
+                                const Location = require('expo-location');
+                                const { status } = await Location.requestForegroundPermissionsAsync();
+                                if (status !== 'granted') {
+                                    Alert.alert(
+                                        'Location Permission',
+                                        'Location access helps show nearby bins. You can still report without it.',
+                                        [
+                                            { text: 'Continue Anyway', onPress: () => navigation.navigate('PublicStack', { screen: 'PublicMap' }) },
+                                            { text: 'Cancel', style: 'cancel' },
+                                        ]
+                                    );
+                                    return;
+                                }
+                                navigation.navigate('PublicStack', { screen: 'PublicMap' });
+                            } catch (err) {
+                                console.log('Guest navigation error:', err);
+                                // Fallback: try navigating anyway, or show alert
+                                try {
+                                    navigation.navigate('PublicStack', { screen: 'PublicMap' });
+                                } catch (navErr) {
+                                    Alert.alert('Error', 'Could not open Guest Report. Please try again or login to report.');
+                                }
+                            }
+                        }}
                     >
                         <Text style={styles.guestBtnText}>
                             📸  Report as Guest (No Login)
