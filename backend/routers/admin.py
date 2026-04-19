@@ -460,19 +460,38 @@ def update_zone(
     zone = db.query(Zone).filter(Zone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
-    allowed = ["name", "description", "center_lat", "center_lng", "radius_km",
-               "depot_lat", "depot_lng", "depot_address"]
-    for field in allowed:
-        if field in data:
-            setattr(zone, field, data[field])
-    db.commit()
-    db.refresh(zone)
-    return {
-        "id": zone.id, "name": zone.name, "description": zone.description,
-        "center_lat": zone.center_lat, "center_lng": zone.center_lng,
-        "radius_km": zone.radius_km, "depot_lat": zone.depot_lat,
-        "depot_lng": zone.depot_lng, "depot_address": zone.depot_address,
-    }
+    
+    try:
+        # Only update fields that exist on the model
+        if 'name' in data and data['name']:
+            zone.name = data['name']
+        if hasattr(zone, 'description') and 'description' in data:
+            zone.description = data['description']
+        if hasattr(zone, 'center_lat') and 'center_lat' in data:
+            zone.center_lat = data['center_lat']
+        if hasattr(zone, 'center_lng') and 'center_lng' in data:
+            zone.center_lng = data['center_lng']
+        if hasattr(zone, 'radius_km') and 'radius_km' in data:
+            zone.radius_km = data['radius_km']
+        if hasattr(zone, 'depot_lat') and 'depot_lat' in data:
+            zone.depot_lat = data['depot_lat']
+        if hasattr(zone, 'depot_lng') and 'depot_lng' in data:
+            zone.depot_lng = data['depot_lng']
+        if hasattr(zone, 'depot_address') and 'depot_address' in data:
+            zone.depot_address = data['depot_address']
+        
+        db.commit()
+        db.refresh(zone)
+        # Safely return attributes
+        return {
+            "id": zone.id, "name": zone.name, "description": getattr(zone, 'description', None),
+            "center_lat": getattr(zone, 'center_lat', None), "center_lng": getattr(zone, 'center_lng', None),
+            "radius_km": getattr(zone, 'radius_km', None), "depot_lat": getattr(zone, 'depot_lat', None),
+            "depot_lng": getattr(zone, 'depot_lng', None), "depot_address": getattr(zone, 'depot_address', None),
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to update zone: {str(e)}")
 
 
 @router.delete("/zones/{zone_id}")
@@ -484,12 +503,21 @@ def delete_zone(
     zone = db.query(Zone).filter(Zone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
-    # Unassign bins and users from this zone first
-    db.query(Bin).filter(Bin.zone_id == zone_id).update({"zone_id": None}, synchronize_session=False)
-    db.query(User).filter(User.zone_id == zone_id).update({"zone_id": None}, synchronize_session=False)
-    db.delete(zone)
-    db.commit()
-    return {"message": "Zone deleted successfully"}
+    
+    try:
+        # Unassign bins from this zone
+        db.query(Bin).filter(Bin.zone_id == zone_id).update({"zone_id": None}, synchronize_session=False)
+        # Unassign users from this zone
+        db.query(User).filter(User.zone_id == zone_id).update({"zone_id": None}, synchronize_session=False)
+        # Delete related routes
+        db.query(Route).filter(Route.zone_id == zone_id).delete(synchronize_session=False)
+        
+        db.delete(zone)
+        db.commit()
+        return {"message": "Zone deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to delete zone: {str(e)}")
 
 
 # User Management
