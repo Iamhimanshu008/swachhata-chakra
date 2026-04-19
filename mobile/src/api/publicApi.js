@@ -6,32 +6,48 @@ export const getBins = async () => {
 };
 
 export const submitPublicReport = async (formData) => {
-  try {
-    const response = await client.post('/public/report', formData, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
-      transformRequest: (data, headers) => {
-        // Remove Content-Type so axios sets it with correct boundary
-        delete headers['Content-Type'];
-        return data;
-      },
-      timeout: 120000,
-    });
-    return response.data;
-  } catch (error) {
-    console.log('Upload error details:', JSON.stringify(error));
-    if (error.response) {
-      console.log('Server response:', error.response.status, error.response.data);
-      throw new Error(error.response?.data?.detail || 'Server rejected the upload');
-    } else if (error.request) {
-      console.log('No response received:', error.request);
-      throw new Error('No response from server — check internet connection');
-    } else {
-      throw new Error(error.message || 'Network Error');
+  const MAX_RETRIES = 3;
+  let lastError;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(`Upload attempt ${attempt}/${MAX_RETRIES}`);
+      
+      const response = await client.post('/public/report', formData, {
+        transformRequest: (data, headers) => {
+          delete headers.post['Content-Type'];
+          delete headers.common['Content-Type'];
+          delete headers['Content-Type'];
+          return data;
+        },
+        timeout: 120000,
+      });
+      
+      console.log('Upload success:', response.data);
+      return response.data;
+      
+    } catch (error) {
+      lastError = error;
+      console.log(`Attempt ${attempt} failed:`, error.message);
+      
+      if (error.response) {
+        // Server responded with error — no retry needed
+        console.log('Server error:', error.response.status, error.response.data);
+        throw new Error(
+          error.response?.data?.detail || 
+          `Server error ${error.response.status}`
+        );
+      }
+      
+      // No response (timeout/network) — wait and retry
+      if (attempt < MAX_RETRIES) {
+        console.log(`Waiting 5s before retry...`);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
     }
   }
+  
+  throw new Error('Server unavailable after 3 attempts. Try again in 1 minute.');
 };
 
 export const getReportStatus = async (id) => {

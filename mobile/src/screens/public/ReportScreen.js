@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { getBins, submitPublicReport } from '../../api/publicApi';
+import client from '../../api/client';
 import { haversineDistance } from '../../utils/geofence';
 import { COLORS } from '../../config';
 
@@ -21,6 +22,7 @@ export default function ReportScreen({ route, navigation }) {
     const [location, setLocation] = useState(null);
     const [locStatus, setLocStatus] = useState('detecting');
     const [submitting, setSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState('');
     const [showBinPicker, setShowBinPicker] = useState(false);
     const [result, setResult] = useState(null);
     const [distanceToBin, setDistanceToBin] = useState(null);
@@ -114,6 +116,16 @@ export default function ReportScreen({ route, navigation }) {
         setResult(null);
     };
 
+    const wakeUpServer = async () => {
+        try {
+            setSubmitStatus('Waking up server...');
+            await client.get('/public/bins', { timeout: 30000 });
+            console.log('Server is awake');
+        } catch (e) {
+            console.log('Wake-up ping failed, proceeding anyway');
+        }
+    };
+
     const handleSubmit = async () => {
         if (!photo || !photo.uri) {
             Alert.alert('Photo Required', 'Please take or select a photo first');
@@ -134,8 +146,13 @@ export default function ReportScreen({ route, navigation }) {
         }
 
         setSubmitting(true);
+        setSubmitStatus('Connecting to server...');
         setResult(null);
         try {
+            // Wake up Render server (free tier spins down after inactivity)
+            await wakeUpServer();
+
+            setSubmitStatus('Uploading photo...');
             const formData = new FormData();
             formData.append('bin_id', selectedBin.id);
             formData.append('image', {
@@ -147,6 +164,7 @@ export default function ReportScreen({ route, navigation }) {
             formData.append('longitude', String(location.longitude));
             formData.append('description', description.trim());
 
+            setSubmitStatus('🤖 AI is analyzing your photo...');
             const res = await submitPublicReport(formData);
             setResult(res);
             resetTimerRef.current = setTimeout(resetForm, 4000);
@@ -158,6 +176,7 @@ export default function ReportScreen({ route, navigation }) {
             Alert.alert('Submission Failed', msg);
         }
         setSubmitting(false);
+        setSubmitStatus('');
     };
 
     const canSubmit = selectedBin && photo && locStatus === 'found' && !submitting;
@@ -288,7 +307,7 @@ export default function ReportScreen({ route, navigation }) {
                     {submitting ? (
                         <>
                             <ActivityIndicator color="#fff" size="small" />
-                            <Text style={[styles.submitBtnText, { marginLeft: 8 }]}>🤖 AI is analyzing your photo...</Text>
+                            <Text style={[styles.submitBtnText, { marginLeft: 8, fontSize: 14 }]}>{submitStatus || 'Please wait...'}</Text>
                         </>
                     ) : (
                         <Text style={styles.submitBtnText}>🚀  Submit Report</Text>
