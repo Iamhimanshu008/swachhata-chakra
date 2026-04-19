@@ -505,53 +505,70 @@ def delete_zone(
         raise HTTPException(status_code=404, detail="Zone not found")
     
     try:
-        # Check if bins are assigned to this zone
-        bins_in_zone = db.query(Bin).filter(
-            Bin.zone_id == zone_id
-        ).count()
+        # Find another zone for reassignment
+        other_zone = db.query(Zone).filter(Zone.id != zone_id).first()
         
-        other_zone = None
-        if bins_in_zone > 0:
-            # Find another zone to reassign bins to
-            other_zone = db.query(Zone).filter(
-                Zone.id != zone_id
-            ).first()
-            
-            if other_zone:
-                # Reassign bins to another zone
-                db.query(Bin).filter(
-                    Bin.zone_id == zone_id
-                ).update(
-                    {"zone_id": other_zone.id},
-                    synchronize_session=False
-                )
-            else:
-                # No other zone exists — block deletion
+        # 1. Handle Bins (NOT NULL)
+        bins_count = db.query(Bin).filter(Bin.zone_id == zone_id).count()
+        if bins_count > 0:
+            if not other_zone:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Cannot delete: {bins_in_zone} bins assigned to this zone. Create another zone first or reassign bins."
+                    detail=f"Cannot delete last zone: {bins_count} bins assigned."
                 )
+            db.query(Bin).filter(Bin.zone_id == zone_id).update(
+                {"zone_id": other_zone.id}, synchronize_session=False
+            )
+            
+        # 2. Handle Recyclers (NOT NULL)
+        from models.recycler import Recycler
+        recyclers_count = db.query(Recycler).filter(Recycler.zone_id == zone_id).count()
+        if recyclers_count > 0:
+            if not other_zone:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Cannot delete last zone: {recyclers_count} recyclers assigned."
+                )
+            db.query(Recycler).filter(Recycler.zone_id == zone_id).update(
+                {"zone_id": other_zone.id}, synchronize_session=False
+            )
+
+        # 3. Handle SHGReports (NOT NULL)
+        from models.report import SHGReport
+        shg_reports_count = db.query(SHGReport).filter(SHGReport.zone_id == zone_id).count()
+        if shg_reports_count > 0:
+            if not other_zone:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Cannot delete last zone: {shg_reports_count} SHG reports mapped here."
+                )
+            db.query(SHGReport).filter(SHGReport.zone_id == zone_id).update(
+                {"zone_id": other_zone.id}, synchronize_session=False
+            )
         
-        # Unassign users (users.zone_id is nullable)
-        db.query(User).filter(
-            User.zone_id == zone_id
-        ).update(
-            {"zone_id": None},
-            synchronize_session=False
+        # 4. Handle Users (Nullable - set to None)
+        db.query(User).filter(User.zone_id == zone_id).update(
+            {"zone_id": None}, synchronize_session=False
         )
         
-        # Delete related routes for this zone
-        db.query(Route).filter(
-            Route.zone_id == zone_id
-        ).delete(synchronize_session=False)
+        # 5. Handle Routes (Delete)
+        from models.route import Route
+        db.query(Route).filter(Route.zone_id == zone_id).delete(synchronize_session=False)
         
-        # Now safe to delete zone
+        # 6. Delete zone itself
+        db.flush()
         db.delete(zone)
         db.commit()
         
         msg = "Zone deleted successfully"
-        if bins_in_zone > 0 and other_zone:
-            msg += f" ({bins_in_zone} bins reassigned to {other_zone.name})"
+        reassignments = []
+        if bins_count > 0 and other_zone: reassignments.append(f"{bins_count} bins")
+        if recyclers_count > 0 and other_zone: reassignments.append(f"{recyclers_count} recyclers")
+        if shg_reports_count > 0 and other_zone: reassignments.append(f"{shg_reports_count} SHG reports")
+        
+        if reassignments and other_zone:
+            msg += f" ({', '.join(reassignments)} moved to {other_zone.name})"
+            
         return {"message": msg}
         
     except HTTPException:
