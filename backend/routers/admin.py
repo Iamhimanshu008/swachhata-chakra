@@ -20,7 +20,7 @@ from database import get_db
 from models.bin import Bin, BinStatus
 from models.collection import Collection
 from models.report import BinReport, SHGReport
-from models.route import Route
+from models.route import Route, RouteStop
 from models.user import User, UserRole
 from models.zone import Zone
 from schemas.admin import AdminSettings
@@ -575,6 +575,10 @@ def update_bin(
         bin_obj.status = data.status
     if data.fill_level is not None:
         bin_obj.fill_level = data.fill_level
+    if data.zone_id is not None:
+        bin_obj.zone_id = data.zone_id
+    if data.capacity_kg is not None:
+        bin_obj.capacity_kg = data.capacity_kg
 
     db.commit()
     db.refresh(bin_obj)
@@ -590,6 +594,13 @@ def delete_bin(
     bin_obj = db.query(Bin).filter(Bin.id == bin_id).first()
     if not bin_obj:
         raise HTTPException(status_code=404, detail="Bin not found")
+
+    # Delete related records first to avoid FK constraint errors
+    db.query(BinReport).filter(BinReport.bin_id == bin_id).delete(synchronize_session=False)
+    db.query(Collection).filter(Collection.bin_id == bin_id).delete(synchronize_session=False)
+    db.query(RouteStop).filter(RouteStop.bin_id == bin_id).delete(synchronize_session=False)
+    db.query(SHGReport).filter(SHGReport.bin_id == bin_id).delete(synchronize_session=False)
+
     db.delete(bin_obj)
     db.commit()
     return {"message": "Bin deleted successfully"}

@@ -17,6 +17,8 @@ class BinUpdate(BaseModel):
     address: Optional[str] = None
     status: Optional[str] = None
     fill_level: Optional[int] = None
+    zone_id: Optional[int] = None
+    capacity_kg: Optional[float] = None
 
 
 class BinRead(BaseModel):
@@ -28,6 +30,7 @@ class BinRead(BaseModel):
     zone_id: int
     status: str
     fill_level: int
+    capacity_kg: Optional[float] = 50.0
     last_collected: Optional[datetime] = None
 
     class Config:
