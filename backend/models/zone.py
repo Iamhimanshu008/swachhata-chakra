@@ -11,5 +11,8 @@ class Zone(Base):
     center_lat = Column(Float, nullable=True)
     center_lng = Column(Float, nullable=True)
     radius_km = Column(Float, default=10.0)
+    depot_lat = Column(Float, nullable=True)
+    depot_lng = Column(Float, nullable=True)
+    depot_address = Column(String(500), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

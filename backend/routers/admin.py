@@ -442,9 +442,54 @@ def list_zones(
             "center_lat": z.center_lat,
             "center_lng": z.center_lng,
             "radius_km": z.radius_km,
+            "depot_lat": z.depot_lat,
+            "depot_lng": z.depot_lng,
+            "depot_address": z.depot_address,
         }
         for z in zones
     ]
+
+
+@router.put("/zones/{zone_id}")
+def update_zone(
+    zone_id: int,
+    data: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin")),
+):
+    zone = db.query(Zone).filter(Zone.id == zone_id).first()
+    if not zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
+    allowed = ["name", "description", "center_lat", "center_lng", "radius_km",
+               "depot_lat", "depot_lng", "depot_address"]
+    for field in allowed:
+        if field in data:
+            setattr(zone, field, data[field])
+    db.commit()
+    db.refresh(zone)
+    return {
+        "id": zone.id, "name": zone.name, "description": zone.description,
+        "center_lat": zone.center_lat, "center_lng": zone.center_lng,
+        "radius_km": zone.radius_km, "depot_lat": zone.depot_lat,
+        "depot_lng": zone.depot_lng, "depot_address": zone.depot_address,
+    }
+
+
+@router.delete("/zones/{zone_id}")
+def delete_zone(
+    zone_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin")),
+):
+    zone = db.query(Zone).filter(Zone.id == zone_id).first()
+    if not zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
+    # Unassign bins and users from this zone first
+    db.query(Bin).filter(Bin.zone_id == zone_id).update({"zone_id": None}, synchronize_session=False)
+    db.query(User).filter(User.zone_id == zone_id).update({"zone_id": None}, synchronize_session=False)
+    db.delete(zone)
+    db.commit()
+    return {"message": "Zone deleted successfully"}
 
 
 # User Management

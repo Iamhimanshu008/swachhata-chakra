@@ -730,6 +730,20 @@ export default function AdminDashboard() {
     function RouteGeneration() {
         const [generating, setGenerating] = useState(false);
         const [result, setResult] = useState(null);
+        const [localZones, setLocalZones] = useState([]);
+        const [editZone, setEditZone] = useState(null);
+        const [zoneForm, setZoneForm] = useState({ name: '', description: '', depot_lat: '', depot_lng: '', depot_address: '' });
+        const [zoneSaving, setZoneSaving] = useState(false);
+
+        useEffect(() => { loadLocalZones(); }, []);
+
+        const loadLocalZones = async () => {
+            try {
+                const data = await adminApi.getZones();
+                setLocalZones(data);
+                setZones(data); // keep parent state in sync
+            } catch (e) { console.error(e); }
+        };
 
         const handleGenerate = async (zoneId) => {
             setGenerating(true);
@@ -744,40 +758,124 @@ export default function AdminDashboard() {
             setGenerating(false);
         };
 
+        const handleEditZone = (zone) => {
+            setEditZone(zone);
+            setZoneForm({
+                name: zone.name || '',
+                description: zone.description || '',
+                depot_lat: zone.depot_lat || '',
+                depot_lng: zone.depot_lng || '',
+                depot_address: zone.depot_address || '',
+            });
+        };
+
+        const handleSaveZone = async () => {
+            if (!editZone) return;
+            setZoneSaving(true);
+            try {
+                const payload = { ...zoneForm };
+                if (payload.depot_lat) payload.depot_lat = parseFloat(payload.depot_lat);
+                if (payload.depot_lng) payload.depot_lng = parseFloat(payload.depot_lng);
+                if (!payload.depot_lat) delete payload.depot_lat;
+                if (!payload.depot_lng) delete payload.depot_lng;
+                await adminApi.updateZone(editZone.id, payload);
+                toast.success('Zone updated!');
+                setEditZone(null);
+                loadLocalZones();
+            } catch (e) {
+                console.error('Zone update error:', e);
+                toast.error(e.response?.data?.detail || 'Failed to update zone');
+            }
+            setZoneSaving(false);
+        };
+
+        const handleDeleteZone = async (zoneId, zoneName) => {
+            if (!confirm(`Delete "${zoneName}"? Bins and users in this zone will be unassigned.`)) return;
+            try {
+                await adminApi.deleteZone(zoneId);
+                toast.success('Zone deleted');
+                loadLocalZones();
+            } catch (e) {
+                console.error('Zone delete error:', e);
+                toast.error(e.response?.data?.detail || 'Failed to delete zone');
+            }
+        };
+
         return (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-fit">
-                    <h3 className="font-semibold text-gray-900 mb-4 font-display">Generate Optimized Routes</h3>
-                    <div className="space-y-3">
-                        <button onClick={() => handleGenerate(null)} disabled={generating}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-sw-mid text-white font-medium rounded-xl hover:bg-sw-dark disabled:opacity-50 transition-colors">
-                            {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-                            Generate for All Zones
-                        </button>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                            <button onClick={() => handleGenerate(1)} disabled={generating} className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors">Zone 1 (North)</button>
-                            <button onClick={() => handleGenerate(2)} disabled={generating} className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors">Zone 2 (South)</button>
-                            <button onClick={() => handleGenerate(3)} disabled={generating} className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors">Zone 3 (East)</button>
-                            <button onClick={() => handleGenerate(4)} disabled={generating} className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors">Zone 4 (West)</button>
+                <div className="space-y-6">
+                    {/* Route Generation Card */}
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-fit">
+                        <h3 className="font-semibold text-gray-900 mb-4 font-display">Generate Optimized Routes</h3>
+                        <div className="space-y-3">
+                            <button onClick={() => handleGenerate(null)} disabled={generating}
+                                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-sw-mid text-white font-medium rounded-xl hover:bg-sw-dark disabled:opacity-50 transition-colors">
+                                {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                                Generate for All Zones
+                            </button>
+                            <div className="grid grid-cols-2 gap-3">
+                                {localZones.map(z => (
+                                    <button key={z.id} onClick={() => handleGenerate(z.id)} disabled={generating}
+                                        className="px-4 py-2.5 border border-sw-mid text-sw-mid font-medium rounded-xl hover:bg-sw-bg transition-colors text-sm">
+                                        {z.name}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
+                        {result && (
+                            <div className={`mt-4 p-4 rounded-xl text-sm ${result.error ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
+                                {result.error ? result.error : (
+                                    <div>
+                                        <p className="font-semibold mb-1">✓ Route Generated!</p>
+                                        <p>Collector: {result.collector || 'Unassigned'} | Zone: {result.zone_name || 'All Zones'}</p>
+                                        <p className="font-mono-data">Bins: {result.bins_count || (result.stops?.length) || 0} | Distance: {result.total_distance_km || 0} km | Time: {result.estimated_duration_min || 0} min</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
-                    {result && (
-                        <div className={`mt-4 p-4 rounded-xl text-sm ${result.error ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
-                            {result.error ? result.error : (
-                                <div>
-                                    <p className="font-semibold mb-1">✓ Route Generated!</p>
-                                    <p>Collector: {result.collector || 'Unassigned'} | Zone: {result.zone_name || 'All Zones'}</p>
-                                    <p className="font-mono-data">Bins: {result.bins_count || (result.stops?.length) || 0} | Distance: {result.total_distance_km || 0} km | Time: {result.estimated_duration_min || 0} min</p>
+
+                    {/* Zone Management Card */}
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="font-semibold text-gray-900 font-display">Zone Management</h3>
+                        </div>
+                        <p className="text-xs text-gray-500 mb-3">Configure zones, depot locations, and collection boundaries.</p>
+
+                        {/* Add New Zone */}
+                        <AddZoneFeature onZoneAdded={loadLocalZones} />
+
+                        {/* Zone List */}
+                        <div className="space-y-2 mt-4">
+                            {localZones.map(zone => (
+                                <div key={zone.id} className="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:bg-gray-50/50 transition-colors">
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-medium text-gray-900 text-sm">{zone.name}</p>
+                                        <p className="text-xs text-gray-500 truncate">
+                                            {zone.depot_address
+                                                ? `🏢 ${zone.depot_address}`
+                                                : zone.depot_lat
+                                                    ? `📍 Depot: ${zone.depot_lat?.toFixed(4)}, ${zone.depot_lng?.toFixed(4)}`
+                                                    : '⚠️ No depot set'}
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-1 ml-2">
+                                        <button onClick={() => handleEditZone(zone)} className="text-green-600 hover:text-green-700 hover:bg-green-100 p-1.5 rounded-md transition-colors" title="Edit Zone">
+                                            <Pencil className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button onClick={() => handleDeleteZone(zone.id, zone.name)} className="text-red-500 hover:text-red-700 hover:bg-red-100 p-1.5 rounded-md transition-colors" title="Delete Zone">
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                            {localZones.length === 0 && (
+                                <div className="text-center py-6 text-gray-400">
+                                    <Building className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                                    <p className="text-sm">No zones configured</p>
                                 </div>
                             )}
                         </div>
-                    )}
-
-                    {/* Add New Zone Feature */}
-                    <div className="mt-8 border-t border-gray-100 pt-6">
-                        <h4 className="font-semibold text-gray-800 text-sm mb-2">Zone Management</h4>
-                        <p className="text-xs text-gray-500 mb-2">Configure new geographical collection boundaries.</p>
-                        <AddZoneFeature />
                     </div>
                 </div>
 
@@ -791,6 +889,52 @@ export default function AdminDashboard() {
                         isLive={generating} 
                     />
                 </div>
+
+                {/* Edit Zone Modal */}
+                {editZone && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl animate-slide-up">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="font-bold text-xl text-sw-dark">Edit Zone: {editZone.name}</h3>
+                                <button onClick={() => setEditZone(null)} className="p-1 hover:bg-gray-100 rounded-lg"><X className="w-5 h-5" /></button>
+                            </div>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Zone Name</label>
+                                    <input value={zoneForm.name} onChange={(e) => setZoneForm({ ...zoneForm, name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    <input value={zoneForm.description} onChange={(e) => setZoneForm({ ...zoneForm, description: e.target.value })} placeholder="Optional description" className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" />
+                                </div>
+                                <div className="border-t border-gray-100 pt-4">
+                                    <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-1.5">🏢 Base Depot Configuration</h4>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Depot Address</label>
+                                        <input value={zoneForm.depot_address} onChange={(e) => setZoneForm({ ...zoneForm, depot_address: e.target.value })} placeholder="e.g. Municipal Office, Main Road" className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3 mt-3">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Depot Latitude</label>
+                                            <input type="number" step="any" value={zoneForm.depot_lat} onChange={(e) => setZoneForm({ ...zoneForm, depot_lat: e.target.value })} placeholder="e.g. 26.8467" className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Depot Longitude</label>
+                                            <input type="number" step="any" value={zoneForm.depot_lng} onChange={(e) => setZoneForm({ ...zoneForm, depot_lng: e.target.value })} placeholder="e.g. 80.9462" className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-3 mt-6">
+                                <button onClick={() => setEditZone(null)} className="px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+                                <button onClick={handleSaveZone} disabled={zoneSaving} className="flex items-center gap-2 px-6 py-2 bg-sw-mid text-white text-sm font-bold rounded-xl hover:bg-sw-dark disabled:opacity-50 transition-colors">
+                                    {zoneSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }

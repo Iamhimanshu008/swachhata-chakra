@@ -30,6 +30,21 @@ export const getZones = async () => {
     return res.data;
 };
 
+export const createZone = async (data) => {
+    const res = await client.post('/admin/zones', data);
+    return res.data;
+};
+
+export const updateZone = async (id, data) => {
+    const res = await client.put(`/admin/zones/${id}`, data);
+    return res.data;
+};
+
+export const deleteZone = async (id) => {
+    const res = await client.delete(`/admin/zones/${id}`);
+    return res.data;
+};
+
 export const getBins = async () => {
     const res = await client.get('/admin/bins');
     return res.data;
