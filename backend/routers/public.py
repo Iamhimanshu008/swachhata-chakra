@@ -85,10 +85,16 @@ async def submit_public_report(
     except Exception as exc:
         logger.warning(f"⚠️ Image upload failed: {exc} — saving report without image")
 
-    # AI analysis — never block report submission
+    # AI analysis — run off-thread with timeout, never block report submission
     analysis = DEFAULT_ANALYSIS.copy()
     try:
-        analysis = analyze_bin_image(file_bytes, upload.content_type)
+        analysis = await asyncio.wait_for(
+            asyncio.to_thread(analyze_bin_image, file_bytes, upload.content_type),
+            timeout=20.0,
+        )
+    except asyncio.TimeoutError:
+        logger.warning("⏱️ AI analysis timed out after 20s — using defaults")
+        analysis = DEFAULT_ANALYSIS.copy()
     except Exception as exc:
         logger.warning(f"⚠️ AI analysis failed: {exc} — using defaults")
         analysis = DEFAULT_ANALYSIS.copy()
