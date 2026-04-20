@@ -13,7 +13,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill
 from shapely.geometry import Point
 from sqlalchemy import func
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session, aliased
 
 from database import get_db
@@ -642,6 +642,12 @@ def create_user(
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    # Validate phone_number uniqueness
+    if data.phone_number:
+        phone_exists = db.query(User).filter(User.phone_number == data.phone_number).first()
+        if phone_exists:
+            raise HTTPException(status_code=400, detail="Phone number already registered")
+
     # Validate zone exists
     if data.zone_id:
         zone = db.query(Zone).filter(Zone.id == data.zone_id).first()
@@ -659,9 +665,13 @@ def create_user(
         zone_id=data.zone_id,
         phone_number=data.phone_number,
     )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
+    try:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="A user with this email or phone number already exists")
     return user
 
 
@@ -681,14 +691,26 @@ def update_user(
     if data.phone is not None:
         user.phone = data.phone
     if data.phone_number is not None:
+        # Validate phone_number uniqueness (exclude current user)
+        if data.phone_number:
+            phone_exists = db.query(User).filter(
+                User.phone_number == data.phone_number,
+                User.id != user_id
+            ).first()
+            if phone_exists:
+                raise HTTPException(status_code=400, detail="Phone number already registered to another user")
         user.phone_number = data.phone_number
     if data.is_active is not None:
         user.is_active = data.is_active
     if data.zone_id is not None:
         user.zone_id = data.zone_id
 
-    db.commit()
-    db.refresh(user)
+    try:
+        db.commit()
+        db.refresh(user)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="A user with this phone number already exists")
     return user
 
 
