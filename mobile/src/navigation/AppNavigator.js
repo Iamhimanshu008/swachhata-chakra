@@ -12,6 +12,8 @@ import { COLORS } from '../config';
 import { registerForPushNotifications, setupNotificationListeners } from '../utils/notifications';
 import { getUnreadCount } from '../api/notificationApi';
 
+import LandingScreen from '../screens/LandingScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
@@ -71,9 +73,10 @@ export default function AppNavigator() {
     }
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Landing">
             {!token ? (
                 <>
+                    <Stack.Screen name="Landing" component={LandingScreen} />
                     <Stack.Screen name="Login" component={LoginScreen} />
                     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
                     <Stack.Screen name="PublicStack" component={PublicNavigator} />
@@ -84,6 +87,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="SHGTabs" component={SHGNavigator} />
             ) : (
                 <>
+                    <Stack.Screen name="Landing" component={LandingScreen} />
                     <Stack.Screen name="Login" component={LoginScreen} />
                     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
                     <Stack.Screen name="PublicStack" component={PublicNavigator} />
