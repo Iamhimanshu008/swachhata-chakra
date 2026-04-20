@@ -4,8 +4,9 @@ import {
   StyleSheet, Alert, KeyboardAvoidingView,
   Platform, ScrollView, ActivityIndicator
 } from 'react-native';
-import { login } from '../../api/authApi';
-import client from '../../api/client';
+import { login as loginApi, getMe } from '../api/authApi';
+import client from '../api/client';
+import useStore from '../store';
 
 const LoginScreen = ({ navigation }) => {
   const [mode, setMode] = useState('email'); // 'email' | 'phone'
@@ -23,6 +24,8 @@ const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
 
+  const { login } = useStore();
+
   // Email login
   const handleEmailLogin = async () => {
     if (!email || !password) {
@@ -31,7 +34,11 @@ const LoginScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      await login({ username: email, password });
+      const tokenData = await loginApi(email, password);
+      const { access_token, refresh_token } = tokenData;
+      await login(null, access_token, refresh_token);
+      const user = await getMe();
+      await login(user, access_token, refresh_token);
     } catch (err) {
       Alert.alert('Login Failed', err.message || 'Invalid credentials');
     } finally {
@@ -80,8 +87,7 @@ const LoginScreen = ({ navigation }) => {
       });
       const { access_token, refresh_token } = res.data;
       // Store tokens same as email login
-      const { default: useStore } = require('../store');
-      await useStore.getState().login(
+      await login(
         res.data.user,
         access_token,
         refresh_token
