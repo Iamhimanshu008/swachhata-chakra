@@ -449,6 +449,44 @@ def list_zones(
         for z in zones
     ]
 
+@router.post("/zones", status_code=201)
+def create_zone(
+    data: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin")),
+):
+    try:
+        zone = Zone(
+            name=data.get('name', 'New Zone'),
+            description=data.get('description', ''),
+        )
+        db.add(zone)
+        db.commit()
+        db.refresh(zone)
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Zone created: {zone.id} - {zone.name}")
+        return {
+            "id": zone.id,
+            "name": zone.name,
+            "description": zone.description,
+            "center_lat": zone.center_lat,
+            "center_lng": zone.center_lng,
+            "radius_km": zone.radius_km,
+            "depot_lat": zone.depot_lat,
+            "depot_lng": zone.depot_lng,
+            "depot_address": zone.depot_address,
+        }
+    except Exception as e:
+        db.rollback()
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Zone create failed: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to create zone: {str(e)}"
+        )
+
 
 @router.put("/zones/{zone_id}")
 def update_zone(
@@ -584,10 +622,14 @@ def delete_zone(
 # User Management
 @router.get("/users", response_model=list[UserRead])
 def list_users(
+    role: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),
 ):
-    return db.query(User).all()
+    query = db.query(User)
+    if role:
+        query = query.filter(User.role == role)
+    return query.all()
 
 
 @router.post("/users", response_model=UserRead)
