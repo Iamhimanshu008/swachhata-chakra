@@ -1092,7 +1092,9 @@ export default function AdminDashboard() {
                             <input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="Email" className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid" />
                             <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Address *" className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid md:col-span-2" />
                             <select value={form.zone_id} onChange={(e) => setForm({ ...form, zone_id: parseInt(e.target.value) })} className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid">
-                                <option value={1}>Zone 1</option><option value={2}>Zone 2</option><option value={3}>Zone 3</option><option value={4}>Zone 4</option>
+                                {zones.map((z) => (
+                                    <option key={z.id} value={z.id}>{z.name}</option>
+                                ))}
                             </select>
                             <input value={form.price_per_kg} onChange={(e) => setForm({ ...form, price_per_kg: e.target.value })} type="number" placeholder="Price/kg (₹) *" className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid" />
                             <input value={form.min_quantity_kg} onChange={(e) => setForm({ ...form, min_quantity_kg: e.target.value })} type="number" placeholder="Min Qty (kg) *" className="px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-mid" />
