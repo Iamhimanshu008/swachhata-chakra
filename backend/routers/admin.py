@@ -632,6 +632,15 @@ def list_users(
     return query.all()
 
 
+def save_phone(phone: str) -> str:
+    if not phone:
+        return phone
+    digits = phone.strip().replace('+', '').replace(' ', '')
+    if digits.startswith('91') and len(digits) == 12:
+        return digits[2:]  # store as 10 digit
+    return digits
+
+
 @router.post("/users", response_model=UserRead)
 def create_user(
     data: UserCreate,
@@ -639,7 +648,7 @@ def create_user(
     current_user: User = Depends(require_role("admin")),
 ):
     email = data.email.strip().lower() if data.email else None
-    phone_number = data.phone_number.strip() if data.phone_number else None
+    phone_number = save_phone(data.phone_number)
     full_name = data.name.strip() if data.name else None
 
     if email:

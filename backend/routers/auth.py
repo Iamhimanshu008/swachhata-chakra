@@ -118,6 +118,26 @@ async def forgot_password(
 from services.otp_service import create_otp, verify_otp, send_otp_sms
 from models.otp import OTPRecord
 
+def normalize_phone(phone: str) -> list[str]:
+    """Return all possible formats of a phone number for DB lookup"""
+    if not phone:
+        return []
+    phone = phone.strip()
+    digits_only = phone.replace('+', '').replace(' ', '').replace('-', '')
+    
+    variants = set()
+    variants.add(phone)           # as-is
+    variants.add(digits_only)     # pure digits
+    
+    if digits_only.startswith('91') and len(digits_only) == 12:
+        variants.add(digits_only[2:])      # remove 91 prefix → 10 digit
+        variants.add('+' + digits_only)    # +91XXXXXXXXXX
+    elif len(digits_only) == 10:
+        variants.add('91' + digits_only)   # add 91
+        variants.add('+91' + digits_only)  # add +91
+    
+    return list(variants)
+
 # Send OTP endpoint
 @router.post("/send-otp")
 async def send_otp(
@@ -133,8 +153,9 @@ async def send_otp(
         phone_number = '+91' + phone_number.lstrip('0')
     
     # Check if user exists with this phone number
+    phone_variants = normalize_phone(phone_number)
     user = db.query(User).filter(
-        User.phone_number == phone_number
+        User.phone_number.in_(phone_variants)
     ).first()
     
     if not user:
@@ -179,8 +200,9 @@ async def login_with_otp(
         )
     
     # Get user
+    phone_variants = normalize_phone(phone_number)
     user = db.query(User).filter(
-        User.phone_number == phone_number
+        User.phone_number.in_(phone_variants)
     ).first()
     
     if not user:
