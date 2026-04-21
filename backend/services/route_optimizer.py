@@ -107,8 +107,8 @@ def optimize_routes(
 
     # Use centroid as depot if not provided
     if depot_lat is None or depot_lng is None:
-        depot_lat = sum(b["lat"] for b in eligible_bins) / len(eligible_bins)
-        depot_lng = sum(b["lng"] for b in eligible_bins) / len(eligible_bins)
+        depot_lat = 21.249204
+        depot_lng = 81.605973
 
     # Build locations list: depot at index 0, then bins
     locations = [{"lat": depot_lat, "lng": depot_lng}]
@@ -246,6 +246,8 @@ def create_route_for_zone(
     db: Session,
     zone_id: int,
     *,
+    depot_lat: Optional[float] = None,
+    depot_lng: Optional[float] = None,
     collection_threshold_percent: int = 60,
     force_include_bin_ids: Optional[List[int]] = None,
     route_name_prefix: str = "AI Route",
@@ -292,6 +294,8 @@ def create_route_for_zone(
 
     result = optimize_routes(
         bins_data,
+        depot_lat=depot_lat,
+        depot_lng=depot_lng,
         collection_threshold_percent=collection_threshold_percent,
         force_include_bin_ids=force_include_bin_ids,
     )

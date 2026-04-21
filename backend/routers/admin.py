@@ -12,7 +12,7 @@ from geoalchemy2.shape import from_shape
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill
 from shapely.geometry import Point
-from sqlalchemy import func
+from sqlalchemy import func, text
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session, aliased
 
@@ -868,9 +868,15 @@ def generate_routes(
     generated_routes = []
     for target_zone_id in zone_ids:
         try:
+            zone = db.query(Zone).filter(Zone.id == target_zone_id).first()
+            depot_lat = zone.depot_lat if zone and zone.depot_lat else None
+            depot_lng = zone.depot_lng if zone and zone.depot_lng else None
+
             result = create_route_for_zone(
                 db,
                 zone_id=target_zone_id,
+                depot_lat=depot_lat,
+                depot_lng=depot_lng,
                 collection_threshold_percent=60,
                 route_name_prefix="AI Route",
             )
@@ -1243,3 +1249,19 @@ async def reseed_zones(
     db.add_all(zones)
     db.commit()
     return {"message": "4 zones created successfully"}
+
+@router.post("/reset-sequences")
+async def reset_sequences(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role(["admin"]))
+):
+    db.execute(text("""
+        SELECT setval('bins_id_seq', 
+            COALESCE((SELECT MAX(id) FROM bins), 0) + 1, false)
+    """))
+    db.execute(text("""
+        SELECT setval('zones_id_seq',
+            COALESCE((SELECT MAX(id) FROM zones), 0) + 1, false)
+    """))
+    db.commit()
+    return {"message": "Sequences reset to current max IDs"}

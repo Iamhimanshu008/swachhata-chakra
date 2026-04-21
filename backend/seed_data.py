@@ -22,13 +22,7 @@ def hash_password(password: str) -> str:
 def seed_database():
     db = SessionLocal()
     try:
-        # Only seed if database is empty
-        existing_zones = db.query(Zone).first()
-        if existing_zones:
-            print("Database already has data — skipping seed.")
-            return
-
-        print("Seeding database for Nava Raipur (4 Zones)...")
+        print("Seeding/updating database for Nava Raipur (4 Zones)...")
 
         # ── Zones ──────────────────────────────────────────────
         zone1 = Zone(
@@ -60,12 +54,16 @@ def seed_database():
             radius_km=8.0,
         )
         
-        db.add_all([zone1, zone2, zone3, zone4])
+        for z in [zone1, zone2, zone3, zone4]:
+            if not db.query(Zone).filter(Zone.name == z.name).first():
+                db.add(z)
         db.commit()
-        db.refresh(zone1)
-        db.refresh(zone2)
-        db.refresh(zone3)
-        db.refresh(zone4)
+
+        # Query them back to ensure we have IDs
+        zone1 = db.query(Zone).filter(Zone.name == zone1.name).first()
+        zone2 = db.query(Zone).filter(Zone.name == zone2.name).first()
+        zone3 = db.query(Zone).filter(Zone.name == zone3.name).first()
+        zone4 = db.query(Zone).filter(Zone.name == zone4.name).first()
 
         zones = [zone1, zone2, zone3, zone4]
 
@@ -131,12 +129,13 @@ def seed_database():
         )
         users.append(recycler_user)
 
-        db.add_all(users)
+        for u in users:
+            if not db.query(User).filter(User.email == u.email).first():
+                db.add(u)
         db.commit()
 
         # Refresh collectors to get their IDs
-        for c in collectors:
-            db.refresh(c)
+        collectors = db.query(User).filter(User.email.in_([c.email for c in collectors])).all()
 
         # ── Bins ──────────────────────────────────────────────
         # Landmarks and variations mapping strictly to 4 zones
@@ -212,11 +211,13 @@ def seed_database():
             )
             db_bins.append(db_bin)
             
-        db.add_all(db_bins)
+        for b in db_bins:
+            if not db.query(Bin).filter(Bin.label == b.label, Bin.zone_id == b.zone_id).first():
+                db.add(b)
         db.commit()
 
-        for b in db_bins:
-            db.refresh(b)
+        # Get all bins back
+        db_bins = db.query(Bin).all()
 
         # ── Routes ──────────────────────────────────────────────
         # Create active routes for today for Collector 1 and Collector 3 (representing different zones)
@@ -234,9 +235,13 @@ def seed_database():
             status=RouteStatus.planned,
             optimized=True
         )
-        db.add(route1)
-        db.commit()
-        db.refresh(route1)
+        existing_route1 = db.query(Route).filter(Route.name == route1.name, Route.date == route1.date).first()
+        if not existing_route1:
+            db.add(route1)
+            db.commit()
+            db.refresh(route1)
+        else:
+            route1 = existing_route1
 
         route1_stops = []
         for idx, route_bin in enumerate(route1_bins, 1):
@@ -260,9 +265,13 @@ def seed_database():
             status=RouteStatus.in_progress, # Set as in progress
             optimized=True
         )
-        db.add(route2)
-        db.commit()
-        db.refresh(route2)
+        existing_route2 = db.query(Route).filter(Route.name == route2.name, Route.date == route2.date).first()
+        if not existing_route2:
+            db.add(route2)
+            db.commit()
+            db.refresh(route2)
+        else:
+            route2 = existing_route2
 
         route2_stops = []
         for idx, route_bin in enumerate(route2_bins, 1):
@@ -277,7 +286,9 @@ def seed_database():
             )
             route2_stops.append(stop)
 
-        db.add_all(route1_stops + route2_stops)
+        for rs in route1_stops + route2_stops:
+            if not db.query(RouteStop).filter(RouteStop.route_id == rs.route_id, RouteStop.bin_id == rs.bin_id).first():
+                db.add(rs)
         db.commit()
 
         # ── Recyclers ──────────────────────────────────────────────
@@ -340,7 +351,9 @@ def seed_database():
             )
         ]
         
-        db.add_all(recyclers)
+        for rec in recyclers:
+            if not db.query(Recycler).filter(Recycler.email == rec.email).first():
+                db.add(rec)
         db.commit()
 
         print("✓ Nava Raipur database seed complete with 4 Zones!")
