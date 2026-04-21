@@ -638,13 +638,18 @@ def create_user(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),
 ):
-    existing = db.query(User).filter(User.email == data.email).first()
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
+    email = data.email.strip().lower() if data.email else None
+    phone_number = data.phone_number.strip() if data.phone_number else None
+    full_name = data.name.strip() if data.name else None
+
+    if email:
+        existing = db.query(User).filter(User.email == email).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered")
 
     # Validate phone_number uniqueness
-    if data.phone_number:
-        phone_exists = db.query(User).filter(User.phone_number == data.phone_number).first()
+    if phone_number:
+        phone_exists = db.query(User).filter(User.phone_number == phone_number).first()
         if phone_exists:
             raise HTTPException(status_code=400, detail="Phone number already registered")
 
@@ -658,12 +663,12 @@ def create_user(
             )
 
     user = User(
-        full_name=data.name,
-        email=data.email,
+        full_name=full_name,
+        email=email,
         hashed_password=hash_password(data.password),
         role=data.role,
         zone_id=data.zone_id,
-        phone_number=data.phone_number,
+        phone_number=phone_number,
     )
     try:
         db.add(user)

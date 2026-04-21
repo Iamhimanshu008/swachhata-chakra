@@ -146,11 +146,8 @@ async def send_otp(
     otp = create_otp(db, phone_number)
     send_otp_sms(phone_number, otp)
     
-    # For development — return OTP in response
-    # REMOVE in production
     return {
         "message": f"OTP sent to {phone_number}",
-        "dev_otp": otp,  # REMOVE IN PRODUCTION
         "expires_in_minutes": 10
     }
 

@@ -5,7 +5,7 @@ import asyncio
 import logging
 import os
 import uuid
-from datetime import datetime, date, timezone
+from datetime import datetime, date, timezone, timedelta
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
@@ -61,6 +61,14 @@ async def submit_public_report(
     if not bin_obj:
         raise HTTPException(status_code=404, detail="Bin not found")
 
+    recent_count = db.query(BinReport).filter(
+        BinReport.created_at > datetime.now(timezone.utc) - 
+        timedelta(minutes=settings.SPAM_WINDOW_MINUTES)
+    ).count()
+    if recent_count > 10:
+        raise HTTPException(status_code=429, 
+            detail="Too many reports. Please wait before submitting again.")
+
     from utils.geofence import is_within_radius, get_geofence_radius
     geofence_radius = get_geofence_radius(db)
     if not is_within_radius(lat, lng, bin_obj.latitude, bin_obj.longitude, geofence_radius):
@@ -69,7 +77,10 @@ async def submit_public_report(
             detail=f"You must be within {int(geofence_radius)} meters of the bin to submit a report."
         )
 
-    file_ext = Path(upload.filename or "").suffix or ".jpg"
+    file_ext = Path(upload.filename or "").suffix.lower()
+    ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.heic'}
+    if file_ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail="Only image files allowed (jpg, png, webp)")
     filename = f"{uuid.uuid4().hex}{file_ext}"
     file_bytes = upload.file.read()
 
@@ -116,14 +127,22 @@ async def submit_public_report(
         ),
     )
 
+    ai_confidence = float(analysis.get("confidence", 0))
+    compare_conf = ai_confidence / 100.0 if ai_confidence > 1 else ai_confidence
+    if compare_conf < settings.AI_CONFIDENCE_THRESHOLD:
+        logger.warning(f"Low confidence {ai_confidence}, skipping bin update")
+        update_bin = False
+    else:
+        update_bin = True
+
     try:
         db.add(report)
-        bin_obj.fill_level = analysis["fill_level"]
-
-        # CRITICAL FIX: Also update bin status so route optimizer picks it up
-        from services.report_utils import status_from_fill_level
-        bin_obj.status = BinStatus(status_from_fill_level(analysis["fill_level"]))
-        bin_obj.updated_at = datetime.now(timezone.utc)
+        
+        if update_bin:
+            bin_obj.fill_level = analysis["fill_level"]
+            from services.report_utils import status_from_fill_level
+            bin_obj.status = BinStatus(status_from_fill_level(analysis["fill_level"]))
+            bin_obj.updated_at = datetime.now(timezone.utc)
 
         db.commit()
         db.refresh(report)
