@@ -129,7 +129,7 @@ export default function MapScreen({ navigation }) {
     }
 
     const routeCoords = stops
-        .sort((a, b) => (a.stop_order ?? a.sequence_order) - (b.stop_order ?? b.sequence_order))
+        .sort((a, b) => (a.sequence ?? a.stop_sequence ?? 0) - (b.sequence ?? b.stop_sequence ?? 0))
         .map(s => ({
             latitude: s.bin_lat ?? s.latitude,
             longitude: s.bin_lng ?? s.longitude,

@@ -1,196 +1,325 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
-    View, Text, TextInput, TouchableOpacity,
-    StyleSheet, KeyboardAvoidingView, Platform,
-    ScrollView, ActivityIndicator, Alert,
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet, Alert, KeyboardAvoidingView,
+  Platform, ScrollView, ActivityIndicator
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import useStore from '../store';
 import { login as loginApi, getMe } from '../api/authApi';
-import { COLORS } from '../config';
+import client from '../api/client';
+import useStore from '../store';
 
+const LoginScreen = ({ navigation }) => {
+  const [mode, setMode] = useState('email'); // 'email' | 'phone'
+  
+  // Email mode state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
+  // Phone mode state
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [devOtp, setDevOtp] = useState(''); // remove in prod
+  
+  const [loading, setLoading] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
 
-export default function LoginScreen({ navigation }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [role, setRole] = useState('collector'); // 'collector' or 'shg'
-    const [loading, setLoading] = useState(false);
-    const { login } = useStore();
+  const { login } = useStore();
 
-    const performLogin = async (emailToUse, passwordToUse, roleToUse) => {
-        setLoading(true);
-        try {
-            const tokenData = await loginApi(emailToUse, passwordToUse, roleToUse);
-            const { access_token, refresh_token } = tokenData;
-            await login(null, access_token, refresh_token);
-            const user = await getMe();
-            await login(user, access_token, refresh_token);
-            // Global state drives AppNavigator, so we don't need manual navigation replace
-        } catch (err) {
-            const detail = err.response?.data?.detail;
-            const msg = typeof detail === 'string' ? detail : Array.isArray(detail) ? detail.map(d => d.msg).join(', ') : 'Login failed. Check credentials.';
-            Alert.alert('Login Failed', msg || 'Invalid credentials. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+  // Email login
+  const handleEmailLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Enter email and password');
+      return;
+    }
+    setLoading(true);
+    try {
+      const tokenData = await loginApi(email, password);
+      const { access_token, refresh_token } = tokenData;
+      await login(null, access_token, refresh_token);
+      const user = await getMe();
+      await login(user, access_token, refresh_token);
+    } catch (err) {
+      Alert.alert('Login Failed', err.message || 'Invalid credentials');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleLogin = () => {
-        if (!email || !password) {
-            Alert.alert('Error', 'Please enter email and password');
-            return;
-        }
-        performLogin(email, password, role);
-    };
+  // Send OTP
+  const handleSendOtp = async () => {
+    if (!phone || phone.length < 10) {
+      Alert.alert('Error', 'Enter valid 10-digit phone number');
+      return;
+    }
+    setOtpLoading(true);
+    try {
+      const res = await client.post('/auth/send-otp', {
+        phone_number: phone
+      });
+      setOtpSent(true);
+      setDevOtp(res.data.dev_otp || '');
+      Alert.alert(
+        'OTP Sent ✅',
+        `OTP sent to +91${phone}\nExpires in 10 minutes${res.data.dev_otp ? '\n\n[DEV] OTP: ' + res.data.dev_otp : ''}`
+      );
+    } catch (err) {
+      Alert.alert(
+        'Failed',
+        err.response?.data?.detail || 'Could not send OTP'
+      );
+    } finally {
+      setOtpLoading(false);
+    }
+  };
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={{ flex: 1 }}
+  // OTP Login
+  const handleOtpLogin = async () => {
+    if (!otp || otp.length !== 6) {
+      Alert.alert('Error', 'Enter 6-digit OTP');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await client.post('/auth/login-otp', {
+        phone_number: phone,
+        otp: otp
+      });
+      const { access_token, refresh_token } = res.data;
+      // Store tokens same as email login
+      await login(
+        res.data.user,
+        access_token,
+        refresh_token
+      );
+    } catch (err) {
+      Alert.alert(
+        'Login Failed',
+        err.response?.data?.detail || 'Invalid OTP'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.logo}>♻️</Text>
+          <Text style={styles.title}>SmartWaste AI</Text>
+          <Text style={styles.subtitle}>Staff Login</Text>
+        </View>
+
+        {/* Mode Toggle */}
+        <View style={styles.toggleRow}>
+          <TouchableOpacity
+            style={[styles.toggleBtn, mode === 'email' && styles.toggleActive]}
+            onPress={() => setMode('email')}
+          >
+            <Text style={[
+              styles.toggleText,
+              mode === 'email' && styles.toggleTextActive
+            ]}>📧 Email</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.toggleBtn, mode === 'phone' && styles.toggleActive]}
+            onPress={() => setMode('phone')}
+          >
+            <Text style={[
+              styles.toggleText,
+              mode === 'phone' && styles.toggleTextActive
+            ]}>📱 Phone OTP</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Email Mode */}
+        {mode === 'email' && (
+          <View style={styles.formSection}>
+            <Text style={styles.label}>Email Address</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="staff@smartwaste.ai"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            <TouchableOpacity
+              style={[styles.loginBtn, loading && styles.btnDisabled]}
+              onPress={handleEmailLogin}
+              disabled={loading}
             >
-                <ScrollView
-                    contentContainerStyle={styles.scroll}
-                    keyboardShouldPersistTaps="handled"
+              {loading
+                ? <ActivityIndicator color="#fff" />
+                : <Text style={styles.loginBtnText}>Login →</Text>
+              }
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Phone OTP Mode */}
+        {mode === 'phone' && (
+          <View style={styles.formSection}>
+            <Text style={styles.label}>Phone Number</Text>
+            <View style={styles.phoneRow}>
+              <View style={styles.countryCode}>
+                <Text style={styles.countryCodeText}>🇮🇳 +91</Text>
+              </View>
+              <TextInput
+                style={[styles.input, styles.phoneInput]}
+                placeholder="10-digit number"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                maxLength={10}
+              />
+            </View>
+
+            {!otpSent ? (
+              <TouchableOpacity
+                style={[styles.otpBtn, otpLoading && styles.btnDisabled]}
+                onPress={handleSendOtp}
+                disabled={otpLoading}
+              >
+                {otpLoading
+                  ? <ActivityIndicator color="#16a34a" />
+                  : <Text style={styles.otpBtnText}>Send OTP</Text>
+                }
+              </TouchableOpacity>
+            ) : (
+              <>
+                <Text style={styles.label}>Enter OTP</Text>
+                <TextInput
+                  style={[styles.input, styles.otpInput]}
+                  placeholder="6-digit OTP"
+                  value={otp}
+                  onChangeText={setOtp}
+                  keyboardType="number-pad"
+                  maxLength={6}
+                />
+                <TouchableOpacity
+                  style={styles.resendLink}
+                  onPress={() => { setOtpSent(false); setOtp(''); }}
                 >
-                    {/* Logo */}
-                    <View style={styles.logoContainer}>
-                        <Text style={styles.logoEmoji}>♻️</Text>
-                        <Text style={styles.logoTitle}>SmartWaste AI</Text>
-                        <Text style={styles.logoSubtitle}>Staff App</Text>
-                        <Text style={styles.logoDesc}>
-                            Rural Plastic Waste Management{'\n'}Chhattisgarh, India
-                        </Text>
-                    </View>
+                  <Text style={styles.resendText}>Resend OTP</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.loginBtn, loading && styles.btnDisabled]}
+                  onPress={handleOtpLogin}
+                  disabled={loading}
+                >
+                  {loading
+                    ? <ActivityIndicator color="#fff" />
+                    : <Text style={styles.loginBtnText}>Verify & Login →</Text>
+                  }
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        )}
 
-                    {/* Form */}
-                    <View style={styles.card}>
-                        <View style={styles.roleToggle}>
-                            <TouchableOpacity 
-                                style={[styles.roleBtn, role === 'collector' && styles.roleBtnActive]} 
-                                onPress={() => { setRole('collector'); setEmail(''); setPassword(''); }}
-                            >
-                                <Text style={[styles.roleBtnText, role === 'collector' && styles.roleBtnTextActive]}>Collector</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={[styles.roleBtn, role === 'shg' && styles.roleBtnActive]} 
-                                onPress={() => { setRole('shg'); setEmail(''); setPassword(''); }}
-                            >
-                                <Text style={[styles.roleBtnText, role === 'shg' && styles.roleBtnTextActive]}>SHG Member</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <Text style={styles.cardTitle}>Sign In</Text>
-
-                        <Text style={styles.label}>Email</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={email}
-                            onChangeText={setEmail}
-                            placeholder={role === 'collector' ? "collector1@smartwaste.com" : "shg1@smartwaste.com"}
-                            placeholderTextColor="#999"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
-
-                        <Text style={styles.label}>Password</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={password}
-                            onChangeText={setPassword}
-                            placeholder={role === 'collector' ? "Col@123" : "SHG@123"}
-                            placeholderTextColor="#999"
-                            secureTextEntry
-                        />
-
-                        <TouchableOpacity 
-                            onPress={() => navigation.navigate('ForgotPassword')}
-                            style={{ alignSelf: 'flex-end', marginBottom: 16, marginTop: -8 }}
-                        >
-                            <Text style={{ color: '#2D6A4F', fontSize: 13, fontWeight: '600' }}>
-                                Forgot Password?
-                            </Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
-                            onPress={handleLogin}
-                            disabled={loading}
-                        >
-                            {loading
-                                ? <ActivityIndicator color="#fff" />
-                                : <Text style={styles.loginBtnText}>Sign In</Text>
-                            }
-                        </TouchableOpacity>
-
-
-                    </View>
-
-                    {/* Guest access */}
-                    <TouchableOpacity
-                        style={styles.guestBtn}
-                        onPress={async () => {
-                            try {
-                                // Pre-request location permission before map loads
-                                const Location = require('expo-location');
-                                const { status } = await Location.requestForegroundPermissionsAsync();
-                                if (status !== 'granted') {
-                                    Alert.alert(
-                                        'Location Permission',
-                                        'Location access helps show nearby bins. You can still report without it.',
-                                        [
-                                            { text: 'Continue Anyway', onPress: () => navigation.navigate('PublicStack', { screen: 'PublicMap' }) },
-                                            { text: 'Cancel', style: 'cancel' },
-                                        ]
-                                    );
-                                    return;
-                                }
-                                navigation.navigate('PublicStack', { screen: 'PublicMap' });
-                            } catch (err) {
-                                console.log('Guest navigation error:', err);
-                                // Fallback: try navigating anyway, or show alert
-                                try {
-                                    navigation.navigate('PublicStack', { screen: 'PublicMap' });
-                                } catch (navErr) {
-                                    Alert.alert('Error', 'Could not open Guest Report. Please try again or login to report.');
-                                }
-                            }
-                        }}
-                    >
-                        <Text style={styles.guestBtnText}>
-                            📸  Report as Guest (No Login)
-                        </Text>
-                    </TouchableOpacity>
-                </ScrollView>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
-    );
-}
-
+        {/* Back to Landing */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Landing')}
+          style={styles.backLink}
+        >
+          <Text style={styles.backLinkText}>← Back</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: COLORS.dark },
-    scroll: { flexGrow: 1, justifyContent: 'center', padding: 24 },
-    logoContainer: { alignItems: 'center', marginBottom: 32 },
-    logoEmoji: { fontSize: 64, marginBottom: 12 },
-    logoTitle: { fontSize: 28, fontWeight: '800', color: COLORS.white, letterSpacing: 0.5 },
-    logoSubtitle: { fontSize: 14, color: COLORS.accent, fontWeight: '600', marginTop: 4 },
-    logoDesc: { fontSize: 12, color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: 8, lineHeight: 18 },
-    card: { backgroundColor: COLORS.white, borderRadius: 24, padding: 24, marginBottom: 16, shadowColor: '#000', shadowOpacity: 0.15, shadowRadius: 20, elevation: 8 },
-    cardTitle: { fontSize: 20, fontWeight: '700', color: COLORS.dark, marginBottom: 20 },
-    roleToggle: { flexDirection: 'row', backgroundColor: '#F3F4F6', borderRadius: 12, padding: 4, marginBottom: 20 },
-    roleBtn: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
-    roleBtnActive: { backgroundColor: COLORS.white, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 },
-    roleBtnText: { fontSize: 13, fontWeight: '600', color: '#6B7280' },
-    roleBtnTextActive: { color: COLORS.mid },
-    label: { fontSize: 13, fontWeight: '600', color: '#555', marginBottom: 6 },
-    input: { height: 48, borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 12, paddingHorizontal: 14, fontSize: 14, color: '#1a1a1a', marginBottom: 16, backgroundColor: '#FAFAFA' },
-    loginBtn: { height: 52, backgroundColor: COLORS.mid, borderRadius: 14, justifyContent: 'center', alignItems: 'center', marginTop: 4, shadowColor: COLORS.mid, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
-    loginBtnDisabled: { opacity: 0.6 },
-    loginBtnText: { color: COLORS.white, fontSize: 16, fontWeight: '700' },
-    demoBtn: { marginTop: 12, padding: 10, alignItems: 'center' },
-    demoBtnText: { color: COLORS.mid, fontSize: 13, fontWeight: '600' },
-    guestBtn: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)' },
-    guestBtnText: { color: COLORS.white, fontSize: 15, fontWeight: '600' },
+  container: { flex: 1, backgroundColor: '#f0fdf4' },
+  scrollContent: {
+    flexGrow: 1, padding: 24,
+    justifyContent: 'center', minHeight: '100%'
+  },
+  header: { alignItems: 'center', marginBottom: 28 },
+  logo: { fontSize: 52 },
+  title: {
+    fontSize: 26, fontWeight: '800',
+    color: '#14532d', marginTop: 8
+  },
+  subtitle: { fontSize: 14, color: '#16a34a', marginTop: 4 },
+  toggleRow: {
+    flexDirection: 'row',
+    backgroundColor: '#dcfce7',
+    borderRadius: 12,
+    padding: 4,
+    marginBottom: 24,
+  },
+  toggleBtn: {
+    flex: 1, paddingVertical: 10,
+    borderRadius: 10, alignItems: 'center',
+  },
+  toggleActive: { backgroundColor: '#16a34a' },
+  toggleText: { fontSize: 14, fontWeight: '600', color: '#16a34a' },
+  toggleTextActive: { color: '#ffffff' },
+  formSection: { gap: 8 },
+  label: {
+    fontSize: 13, fontWeight: '600',
+    color: '#374151', marginBottom: 2, marginTop: 8
+  },
+  input: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1.5, borderColor: '#d1fae5',
+    borderRadius: 10, paddingHorizontal: 14,
+    paddingVertical: 12, fontSize: 15, color: '#111827',
+  },
+  phoneRow: { flexDirection: 'row', gap: 8 },
+  countryCode: {
+    backgroundColor: '#fff',
+    borderWidth: 1.5, borderColor: '#d1fae5',
+    borderRadius: 10, paddingHorizontal: 12,
+    justifyContent: 'center',
+  },
+  countryCodeText: { fontSize: 14, fontWeight: '600' },
+  phoneInput: { flex: 1 },
+  otpInput: {
+    textAlign: 'center', fontSize: 22,
+    fontWeight: '700', letterSpacing: 8,
+  },
+  loginBtn: {
+    backgroundColor: '#16a34a',
+    borderRadius: 12, paddingVertical: 14,
+    alignItems: 'center', marginTop: 16,
+  },
+  loginBtnText: {
+    color: '#fff', fontSize: 16, fontWeight: '700'
+  },
+  otpBtn: {
+    borderWidth: 2, borderColor: '#16a34a',
+    borderRadius: 12, paddingVertical: 12,
+    alignItems: 'center', marginTop: 8,
+    backgroundColor: '#f0fdf4',
+  },
+  otpBtnText: {
+    color: '#16a34a', fontSize: 15, fontWeight: '700'
+  },
+  btnDisabled: { opacity: 0.6 },
+  resendLink: { alignSelf: 'flex-end', marginTop: 4 },
+  resendText: { color: '#16a34a', fontSize: 13 },
+  backLink: { alignItems: 'center', marginTop: 24 },
+  backLinkText: { color: '#16a34a', fontSize: 14 },
 });
+
+export default LoginScreen;
