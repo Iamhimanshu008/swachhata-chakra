@@ -1,18 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
   Image, StatusBar, Dimensions
 } from 'react-native';
+import LanguagePickerModal from '../components/LanguagePickerModal';
+import { useTranslation } from '../i18n';
 
 const { width, height } = Dimensions.get('window');
 
 const LandingScreen = ({ navigation }) => {
+  const [showLangPicker, setShowLangPicker] = useState(false);
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#052e16" />
       
       {/* Background gradient effect */}
       <View style={styles.bgTop} />
+      
+      <View style={styles.topBar}>
+        <TouchableOpacity
+          style={styles.langBtn}
+          onPress={() => setShowLangPicker(true)}
+        >
+          <Text style={styles.langBtnText}>🌐</Text>
+        </TouchableOpacity>
+      </View>
+
+      <LanguagePickerModal 
+        visible={showLangPicker}
+        onClose={() => setShowLangPicker(false)}
+      />
       
       {/* Logo + Title */}
       <View style={styles.heroSection}>
@@ -63,7 +82,7 @@ const LandingScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Login')}
           activeOpacity={0.85}
         >
-          <Text style={styles.primaryBtnText}>🚀 Get Started</Text>
+          <Text style={styles.primaryBtnText}>🚀 {t('get_started')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -72,12 +91,12 @@ const LandingScreen = ({ navigation }) => {
           activeOpacity={0.8}
         >
           <Text style={styles.secondaryBtnText}>
-            📸 Report a Bin (No Login Required)
+            📸 {t('report_bin')}
           </Text>
         </TouchableOpacity>
         
         <Text style={styles.footerNote}>
-          For authorized staff only • SmartWaste AI
+          {t('authorized_only')}
         </Text>
       </View>
     </View>
@@ -101,6 +120,16 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
   },
+  topBar: {
+    position: 'absolute', top: 50, right: 20,
+    zIndex: 10,
+  },
+  langBtn: {
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    justifyContent: 'center', alignItems: 'center',
+  },
+  langBtnText: { fontSize: 22 },
   heroSection: {
     alignItems: 'center',
     marginTop: 20,

@@ -11,9 +11,14 @@ import { getTodayRoute, updateLocation } from '../../api/collectorApi';
 import RouteCard from '../../components/RouteCard';
 import StatusBadge from '../../components/StatusBadge';
 import { COLORS } from '../../config';
+import AppHeader from '../../components/AppHeader';
+import SideDrawer from '../../components/SideDrawer';
+import { useTranslation } from '../../i18n';
 
 export default function HomeScreen({ navigation }) {
-    const { user, todayRoute, setTodayRoute, logout } = useStore();
+    const { user, todayRoute, setTodayRoute } = useStore();
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
@@ -41,27 +46,14 @@ export default function HomeScreen({ navigation }) {
 
     const onRefresh = () => { setRefreshing(true); loadRoute(); };
 
-    const doLogout = () => {
-        Alert.alert('Logout', 'Are you sure?', [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Logout', style: 'destructive', onPress: async () => { await logout(); } },
-        ]);
-    };
-
     const [isTracking, setIsTracking] = useState(false);
 
     useEffect(() => {
         let interval;
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission denied', 'Location access needed for live tracking');
-                return;
-            }
-            
+            if (status !== 'granted') return;
             setIsTracking(true);
-            
-            // Set up 10 second polling
             interval = setInterval(async () => {
                 try {
                     let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
@@ -70,22 +62,23 @@ export default function HomeScreen({ navigation }) {
                     console.log('Location update failed', e);
                 }
             }, 10000);
-            
-            // Do an immediate update
             try {
                 let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
                 await updateLocation(location.coords.latitude, location.coords.longitude);
             } catch (e) {}
         })();
-        
         return () => {
             if (interval) clearInterval(interval);
             setIsTracking(false);
         };
     }, []);
 
-    const getHour = () => new Date().getHours();
-    const greeting = getHour() < 12 ? 'Good morning' : getHour() < 17 ? 'Good afternoon' : 'Good evening';
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return t('good_morning') || 'Good morning,';
+        if (hour < 17) return t('good_afternoon') || 'Good afternoon,';
+        return t('good_evening') || 'Good evening,';
+    };
 
     // Count priority bins (use urgency from stops, else derive from fill_level)
     const pending = todayRoute?.stops?.filter(s => s.status !== 'collected') || [];
@@ -101,21 +94,28 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
+            <AppHeader
+                title={t('dashboard')}
+                onMenuPress={() => setDrawerOpen(true)}
+                notificationCount={2}
+                navigation={navigation}
+            />
+            <SideDrawer
+                visible={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                user={user}
+                navigation={navigation}
+            />
             <ScrollView
                 contentContainerStyle={styles.content}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.light} />}
             >
-                {/* Header */}
-                <View style={styles.headerRow}>
-                    <View style={styles.header}>
-                        <Text style={styles.greeting}>{greeting},</Text>
-                        <Text style={styles.name}>{user?.full_name?.split(' ')[0] || 'Collector'} 👋</Text>
-                        <Text style={styles.date}>{new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
-                        {isTracking && <Text style={{ fontSize: 13, color: '#16A34A', marginTop: 6, fontWeight: '700' }}>📍 Sharing location</Text>}
-                    </View>
-                    <TouchableOpacity onPress={doLogout} style={styles.logoutBtn}>
-                        <Text style={styles.logoutText}>🚪 Logout</Text>
-                    </TouchableOpacity>
+                {/* Greeting */}
+                <View style={styles.greetingSection}>
+                    <Text style={styles.greetingText}>{getGreeting()}</Text>
+                    <Text style={styles.userName}>
+                        {user?.full_name?.split(' ')[0] || 'User'} 👋
+                    </Text>
                 </View>
 
                 {loading ? (
@@ -123,7 +123,7 @@ export default function HomeScreen({ navigation }) {
                 ) : error === 'no_route' ? (
                     <View style={styles.emptyCard}>
                         <Text style={styles.emptyEmoji}>🎉</Text>
-                        <Text style={styles.emptyTitle}>No route assigned today</Text>
+                        <Text style={styles.emptyTitle}>{t('no_route_today')}</Text>
                         <Text style={styles.emptyText}>Check back later or contact your zone manager.</Text>
                     </View>
                 ) : todayRoute ? (
@@ -139,31 +139,31 @@ export default function HomeScreen({ navigation }) {
 
                         {/* Priority Breakdown */}
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Priority Breakdown</Text>
+                            <Text style={styles.sectionTitle}>{t('priority_breakdown')}</Text>
                             <View style={styles.priorityRow}>
                                 <View style={[styles.priorityChip, { backgroundColor: '#FEE2E2' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#EF4444' }]} />
                                     <Text style={[styles.priorityCount, { color: '#DC2626' }]}>{urgentCount}</Text>
-                                    <Text style={styles.priorityLabel}>Urgent</Text>
+                                    <Text style={styles.priorityLabel}>{t('urgent')}</Text>
                                 </View>
                                 <View style={[styles.priorityChip, { backgroundColor: '#FFEDD5' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#F97316' }]} />
                                     <Text style={[styles.priorityCount, { color: '#EA580C' }]}>{highCount}</Text>
-                                    <Text style={styles.priorityLabel}>High</Text>
+                                    <Text style={styles.priorityLabel}>{t('high')}</Text>
                                 </View>
                                 <View style={[styles.priorityChip, { backgroundColor: '#DCFCE7' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#22C55E' }]} />
                                     <Text style={[styles.priorityCount, { color: '#16A34A' }]}>{normalCount}</Text>
-                                    <Text style={styles.priorityLabel}>Normal</Text>
+                                    <Text style={styles.priorityLabel}>{t('normal')}</Text>
                                 </View>
                             </View>
                         </View>
 
                         {/* Progress */}
                         <View style={styles.card}>
-                            <Text style={styles.cardLabel}>Today's Progress</Text>
+                            <Text style={styles.cardLabel}>{t('progress')}</Text>
                             <View style={styles.progressRow}>
-                                <Text style={styles.progressText}>{todayRoute.collected_stops} / {todayRoute.total_stops} bins collected</Text>
+                                <Text style={styles.progressText}>{todayRoute.collected_stops} / {todayRoute.total_stops} {t('bins_collected_today')}</Text>
                                 <StatusBadge status={todayRoute.collected_stops === todayRoute.total_stops ? 'completed' : 'in_progress'} />
                             </View>
                             <View style={styles.progressBar}>
@@ -182,13 +182,9 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: COLORS.bg },
     content: { padding: 20, paddingBottom: 40 },
-    headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 },
-    header: { flex: 1 },
-    logoutBtn: { paddingVertical: 8, paddingHorizontal: 12 },
-    logoutText: { fontSize: 14, color: COLORS.mid, fontWeight: '600' },
-    greeting: { fontSize: 16, color: '#666', fontWeight: '500' },
-    name: { fontSize: 28, fontWeight: '800', color: COLORS.dark, marginTop: 2 },
-    date: { fontSize: 13, color: '#888', marginTop: 4 },
+    greetingSection: { marginBottom: 16 },
+    greetingText: { fontSize: 16, color: '#6b7280' },
+    userName: { fontSize: 28, fontWeight: '800', color: '#14532d' },
     emptyCard: { backgroundColor: COLORS.white, borderRadius: 20, padding: 32, alignItems: 'center', marginTop: 20 },
     emptyEmoji: { fontSize: 48, marginBottom: 12 },
     emptyTitle: { fontSize: 18, fontWeight: '700', color: COLORS.dark, textAlign: 'center', marginBottom: 8 },
