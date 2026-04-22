@@ -16,7 +16,7 @@ import SideDrawer from '../../components/SideDrawer';
 import { useTranslation } from '../../i18n';
 
 export default function HomeScreen({ navigation }) {
-    const { user, todayRoute, setTodayRoute } = useStore();
+    const { user, todayRoute, setTodayRoute, unreadCount } = useStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
@@ -97,7 +97,7 @@ export default function HomeScreen({ navigation }) {
             <AppHeader
                 title={t('dashboard')}
                 onMenuPress={() => setDrawerOpen(true)}
-                notificationCount={2}
+                notificationCount={unreadCount}
                 navigation={navigation}
             />
             <SideDrawer
