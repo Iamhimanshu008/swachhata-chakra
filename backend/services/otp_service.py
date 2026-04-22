@@ -67,7 +67,7 @@ def send_otp_sms(phone_number: str, otp: str) -> bool:
     
     url = "https://www.fast2sms.com/dev/bulkV2"
     payload = {
-        "route": "q",
+        "route": "v3",
         "message": f"Your SmartWaste AI OTP is {otp}. Valid for 10 minutes. Do not share.",
         "language": "english", 
         "flash": 0,
