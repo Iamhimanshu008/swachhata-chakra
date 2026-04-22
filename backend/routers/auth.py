@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -36,18 +37,16 @@ def login(
     payload: LoginRequest,
     db: Session = Depends(get_db),
 ):
-    """Authenticate user and return JWT token."""
-    user = db.query(User).filter(User.email == payload.email).first()
+    """Authenticate user and return JWT token. All roles allowed."""
+    # Case-insensitive, whitespace-stripped email lookup
+    email_clean = payload.email.strip().lower()
+    user = db.query(User).filter(
+        func.lower(User.email) == email_clean
+    ).first()
     if not user or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    if payload.role and user.role != payload.role:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Role mismatch. Required: {payload.role}, Found: {user.role}",
             headers={"WWW-Authenticate": "Bearer"},
         )
     if not user.is_active:
