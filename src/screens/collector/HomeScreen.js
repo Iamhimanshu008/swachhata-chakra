@@ -16,7 +16,7 @@ import SideDrawer from '../../components/SideDrawer';
 import { useTranslation } from '../../i18n';
 
 export default function HomeScreen({ navigation }) {
-    const { user, todayRoute, setTodayRoute, logout } = useStore();
+    const { user, todayRoute, setTodayRoute } = useStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);

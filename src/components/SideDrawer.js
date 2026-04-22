@@ -4,11 +4,13 @@ import {
   Modal, Animated, Dimensions, ScrollView
 } from 'react-native';
 import { useTranslation } from '../i18n';
+import useStore from '../store';
 
 const { width } = Dimensions.get('window');
 
 const SideDrawer = ({ visible, onClose, user, navigation }) => {
   const { t } = useTranslation();
+  const logout = useStore(state => state.logout);
 
   const menuItems = [
     { icon: '🏠', key: 'dashboard', screen: 'Home' },
@@ -79,11 +81,10 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
           {/* Logout */}
           <TouchableOpacity
             style={styles.logoutBtn}
-            onPress={() => {
+          onPress={() => {
               onClose();
-              // Call logout from store
-              const { useStore } = require('../store');
-              useStore.getState().logout();
+              // Delay logout to let drawer animation finish before nav state changes
+              setTimeout(() => logout(), 300);
             }}
           >
             <Text style={styles.logoutIcon}>🚪</Text>
