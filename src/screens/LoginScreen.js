@@ -7,6 +7,7 @@ import {
 import { login as loginApi, getMe } from '../api/authApi';
 import client from '../api/client';
 import useStore from '../store';
+import { useLanguageStore } from '../i18n';
 
 const LoginScreen = ({ navigation }) => {
   const [mode, setMode] = useState('email'); // 'email' | 'phone'
@@ -25,6 +26,7 @@ const LoginScreen = ({ navigation }) => {
   const [otpLoading, setOtpLoading] = useState(false);
 
   const { login } = useStore();
+  const { t } = useLanguageStore();
 
   // Email login
   const handleEmailLogin = async () => {
@@ -115,7 +117,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.header}>
           <Text style={styles.logo}>♻️</Text>
           <Text style={styles.title}>SmartWaste AI</Text>
-          <Text style={styles.subtitle}>Staff Login</Text>
+          <Text style={styles.subtitle}>{t('staff_login')}</Text>
         </View>
 
         {/* Mode Toggle */}
@@ -136,14 +138,14 @@ const LoginScreen = ({ navigation }) => {
             <Text style={[
               styles.toggleText,
               mode === 'phone' && styles.toggleTextActive
-            ]}>📱 Phone OTP</Text>
+            ]}>📱 {t('phone_otp')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Email Mode */}
         {mode === 'email' && (
           <View style={styles.formSection}>
-            <Text style={styles.label}>Email Address</Text>
+            <Text style={styles.label}>{t('email')}</Text>
             <TextInput
               style={styles.input}
               placeholder="staff@smartwaste.ai"
@@ -153,7 +155,7 @@ const LoginScreen = ({ navigation }) => {
               autoCapitalize="none"
               autoCorrect={false}
             />
-            <Text style={styles.label}>Password</Text>
+            <Text style={styles.label}>{t('password')}</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter password"
@@ -168,7 +170,7 @@ const LoginScreen = ({ navigation }) => {
             >
               {loading
                 ? <ActivityIndicator color="#fff" />
-                : <Text style={styles.loginBtnText}>Login →</Text>
+                : <Text style={styles.loginBtnText}>{t('login')}</Text>
               }
             </TouchableOpacity>
           </View>
@@ -200,7 +202,7 @@ const LoginScreen = ({ navigation }) => {
               >
                 {otpLoading
                   ? <ActivityIndicator color="#16a34a" />
-                  : <Text style={styles.otpBtnText}>Send OTP</Text>
+                  : <Text style={styles.otpBtnText}>{t('send_otp')}</Text>
                 }
               </TouchableOpacity>
             ) : (
@@ -240,7 +242,7 @@ const LoginScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Landing')}
           style={styles.backLink}
         >
-          <Text style={styles.backLinkText}>← Back</Text>
+          <Text style={styles.backLinkText}>{t('back')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

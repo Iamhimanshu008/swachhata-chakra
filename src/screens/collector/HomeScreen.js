@@ -11,9 +11,14 @@ import { getTodayRoute, updateLocation } from '../../api/collectorApi';
 import RouteCard from '../../components/RouteCard';
 import StatusBadge from '../../components/StatusBadge';
 import { COLORS } from '../../config';
+import AppHeader from '../../components/AppHeader';
+import SideDrawer from '../../components/SideDrawer';
+import { useLanguageStore } from '../../i18n';
 
 export default function HomeScreen({ navigation }) {
     const { user, todayRoute, setTodayRoute, logout } = useStore();
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const { t } = useLanguageStore();
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
@@ -101,6 +106,17 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
+            <AppHeader
+                title={t('dashboard')}
+                onMenuPress={() => setDrawerOpen(true)}
+                notificationCount={2}
+            />
+            <SideDrawer
+                visible={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                user={user}
+                navigation={navigation}
+            />
             <ScrollView
                 contentContainerStyle={styles.content}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.light} />}
