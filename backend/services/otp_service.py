@@ -66,19 +66,17 @@ def send_otp_sms(phone_number: str, otp: str) -> bool:
         digits = digits[2:]
     
     url = "https://www.fast2sms.com/dev/bulkV2"
-    payload = {
-        "route": "v3",
+    params = {
+        "authorization": api_key,
+        "route": "q",
         "message": f"Your SmartWaste AI OTP is {otp}. Valid for 10 minutes. Do not share.",
-        "language": "english", 
+        "language": "english",
         "flash": 0,
         "numbers": digits,
     }
-    headers = {
-        "authorization": api_key,
-    }
     
     try:
-        response = requests.get(url, params=payload, headers=headers, timeout=10)
+        response = requests.get(url, params=params, timeout=10)
         result = response.json()
         print(f"Fast2SMS response: {result}")
         if result.get("return") == True:
