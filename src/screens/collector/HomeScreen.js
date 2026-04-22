@@ -46,27 +46,14 @@ export default function HomeScreen({ navigation }) {
 
     const onRefresh = () => { setRefreshing(true); loadRoute(); };
 
-    const doLogout = () => {
-        Alert.alert('Logout', 'Are you sure?', [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Logout', style: 'destructive', onPress: async () => { await logout(); } },
-        ]);
-    };
-
     const [isTracking, setIsTracking] = useState(false);
 
     useEffect(() => {
         let interval;
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission denied', 'Location access needed for live tracking');
-                return;
-            }
-            
+            if (status !== 'granted') return;
             setIsTracking(true);
-            
-            // Set up 10 second polling
             interval = setInterval(async () => {
                 try {
                     let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
@@ -75,22 +62,23 @@ export default function HomeScreen({ navigation }) {
                     console.log('Location update failed', e);
                 }
             }, 10000);
-            
-            // Do an immediate update
             try {
                 let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
                 await updateLocation(location.coords.latitude, location.coords.longitude);
             } catch (e) {}
         })();
-        
         return () => {
             if (interval) clearInterval(interval);
             setIsTracking(false);
         };
     }, []);
 
-    const getHour = () => new Date().getHours();
-    const greeting = getHour() < 12 ? 'Good morning' : getHour() < 17 ? 'Good afternoon' : 'Good evening';
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return t('good_morning') || 'Good morning,';
+        if (hour < 17) return t('good_afternoon') || 'Good afternoon,';
+        return t('good_evening') || 'Good evening,';
+    };
 
     // Count priority bins (use urgency from stops, else derive from fill_level)
     const pending = todayRoute?.stops?.filter(s => s.status !== 'collected') || [];
@@ -121,17 +109,12 @@ export default function HomeScreen({ navigation }) {
                 contentContainerStyle={styles.content}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.light} />}
             >
-                {/* Header */}
-                <View style={styles.headerRow}>
-                    <View style={styles.header}>
-                        <Text style={styles.greeting}>{greeting},</Text>
-                        <Text style={styles.name}>{user?.full_name?.split(' ')[0] || 'Collector'} 👋</Text>
-                        <Text style={styles.date}>{new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
-                        {isTracking && <Text style={{ fontSize: 13, color: '#16A34A', marginTop: 6, fontWeight: '700' }}>📍 Sharing location</Text>}
-                    </View>
-                    <TouchableOpacity onPress={doLogout} style={styles.logoutBtn}>
-                        <Text style={styles.logoutText}>🚪 Logout</Text>
-                    </TouchableOpacity>
+                {/* Greeting */}
+                <View style={styles.greetingSection}>
+                    <Text style={styles.greetingText}>{getGreeting()}</Text>
+                    <Text style={styles.userName}>
+                        {user?.full_name?.split(' ')[0] || 'User'} 👋
+                    </Text>
                 </View>
 
                 {loading ? (
@@ -198,13 +181,9 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: COLORS.bg },
     content: { padding: 20, paddingBottom: 40 },
-    headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 },
-    header: { flex: 1 },
-    logoutBtn: { paddingVertical: 8, paddingHorizontal: 12 },
-    logoutText: { fontSize: 14, color: COLORS.mid, fontWeight: '600' },
-    greeting: { fontSize: 16, color: '#666', fontWeight: '500' },
-    name: { fontSize: 28, fontWeight: '800', color: COLORS.dark, marginTop: 2 },
-    date: { fontSize: 13, color: '#888', marginTop: 4 },
+    greetingSection: { marginBottom: 16 },
+    greetingText: { fontSize: 16, color: '#6b7280' },
+    userName: { fontSize: 28, fontWeight: '800', color: '#14532d' },
     emptyCard: { backgroundColor: COLORS.white, borderRadius: 20, padding: 32, alignItems: 'center', marginTop: 20 },
     emptyEmoji: { fontSize: 48, marginBottom: 12 },
     emptyTitle: { fontSize: 18, fontWeight: '700', color: COLORS.dark, textAlign: 'center', marginBottom: 8 },

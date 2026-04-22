@@ -40,6 +40,11 @@ export const translations = {
     completed: "Completed",
     notifications: "Notifications",
     no_notifications: "No new notifications",
+
+    // Greetings
+    good_morning: "Good morning,",
+    good_afternoon: "Good afternoon,",
+    good_evening: "Good evening,",
     
     // Map & Route
     optimized_route: "Optimized Route",
@@ -122,6 +127,11 @@ export const translations = {
     completed: "पूर्ण",
     notifications: "सूचनाएं",
     no_notifications: "कोई नई सूचना नहीं",
+
+    // Greetings
+    good_morning: "सुप्रभात,",
+    good_afternoon: "नमस्कार,",
+    good_evening: "शुभ संध्या,",
     
     // Map & Route
     optimized_route: "अनुकूलित रूट",
@@ -204,6 +214,11 @@ export const translations = {
     completed: "हो गे",
     notifications: "सूचना",
     no_notifications: "कोनो नवा सूचना नइ हे",
+
+    // Greetings
+    good_morning: "राम राम,",
+    good_afternoon: "जय जोहार,",
+    good_evening: "जय जोहार,",
     
     // Map & Route
     optimized_route: "बढ़िया रस्ता",
