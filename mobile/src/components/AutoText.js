@@ -53,12 +53,17 @@ const AutoText = ({ children, style, ...props }) => {
       return;
     }
 
-    // For Hindi — check apiCache in store first
-    const { apiCache } = useLanguageStore.getState();
-    if (apiCache?.hi) {
-      const enKeys = Object.keys(translations.en);
-      const match = enKeys.find(k => translations.en[k] === children);
-      if (match && apiCache.hi[match]) {
+    // For Hindi — check JSON translations first, then apiCache
+    const enKeys = Object.keys(translations.en);
+    const match = enKeys.find(k => translations.en[k] === children);
+
+    if (lang === 'hi') {
+      if (match && translations.hi[match]) {
+        setTranslated(translations.hi[match]);
+        return;
+      }
+      const { apiCache } = useLanguageStore.getState();
+      if (match && apiCache?.hi && apiCache.hi[match]) {
         setTranslated(apiCache.hi[match]);
         return;
       }
