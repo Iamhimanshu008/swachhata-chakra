@@ -43,20 +43,26 @@ export const translateSingle = async (text, targetLang) => {
   return null; // Return null = show original text
 };
 
-export const translateBatch = async (texts, targetLang) => {
+export const translateBatch = async (enTranslations, targetLang) => {
   if (targetLang !== 'hi') return null;
-
+  
   const cacheKey = `sw_trans_v1_${targetLang}`;
+  
+  // Check cache
   try {
     const cached = await AsyncStorage.getItem(cacheKey);
     if (cached) {
       const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < 30 * 24 * 60 * 60 * 1000) return data;
+      if (Date.now() - timestamp < 30 * 24 * 60 * 60 * 1000) {
+        console.log('translateBatch: returning cached', Object.keys(data).length, 'keys');
+        return data;
+      }
     }
   } catch (e) {}
 
-  const keys = Object.keys(texts);
-  const values = Object.values(texts);
+  // enTranslations is { key: 'English text' }
+  const keys = Object.keys(enTranslations);
+  const values = Object.values(enTranslations);
   const translated = {};
   const BATCH_SIZE = 5;
 
@@ -81,6 +87,8 @@ export const translateBatch = async (texts, targetLang) => {
       cacheKey,
       JSON.stringify({ data: translated, timestamp: Date.now() })
     );
+    console.log('translateBatch: cached', Object.keys(translated).length, 'translations');
   }
+
   return Object.keys(translated).length > 0 ? translated : null;
 };
