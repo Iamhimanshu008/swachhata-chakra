@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import AutoText from '../../components/AutoText';
 import {
     View, Text, ScrollView, TouchableOpacity,
     StyleSheet, RefreshControl, ActivityIndicator, Alert,
@@ -16,7 +17,7 @@ import SideDrawer from '../../components/SideDrawer';
 import { useTranslation } from '../../i18n';
 
 export default function HomeScreen({ navigation }) {
-    const { user, todayRoute, setTodayRoute } = useStore();
+    const { user, todayRoute, setTodayRoute, unreadCount } = useStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
@@ -97,7 +98,7 @@ export default function HomeScreen({ navigation }) {
             <AppHeader
                 title={t('dashboard')}
                 onMenuPress={() => setDrawerOpen(true)}
-                notificationCount={2}
+                notificationCount={unreadCount}
                 navigation={navigation}
             />
             <SideDrawer
@@ -110,8 +111,8 @@ export default function HomeScreen({ navigation }) {
                 contentContainerStyle={styles.content}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.light} />}
             >
-                {/* Greeting */}
                 <View style={styles.greetingSection}>
+                    <AutoText style={{color:'red', fontSize:12}}>Test translation</AutoText>
                     <Text style={styles.greetingText}>{getGreeting()}</Text>
                     <Text style={styles.userName}>
                         {user?.full_name?.split(' ')[0] || 'User'} 👋
@@ -124,7 +125,7 @@ export default function HomeScreen({ navigation }) {
                     <View style={styles.emptyCard}>
                         <Text style={styles.emptyEmoji}>🎉</Text>
                         <Text style={styles.emptyTitle}>{t('no_route_today')}</Text>
-                        <Text style={styles.emptyText}>Check back later or contact your zone manager.</Text>
+                        <AutoText style={styles.emptyText}>Check back later or contact your zone manager.</AutoText>
                     </View>
                 ) : todayRoute ? (
                     <>
