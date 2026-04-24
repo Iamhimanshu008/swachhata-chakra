@@ -1,4 +1,5 @@
 import { translations } from './translations';
+import { translateAllKeys } from './translationService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
@@ -7,10 +8,36 @@ export const useLanguageStore = create(
   persist(
     (set, get) => ({
       lang: 'en',
-      setLang: (lang) => set({ lang }),
+      apiCache: {},       // { hi: { key: value } }
+      isLoading: false,
+
+      setLang: async (lang) => {
+        set({ lang });
+        if (lang === 'en' || lang === 'cg') return;
+        // CG uses JSON only — no API
+
+        // Already cached in store
+        if (get().apiCache?.[lang]) return;
+
+        // Fetch Hindi from MyMemory
+        set({ isLoading: true });
+        try {
+          const result = await translateAllKeys(translations.en, lang);
+          if (result) {
+            set(state => ({
+              apiCache: { ...state.apiCache, [lang]: result },
+              isLoading: false,
+            }));
+          } else {
+            set({ isLoading: false });
+          }
+        } catch (e) {
+          set({ isLoading: false });
+        }
+      },
     }),
     {
-      name: 'smartwaste-lang',
+      name: 'sw-lang-v2',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )
@@ -19,9 +46,18 @@ export const useLanguageStore = create(
 // Reactive translation hook — re-renders when lang changes
 export const useTranslation = () => {
   const lang = useLanguageStore(state => state.lang);
-  return {
-    t: (key) => translations[lang]?.[key] || translations['en']?.[key] || key,
-    lang,
-    setLang: useLanguageStore.getState().setLang,
+  const apiCache = useLanguageStore(state => state.apiCache);
+  const isLoading = useLanguageStore(state => state.isLoading);
+  const setLang = useLanguageStore(state => state.setLang);
+
+  const t = (key) => {
+    // Hindi: try API cache first, then JSON fallback
+    if (lang === 'hi' && apiCache?.hi?.[key]) {
+      return apiCache.hi[key];
+    }
+    // CG and fallback: always use JSON
+    return translations[lang]?.[key] || translations['en']?.[key] || key;
   };
+
+  return { t, lang, setLang, isLoading };
 };

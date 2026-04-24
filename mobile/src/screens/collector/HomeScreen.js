@@ -115,7 +115,7 @@ export default function HomeScreen({ navigation }) {
                     <AutoText style={{color:'red', fontSize:12}}>Test translation</AutoText>
                     <Text style={styles.greetingText}>{getGreeting()}</Text>
                     <Text style={styles.userName}>
-                        {user?.full_name?.split(' ')[0] || 'User'} 👋
+                        {user?.full_name?.split(' ')[0] || 'User'} 
                     </Text>
                 </View>
 
