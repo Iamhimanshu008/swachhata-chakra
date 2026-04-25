@@ -18,6 +18,14 @@ const StatCard = ({ emoji, label, value, accent, flex = 1 }) => (
     </View>
 );
 
+const ImpactCard = ({ emoji, label, value, flex = 1 }) => (
+    <View style={[styles.impactCard, { flex }]}>
+        <Text style={styles.cardEmoji}>{emoji}</Text>
+        <Text style={styles.impactCardValue}>{value}</Text>
+        <AutoText style={styles.impactCardLabel}>{label}</AutoText>
+    </View>
+);
+
 export default function StatsScreen() {
     const { t } = useTranslation();
     const [stats, setStats] = useState(null);
@@ -116,10 +124,39 @@ export default function StatsScreen() {
                     />
                 </View>
 
+                {/* ENVIRONMENTAL IMPACT */}
+                <AutoText style={styles.sectionTitle}>ENVIRONMENTAL IMPACT</AutoText>
+                <View style={styles.row}>
+                    <ImpactCard
+                        emoji="🌳"
+                        label="Trees Saved"
+                        value={((stats?.total_kg_all_time ?? 0) * 0.017).toFixed(1)}
+                    />
+                    <View style={styles.gap} />
+                    <ImpactCard
+                        emoji="🌍"
+                        label="kg CO2 Reduced"
+                        value={((stats?.total_kg_all_time ?? 0) * 2.5).toFixed(1)}
+                    />
+                </View>
+                <View style={styles.row}>
+                    <ImpactCard
+                        emoji="💧"
+                        label="L Water Saved"
+                        value={((stats?.total_kg_all_time ?? 0) * 6).toFixed(0)}
+                    />
+                    <View style={styles.gap} />
+                    <ImpactCard
+                        emoji="♻️"
+                        label="kg Plastic Diverted"
+                        value={((stats?.total_kg_all_time ?? 0) * 0.3).toFixed(1)}
+                    />
+                </View>
+
                 {/* Footer */}
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>
-                        <AutoText>Every bin collected makes Raipur cleaner</AutoText> 🌱
+                        <AutoText>Aapka yogdan Raipur ko swachh bana raha hai!</AutoText> 🙏
                     </Text>
                 </View>
             </ScrollView>
@@ -156,6 +193,19 @@ const styles = StyleSheet.create({
     cardEmoji: { fontSize: 28, marginBottom: 8 },
     cardValue: { fontSize: 28, fontWeight: '800', marginBottom: 4 },
     cardLabel: { fontSize: 12, color: '#777', fontWeight: '500', textAlign: 'center' },
+
+    impactCard: {
+        backgroundColor: '#16a34a',
+        borderRadius: 20,
+        padding: 20,
+        alignItems: 'center',
+        shadowColor: '#16a34a',
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 3,
+    },
+    impactCardValue: { fontSize: 24, fontWeight: '800', marginBottom: 4, color: '#ffffff' },
+    impactCardLabel: { fontSize: 12, color: '#e8f5e9', fontWeight: '600', textAlign: 'center' },
 
     footer: {
         marginTop: 24,
