@@ -6,6 +6,7 @@ import BinDetailScreen from '../screens/collector/BinDetailScreen';
 import HistoryScreen from '../screens/collector/HistoryScreen';
 import StatsScreen from '../screens/collector/StatsScreen';
 import SafetyChecklistScreen from '../screens/collector/SafetyChecklistScreen';
+import NewsFeedScreen from '../screens/public/NewsFeedScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import { COLORS } from '../config';
 
@@ -27,6 +28,7 @@ function HomeStackNavigator() {
             <HomeStack.Screen name="HomeMain" component={HomeScreen} />
             <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
             <HomeStack.Screen name="SafetyChecklist" component={SafetyChecklistScreen} />
+            <HomeStack.Screen name="NewsFeed" component={NewsFeedScreen} />
         </HomeStack.Navigator>
     );
 }

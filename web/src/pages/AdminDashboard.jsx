@@ -236,6 +236,41 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
+                {/* Environmental Impact Section */}
+                <div className="mt-8 mb-6">
+                    <h2 className="text-lg font-bold text-gray-900 font-display mb-4">Environmental Impact</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
+                            <span className="text-3xl">🌳</span>
+                            <div>
+                                <p className="text-sm font-medium text-emerald-800">Trees Saved</p>
+                                <p className="text-2xl font-bold text-emerald-900">{((stats?.total_plastic_kg || 0) * 0.017).toFixed(1)}</p>
+                            </div>
+                        </div>
+                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
+                            <span className="text-3xl">🌍</span>
+                            <div>
+                                <p className="text-sm font-medium text-emerald-800">CO₂ Reduced</p>
+                                <p className="text-2xl font-bold text-emerald-900">{((stats?.total_plastic_kg || 0) * 2.5).toFixed(1)} <span className="text-base font-medium">kg</span></p>
+                            </div>
+                        </div>
+                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
+                            <span className="text-3xl">💧</span>
+                            <div>
+                                <p className="text-sm font-medium text-emerald-800">Water Saved</p>
+                                <p className="text-2xl font-bold text-emerald-900">{((stats?.total_plastic_kg || 0) * 6).toFixed(0)} <span className="text-base font-medium">L</span></p>
+                            </div>
+                        </div>
+                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
+                            <span className="text-3xl">♻️</span>
+                            <div>
+                                <p className="text-sm font-medium text-emerald-800">Waste Diverted</p>
+                                <p className="text-2xl font-bold text-emerald-900">{(stats?.total_plastic_kg || 0).toFixed(1)} <span className="text-base font-medium">kg</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Before/After Impact Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <ImpactCard label="Plastic Diverted" before="0 kg" after={`${stats?.total_plastic_kg || 0} kg`} trend="up" />
