@@ -1,70 +1,84 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text } from 'react-native';
 import { useLanguageStore } from '../i18n';
-import { translateSingle } from '../i18n/translationService';
 import { translations } from '../i18n/translations';
 
-const AutoText = ({ children, style, numberOfLines, ...props }) => {
+// Simple in-memory cache shared across all AutoText instances
+const translationMemCache = {};
+
+const fetchTranslation = async (text, lang) => {
+  if (!text || lang === 'en') return text;
+
+  const cacheKey = `${lang}:${text}`;
+  if (translationMemCache[cacheKey]) return translationMemCache[cacheKey];
+
+  if (lang === 'hi') {
+    try {
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|hi`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+      const data = await res.json();
+      if (data.responseStatus === 200) {
+        const result = data.responseData.translatedText;
+        translationMemCache[cacheKey] = result;
+        return result;
+      }
+    } catch (e) {
+      console.log('AutoText API error:', e.message);
+    }
+  }
+
+  return text; // Fallback to original
+};
+
+const AutoText = ({ children, style, ...props }) => {
   const lang = useLanguageStore(state => state.lang);
-  const apiCache = useLanguageStore(state => state.apiCache);
-  const [displayText, setDisplayText] = useState(children);
-  const isMounted = useRef(true);
+  const [translated, setTranslated] = useState(children);
 
   useEffect(() => {
-    isMounted.current = true;
-    return () => { isMounted.current = false; };
-  }, []);
+    if (typeof children !== 'string' || !children.trim()) return;
 
-  useEffect(() => {
-    if (!children || typeof children !== 'string') {
-      setDisplayText(children);
-      return;
-    }
-
+    // For English — show original immediately
     if (lang === 'en') {
-      setDisplayText(children);
+      setTranslated(children);
       return;
     }
 
+    // For Chhattisgarhi — use JSON lookup
     if (lang === 'cg') {
-      // Check if translation exists in CG JSON by value lookup
-      const cgKeys = Object.keys(translations.en || {});
-      const matchKey = cgKeys.find(k => translations.en[k] === children);
-      if (matchKey && translations.cg?.[matchKey]) {
-        setDisplayText(translations.cg[matchKey]);
-      } else {
-        setDisplayText(children);
+      const enKeys = Object.keys(translations.en);
+      const match = enKeys.find(k => translations.en[k] === children);
+      if (match && translations.cg[match]) {
+        setTranslated(translations.cg[match]);
       }
       return;
     }
 
-    // Hindi: check apiCache first
-    if (lang === 'hi' && apiCache?.hi) {
-      const hiKeys = Object.keys(translations.en || {});
-      const matchKey = hiKeys.find(k => translations.en[k] === children);
-      if (matchKey && apiCache.hi[matchKey]) {
-        setDisplayText(apiCache.hi[matchKey]);
+    // For Hindi — check JSON translations first, then apiCache
+    const enKeys = Object.keys(translations.en);
+    const match = enKeys.find(k => translations.en[k] === children);
+
+    if (lang === 'hi') {
+      if (match && translations.hi[match]) {
+        setTranslated(translations.hi[match]);
+        return;
+      }
+      const { apiCache } = useLanguageStore.getState();
+      if (match && apiCache?.hi && apiCache.hi[match]) {
+        setTranslated(apiCache.hi[match]);
         return;
       }
     }
 
-    // Translate on the fly via API
-    setDisplayText(children); // Show original immediately
-    const translate = async () => {
-      const result = await translateSingle(children, lang);
-      if (isMounted.current && result) {
-        setDisplayText(result);
-      }
-    };
-    translate();
+    // Fetch from API
+    let cancelled = false;
+    fetchTranslation(children, lang).then(result => {
+      if (!cancelled && result) setTranslated(result);
+    });
+    return () => { cancelled = true; };
 
-  }, [children, lang, apiCache]);
+  }, [children, lang]);
 
-  return (
-    <Text style={style} numberOfLines={numberOfLines} {...props}>
-      {displayText}
-    </Text>
-  );
+  return <Text style={style} {...props}>{translated}</Text>;
 };
 
 export default AutoText;

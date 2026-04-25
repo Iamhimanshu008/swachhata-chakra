@@ -111,11 +111,10 @@ export default function HomeScreen({ navigation }) {
                 contentContainerStyle={styles.content}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.light} />}
             >
-                {/* Greeting */}
                 <View style={styles.greetingSection}>
                     <Text style={styles.greetingText}>{getGreeting()}</Text>
                     <Text style={styles.userName}>
-                        {user?.full_name?.split(' ')[0] || 'User'} 👋
+                        {user?.full_name?.split(' ')[0] || 'User'} 
                     </Text>
                 </View>
 

@@ -1,5 +1,5 @@
 import { translations } from './translations';
-import { translateAllKeys } from './translationService';
+import { translateBatch } from './translationService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
@@ -22,7 +22,7 @@ export const useLanguageStore = create(
         // Fetch Hindi from MyMemory
         set({ isLoading: true });
         try {
-          const result = await translateAllKeys(translations.en, lang);
+          const result = await translateBatch(translations.en, lang);
           if (result) {
             set(state => ({
               apiCache: { ...state.apiCache, [lang]: result },

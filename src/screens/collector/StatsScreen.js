@@ -14,7 +14,7 @@ const StatCard = ({ emoji, label, value, accent, flex = 1 }) => (
     <View style={[styles.card, { flex }]}>
         <Text style={styles.cardEmoji}>{emoji}</Text>
         <Text style={[styles.cardValue, { color: accent }]}>{value}</Text>
-        <Text style={styles.cardLabel}>{label}</Text>
+        <AutoText style={styles.cardLabel}>{label}</AutoText>
     </View>
 );
 
@@ -119,7 +119,7 @@ export default function StatsScreen() {
                 {/* Footer */}
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>
-                        Every bin collected makes Raipur cleaner 🌱
+                        <AutoText>Every bin collected makes Raipur cleaner</AutoText> 🌱
                     </Text>
                 </View>
             </ScrollView>
