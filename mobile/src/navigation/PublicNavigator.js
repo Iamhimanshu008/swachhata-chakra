@@ -4,6 +4,7 @@ import PublicMapScreen from '../screens/public/MapScreen';
 import ReportScreen from '../screens/public/ReportScreen';
 import StatusScreen from '../screens/public/StatusScreen';
 import RecyclersScreen from '../screens/public/RecyclersScreen';
+import SegregationGuideScreen from '../screens/public/SegregationGuideScreen';
 import { COLORS } from '../config';
 
 const Stack = createNativeStackNavigator();
@@ -47,6 +48,11 @@ export default function PublicNavigator() {
                 name="Recyclers"
                 component={RecyclersScreen}
                 options={{ title: 'Nearby Recyclers' }}
+            />
+            <Stack.Screen
+                name="SegregationGuide"
+                component={SegregationGuideScreen}
+                options={{ title: 'Segregation Guide' }}
             />
         </Stack.Navigator>
     );
