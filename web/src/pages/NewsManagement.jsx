@@ -24,7 +24,7 @@ export default function NewsManagement() {
         summary: '',
         emoji: '📰',
         tag: 'Update',
-        tag_color: '#6b7280',
+        tag_color: '#6b7280ff',
         is_published: true
     });
 
