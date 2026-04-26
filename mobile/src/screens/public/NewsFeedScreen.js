@@ -1,44 +1,49 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS } from '../../config';
-
-const newsItems = [
-  {
-    id: 1,
-    title: "Nava Raipur mein Smart Waste System launch",
-    summary: "SmartWaste AI ne Nava Raipur mein waste collection 40% efficient banaya",
-    date: "24 Apr 2026",
-    emoji: "🏆",
-    tag: "Success Story"
-  },
-  {
-    id: 2,
-    title: "Plastic Waste: India ka target 2025 tak",
-    summary: "Sarkar ne single-use plastic band karne ke liye nayi guidelines jaari ki",
-    date: "20 Apr 2026",
-    emoji: "🌍",
-    tag: "Policy"
-  },
-  {
-    id: 3,
-    title: "SHG mahilaon ne kamaaye 50,000 rupaye",
-    summary: "Chhattisgarh ki SHG groups ne waste collection se monthly income badhayi",
-    date: "15 Apr 2026",
-    emoji: "💪",
-    tag: "Community"
-  },
-  {
-    id: 4,
-    title: "Compost se kisan khush",
-    summary: "Wet waste se bana compost kisan seedha le sakte hain SmartWaste centers se",
-    date: "10 Apr 2026",
-    emoji: "🌱",
-    tag: "Innovation"
-  },
-];
+import { getNews } from '../../api/newsApi';
 
 export default function NewsFeedScreen({ navigation }) {
+    const [news, setNews] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const staticFallback = [
+      { id: 1, title: 'SmartWaste AI launch in Nava Raipur', 
+        summary: 'SmartWaste AI ne waste collection 40% efficient banaya',
+        emoji: '🏆', tag: 'Success Story', 
+        tag_color: '#16a34a', created_at: new Date().toISOString() },
+    ];
+
+    useEffect(() => {
+      const fetchNews = async () => {
+        try {
+          const data = await getNews();
+          setNews(data.length > 0 ? data : staticFallback);
+        } catch (err) {
+          setNews(staticFallback);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchNews();
+    }, []);
+
+    const formatDate = (dateString) => {
+      if (!dateString) return '';
+      return new Date(dateString).toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      });
+    };
+
+    if (loading) {
+      return (
+        <View style={{ flex:1, justifyContent:'center', alignItems:'center', backgroundColor: COLORS.bg }}>
+          <ActivityIndicator size="large" color="#16a34a" />
+        </View>
+      );
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -49,16 +54,16 @@ export default function NewsFeedScreen({ navigation }) {
             </View>
 
             <FlatList
-                data={newsItems}
+                data={news}
                 keyExtractor={item => item.id.toString()}
                 contentContainerStyle={styles.listContainer}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <View style={styles.cardHeader}>
-                            <View style={styles.tagBadge}>
-                                <Text style={styles.tagText}>{item.tag}</Text>
+                            <View style={[styles.tagBadge, { backgroundColor: `${item.tag_color || '#16a34a'}20` }]}>
+                                <Text style={[styles.tagText, { color: item.tag_color || '#16a34a' }]}>{item.tag}</Text>
                             </View>
-                            <Text style={styles.date}>{item.date}</Text>
+                            <Text style={styles.date}>{formatDate(item.created_at)}</Text>
                         </View>
                         <View style={styles.cardBody}>
                             <Text style={styles.emoji}>{item.emoji}</Text>
