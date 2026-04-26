@@ -96,6 +96,14 @@ const LandingScreen = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
         
+        <TouchableOpacity 
+          style={styles.guideBtn}
+          onPress={() => navigation.navigate('PublicStack', { screen: 'SegregationGuide' })}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.guideBtnText}>♻️ Kachra Alag Karna Seekhein</Text>
+        </TouchableOpacity>
+        
         <Text style={styles.footerNote}>
           {t('authorized_only')}
         </Text>
@@ -253,6 +261,21 @@ const styles = StyleSheet.create({
   },
   secondaryBtnText: {
     color: '#4ade80',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  guideBtn: {
+    borderWidth: 1.5,
+    borderColor: '#3b82f6',
+    backgroundColor: 'rgba(59,130,246,0.1)',
+    paddingVertical: 13,
+    borderRadius: 14,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  guideBtnText: {
+    color: '#60a5fa',
     fontSize: 15,
     fontWeight: '600',
   },

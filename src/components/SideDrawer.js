@@ -17,6 +17,8 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
     { icon: '🗺️', key: 'my_route', screen: 'Map' },
     { icon: '📊', key: 'stats', screen: 'Stats' },
     { icon: '📋', key: 'history', screen: 'History' },
+    { icon: '🦺', key: 'Safety Checklist', screen: 'SafetyChecklist' },
+    { icon: '📰', key: 'Swachhta Samachar', screen: 'NewsFeed' },
   ];
 
   const handleNavigate = (screen) => {
