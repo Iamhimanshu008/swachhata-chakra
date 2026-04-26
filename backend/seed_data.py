@@ -14,6 +14,7 @@ from models.user import User
 from models.bin import Bin, BinStatus
 from models.route import Route, RouteStop, RouteStatus
 from models.recycler import Recycler
+from models.news_feed import NewsFeed
 
 def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
@@ -354,6 +355,39 @@ def seed_database():
         for rec in recyclers:
             if not db.query(Recycler).filter(Recycler.email == rec.email).first():
                 db.add(rec)
+        db.commit()
+
+        # ── News Feed ──────────────────────────────────────────────
+        default_news = [
+            {
+                "title": "SmartWaste AI launch in Nava Raipur",
+                "summary": "SmartWaste AI ne Nava Raipur mein waste collection 40% efficient banaya",
+                "emoji": "🏆",
+                "tag": "Success Story",
+                "tag_color": "#16a34a"
+            },
+            {
+                "title": "Plastic Waste: India ka 2025 target",
+                "summary": "Sarkar ne single-use plastic band karne ke liye nayi guidelines jaari ki",
+                "emoji": "🌍",
+                "tag": "Policy",
+                "tag_color": "#3b82f6"
+            },
+            {
+                "title": "SHG mahilaon ki kamayi badhi",
+                "summary": "Chhattisgarh SHG groups ne waste collection se monthly income improve ki",
+                "emoji": "💪",
+                "tag": "Community",
+                "tag_color": "#f59e0b"
+            },
+        ]
+
+        for item in default_news:
+            exists = db.query(NewsFeed).filter(
+                NewsFeed.title == item["title"]
+            ).first()
+            if not exists:
+                db.add(NewsFeed(**item))
         db.commit()
 
         print("✓ Nava Raipur database seed complete with 4 Zones!")

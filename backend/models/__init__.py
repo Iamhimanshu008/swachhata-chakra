@@ -9,5 +9,6 @@ from models.collector_location import CollectorLocation
 from models.notification import Notification
 from models.settings import SystemSettings
 from models.otp import OTPRecord
+from models.news_feed import NewsFeed
 
-__all__ = ["Zone", "User", "Bin", "BinReport", "SHGReport", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord"]
+__all__ = ["Zone", "User", "Bin", "BinReport", "SHGReport", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed"]

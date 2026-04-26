@@ -118,6 +118,7 @@ from routers.shg import router as shg_router
 from routers.collector import router as collector_router
 from routers.recycler import router as recycler_router
 from routers.notifications import router as notifications_router
+from routers.news_feed import router as news_router
 
 app.include_router(auth_router)
 app.include_router(public_router)
@@ -127,6 +128,7 @@ app.include_router(shg_router)
 app.include_router(collector_router)
 app.include_router(recycler_router)
 app.include_router(notifications_router)
+app.include_router(news_router, prefix="/api")
 
 
 @app.get("/")
