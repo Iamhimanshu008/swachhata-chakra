@@ -123,7 +123,7 @@ export default function HomeScreen({ navigation }) {
                 ) : error === 'no_route' ? (
                     <View style={styles.emptyCard}>
                         <Text style={styles.emptyEmoji}>🎉</Text>
-                        <Text style={styles.emptyTitle}>{t('no_route_today')}</Text>
+                        <AutoText style={styles.emptyTitle}>No route assigned today</AutoText>
                         <AutoText style={styles.emptyText}>Check back later or contact your zone manager.</AutoText>
                     </View>
                 ) : todayRoute ? (

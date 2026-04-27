@@ -4,6 +4,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { useTranslation } from '../i18n';
+import AutoText from './AutoText';
 
 const LANGUAGES = [
   { code: 'en', label: 'English', native: 'English' },
@@ -28,7 +29,7 @@ const LanguagePickerModal = ({ visible, onClose }) => {
         activeOpacity={1}
       >
         <View style={styles.sheet}>
-          <Text style={styles.title}>{t('select_language')}</Text>
+          <AutoText style={styles.title}>Select Language</AutoText>
 
           {isLoading && (
             <View style={styles.loadingRow}>

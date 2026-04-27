@@ -1,136 +1,5 @@
 export const translations = {
-  en: {
-    // Landing
-    get_started: "Get Started",
-    report_bin: "Report a Bin (No Login Required)",
-    authorized_only: "For authorized staff only • SmartWaste AI V2",
-    
-    // Login
-    staff_login: "Staff Login",
-    email: "Email Address",
-    password: "Password",
-    login: "Login",
-    phone_otp: "Phone OTP",
-    send_otp: "Send OTP",
-    verify_login: "Verify & Login",
-    resend_otp: "Resend OTP",
-    enter_otp: "Enter OTP",
-    phone_number: "Phone Number",
-    back: "← Back",
-    login_failed: "Login Failed",
-    invalid_credentials: "Invalid email or password",
-    
-    // Navigation / Hamburger
-    menu: "Menu",
-    dashboard: "Dashboard",
-    my_route: "My Route",
-    map: "Map",
-    history: "History",
-    stats: "Statistics",
-    settings: "Settings",
-    logout: "Logout",
-    profile: "Profile",
-    
-    // Dashboard
-    welcome: "Welcome",
-    today_route: "Today's Route",
-    bins_collected: "Bins Collected",
-    total_weight: "Total Weight",
-    pending: "Pending",
-    completed: "Completed",
-    notifications: "Notifications",
-    no_notifications: "No new notifications",
-
-    // Greetings
-    good_morning: "Good morning,",
-    good_afternoon: "Good afternoon,",
-    good_evening: "Good evening,",
-
-    // Dashboard extras
-    today_route: "Today's Route",
-    priority_breakdown: "Priority Breakdown",
-    urgent: "Urgent",
-    high: "High",
-    normal: "Normal",
-    stops: "Stops",
-    progress: "Progress",
-    view_route_map: "View Route on Map",
-    bins_collected_today: "bins collected",
-    in_progress: "IN PROGRESS",
-    active: "Active",
-    sharing_location: "Sharing location",
-    alerts: "Alerts",
-    no_route_today: "No route assigned today",
-    
-    // Map & Route
-    optimized_route: "Optimized Route",
-    stops: "Stops",
-    distance: "Distance",
-    start_route: "Start Route",
-    mark_collected: "Mark as Collected",
-    bin_full: "Bin Full",
-    bin_empty: "Bin Empty",
-    bin_overflow: "Overflow",
-    within_range: "within range",
-    out_of_range: "out of range",
-    
-    // Report
-    report_full_bin: "Report Full Bin",
-    select_bin: "Select Bin",
-    take_photo: "Take Photo",
-    retake: "Retake",
-    add_notes: "Add any notes...",
-    location: "Location",
-    location_detected: "Detected",
-    submit_report: "Submit Report",
-    uploading: "Uploading... please wait",
-    report_success: "Report submitted successfully!",
-    report_failed: "Submission Failed",
-    
-    // Language
-    language: "Language",
-    select_language: "Select Language",
-    
-    // Common
-    loading: "Loading...",
-    save: "Save",
-    cancel: "Cancel",
-    ok: "OK",
-    error: "Error",
-    success: "Success",
-    retry: "Retry",
-    close: "Close",
-    
-    // Hardcoded string fixes
-    "IN PROGRESS": "IN PROGRESS",
-    "Today's Route": "Today's Route",
-    "View Route on Map": "View Route on Map",
-    "No route for today": "No route for today",
-    "No collections yet": "No collections yet",
-    "Completed collections will appear here.": "Completed collections will appear here.",
-    "Active": "Active",
-    "Stops": "Stops",
-    "Progress": "Progress",
-    "Go Back": "Go Back",
-    "This Month": "This Month",
-    "All Time": "All Time",
-    "Avg Kg / Collection": "Avg Kg / Collection",
-    "Track your collection impact": "Track your collection impact",
-    "Every bin collected makes Raipur cleaner": "Every bin collected makes Raipur cleaner",
-    "My Route": "My Route",
-    "Dashboard": "Dashboard",
-    "History": "History",
-    "Statistics": "Statistics",
-    "Logout": "Logout",
-    "Good morning": "Good morning",
-    "Good afternoon": "Good afternoon",
-    "Good evening": "Good evening",
-    "Sharing location": "Sharing location",
-    "Map": "Map",
-    "Home": "Home",
-    "Alerts": "Alerts",
-    "Stats": "Stats"
-  },
+  en: {},
 
   hi: {
     // Landing
@@ -316,7 +185,18 @@ export const translations = {
     "Examples:": "उदाहरण:",
     "Waste Segregation Guide": "कचरा पृथक्करण गाइड",
     "Learn to segregate waste and protect the environment.": "कचरा अलग करना सीखें और पर्यावरण बचाएं",
-    "Notifications": "सूचनाएं"
+    "Notifications": "सूचनाएं",
+    "Get Started": "शुरू करें",
+    "Report Full Bin (No Login)": "डब्बा रिपोर्ट करें (बिना लॉगिन)",
+    "For authorized staff only": "केवल अधिकृत कर्मचारियों के लिए",
+    "Learn Waste Segregation": "कचरा अलग करना सीखें",
+    "Staff Login": "स्टाफ लॉगिन",
+    "Phone OTP": "फोन OTP",
+    "Email": "ईमेल",
+    "Send OTP": "OTP भेजें",
+    "Verify & Login": "सत्यापित करें और लॉगिन करें",
+    "Back": "वापस",
+    "Resend OTP": "OTP दोबारा भेजें"
   },
 
   cg: {

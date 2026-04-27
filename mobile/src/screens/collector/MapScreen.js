@@ -158,7 +158,7 @@ export default function MapScreen({ navigation }) {
                     <AutoText style={styles.backArrowText}>← Back</AutoText>
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>
-                    {t('my_route')} {todayRoute.collected_stops}/{todayRoute.total_stops}
+                    <AutoText>My Route</AutoText> {todayRoute.collected_stops}/{todayRoute.total_stops}
                 </Text>
             </View>
 
@@ -235,7 +235,7 @@ export default function MapScreen({ navigation }) {
                                 onPress={() => handleCollectPress(selected)}
                                 disabled={collecting}
                             >
-                                <Text style={styles.collectBtnText}>✓  {t('mark_collected')}</Text>
+                                <AutoText style={styles.collectBtnText}>✓  Mark as Collected</AutoText>
                             </TouchableOpacity>
                         ) : null}
                     </View>
@@ -246,7 +246,7 @@ export default function MapScreen({ navigation }) {
             <Modal visible={!!collectModal} transparent animationType="slide">
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>{t('mark_collected')}</Text>
+                        <AutoText style={styles.modalTitle}>Mark as Collected</AutoText>
                         <AutoText style={styles.modalSub}>Enter kg collected for {collectModal?.bin_label}</AutoText>
                         <TextInput
                             style={styles.modalInput}
