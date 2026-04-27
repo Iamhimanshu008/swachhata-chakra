@@ -4,7 +4,7 @@ from database import get_db
 from models.news_feed import NewsFeed
 from models.user import User
 from schemas.news_feed import NewsFeedCreate, NewsFeedUpdate, NewsFeedRead
-from routers.auth import get_current_user, require_role
+from services.auth_service import get_current_user, require_role
 from typing import List
 
 router = APIRouter(prefix="/news", tags=["news"])
