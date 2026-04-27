@@ -31,7 +31,7 @@ export default function NewsManagement() {
     const fetchNews = async () => {
         try {
             setLoading(true);
-            const res = await client.get('/news/admin/all');
+            const res = await client.get('/api/news/admin/all');
             setNews(res.data);
         } catch (error) {
             toast.error('Failed to load news');
@@ -87,10 +87,10 @@ export default function NewsManagement() {
         e.preventDefault();
         try {
             if (editingId) {
-                await client.put(`/news/${editingId}`, formData);
+                await client.put(`/api/news/${editingId}`, formData);
                 toast.success('News updated successfully');
             } else {
-                await client.post('/news/', formData);
+                await client.post('/api/news/', formData);
                 toast.success('News created successfully');
             }
             handleCloseModal();
@@ -103,7 +103,7 @@ export default function NewsManagement() {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this news post?')) {
             try {
-                await client.delete(`/news/${id}`);
+                await client.delete(`/api/news/${id}`);
                 toast.success('News deleted successfully');
                 fetchNews();
             } catch (error) {
@@ -114,7 +114,7 @@ export default function NewsManagement() {
 
     const handleTogglePublish = async (id, currentStatus) => {
         try {
-            await client.put(`/news/${id}`, { is_published: !currentStatus });
+            await client.put(`/api/news/${id}`, { is_published: !currentStatus });
             toast.success(`News ${!currentStatus ? 'published' : 'unpublished'}`);
             fetchNews();
         } catch (error) {
