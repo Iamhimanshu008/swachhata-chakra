@@ -4,6 +4,7 @@ import {
   StyleSheet, Alert, KeyboardAvoidingView,
   Platform, ScrollView, ActivityIndicator
 } from 'react-native';
+import AutoText from '../components/AutoText';
 import { login as loginApi, getMe } from '../api/authApi';
 import client from '../api/client';
 import useStore from '../store';
@@ -117,7 +118,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.header}>
           <Text style={styles.logo}>♻️</Text>
           <Text style={styles.title}>SmartWaste AI</Text>
-          <Text style={styles.subtitle}>{t('staff_login')}</Text>
+          <AutoText style={styles.subtitle}>Staff Login</AutoText>
         </View>
 
         {/* Mode Toggle */}
@@ -138,14 +139,14 @@ const LoginScreen = ({ navigation }) => {
             <Text style={[
               styles.toggleText,
               mode === 'phone' && styles.toggleTextActive
-            ]}>📱 {t('phone_otp')}</Text>
+            ]}>📱 <AutoText>Phone OTP</AutoText></Text>
           </TouchableOpacity>
         </View>
 
         {/* Email Mode */}
         {mode === 'email' && (
           <View style={styles.formSection}>
-            <Text style={styles.label}>{t('email')}</Text>
+            <AutoText style={styles.label}>Email Address</AutoText>
             <TextInput
               style={styles.input}
               placeholder="staff@smartwaste.ai"
@@ -155,7 +156,7 @@ const LoginScreen = ({ navigation }) => {
               autoCapitalize="none"
               autoCorrect={false}
             />
-            <Text style={styles.label}>{t('password')}</Text>
+            <AutoText style={styles.label}>Password</AutoText>
             <TextInput
               style={styles.input}
               placeholder="Enter password"
@@ -170,7 +171,7 @@ const LoginScreen = ({ navigation }) => {
             >
               {loading
                 ? <ActivityIndicator color="#fff" />
-                : <Text style={styles.loginBtnText}>{t('login')}</Text>
+                : <AutoText style={styles.loginBtnText}>Login</AutoText>
               }
             </TouchableOpacity>
           </View>
@@ -202,7 +203,7 @@ const LoginScreen = ({ navigation }) => {
               >
                 {otpLoading
                   ? <ActivityIndicator color="#16a34a" />
-                  : <Text style={styles.otpBtnText}>{t('send_otp')}</Text>
+                  : <AutoText style={styles.otpBtnText}>Send OTP</AutoText>
                 }
               </TouchableOpacity>
             ) : (
@@ -242,7 +243,7 @@ const LoginScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Landing')}
           style={styles.backLink}
         >
-          <Text style={styles.backLinkText}>{t('back')}</Text>
+          <AutoText style={styles.backLinkText}>← Back</AutoText>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

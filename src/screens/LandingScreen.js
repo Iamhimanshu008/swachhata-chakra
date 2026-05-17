@@ -83,7 +83,7 @@ const LandingScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Login')}
           activeOpacity={0.85}
         >
-          <Text style={styles.primaryBtnText}>🚀 {t('get_started')}</Text>
+          <AutoText style={styles.primaryBtnText}>🚀 Get Started</AutoText>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -91,9 +91,9 @@ const LandingScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('PublicStack')}
           activeOpacity={0.8}
         >
-          <Text style={styles.secondaryBtnText}>
-            📸 {t('report_bin')}
-          </Text>
+          <AutoText style={styles.secondaryBtnText}>
+            📸 Report Full Bin (No Login)
+          </AutoText>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -101,12 +101,12 @@ const LandingScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('PublicStack', { screen: 'SegregationGuide' })}
           activeOpacity={0.8}
         >
-          <Text style={styles.guideBtnText}>♻️ Kachra Alag Karna Seekhein</Text>
+          <AutoText style={styles.guideBtnText}>♻️ Learn Waste Segregation</AutoText>
         </TouchableOpacity>
         
-        <Text style={styles.footerNote}>
-          {t('authorized_only')}
-        </Text>
+        <AutoText style={styles.footerNote}>
+          For authorized staff only
+        </AutoText>
       </View>
     </View>
   );

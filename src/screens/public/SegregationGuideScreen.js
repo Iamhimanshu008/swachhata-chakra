@@ -8,30 +8,30 @@ const categories = [
     color: "#22c55e",
     bgColor: "#dcfce7",
     emoji: "🟢",
-    title: "Wet Waste (Gila Kachra)",
-    subtitle: "Green Dustbin mein daalein",
-    examples: ["Sabzi ke chilke", "Khana bcha hua", "Chai patti", "Phool patte"],
-    tip: "Composting ke liye best!"
+    title: "Wet Waste",
+    subtitle: "Put in Green Dustbin",
+    examples: ["Vegetable peels", "Leftover food", "Tea leaves", "Flowers and leaves"],
+    tip: "Best for composting!"
   },
   {
     id: 2,
     color: "#3b82f6",
     bgColor: "#dbeafe", 
     emoji: "🔵",
-    title: "Dry Waste (Sukha Kachra)",
-    subtitle: "Blue Dustbin mein daalein",
+    title: "Dry Waste",
+    subtitle: "Put in Blue Dustbin",
     examples: ["Plastic bottles", "Paper", "Cardboard", "Metal cans"],
-    tip: "Recycle ho sakta hai!"
+    tip: "Can be recycled!"
   },
   {
     id: 3,
     color: "#ef4444",
     bgColor: "#fee2e2",
     emoji: "🔴",
-    title: "Hazardous Waste (Khatarnak)",
-    subtitle: "Red Dustbin mein daalein",
+    title: "Hazardous Waste",
+    subtitle: "Put in Red Dustbin",
     examples: ["Batteries", "Medicines", "Paint", "Chemicals"],
-    tip: "Kabhi mix mat karein!"
+    tip: "Never mix with other waste!"
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ const categories = [
     title: "E-Waste (Electronic)",
     subtitle: "Special collection point",
     examples: ["Mobile phones", "Chargers", "Bulbs", "Remote"],
-    tip: "Special disposal zaroori!"
+    tip: "Special disposal required!"
   },
 ];
 
@@ -55,7 +55,7 @@ export default function SegregationGuideScreen() {
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             <Text style={styles.headerTitle}>Waste Segregation Guide</Text>
-            <Text style={styles.headerSubtitle}>Kachra alag karna seekhein aur environment ko bachayein.</Text>
+            <Text style={styles.headerSubtitle}>Learn to segregate waste and protect the environment.</Text>
 
             {categories.map((cat) => {
                 const isExpanded = expandedId === cat.id;

@@ -155,7 +155,7 @@ export default function ReportScreen({ route, navigation }) {
             // Wake up Render server (free tier spins down after inactivity)
             await wakeUpServer();
 
-            setSubmitStatus(t('uploading'));
+            setSubmitStatus('Uploading... please wait');
             const formData = new FormData();
             formData.append('bin_id', selectedBin.id);
             formData.append('image', {
@@ -175,8 +175,8 @@ export default function ReportScreen({ route, navigation }) {
             const detail = err.response?.data?.detail;
             const msg = typeof detail === 'object'
                 ? (detail.rejection_reason || JSON.stringify(detail))
-                : (detail || err.message || t('report_failed'));
-            Alert.alert(t('report_failed'), msg);
+                : (detail || err.message || 'Submission Failed');
+            Alert.alert('Submission Failed', msg);
         }
         setSubmitting(false);
         setSubmitStatus('');
@@ -189,7 +189,7 @@ export default function ReportScreen({ route, navigation }) {
             <SafeAreaView style={styles.container}>
                 <ScrollView contentContainerStyle={styles.content}>
                     <View style={styles.resultCard}>
-                        <Text style={styles.resultTitle}>✅ {t('report_success')}</Text>
+                        <AutoText style={styles.resultTitle}>✅ Report submitted successfully!</AutoText>
                         <View style={styles.resultRow}>
                             <AutoText style={styles.resultLabel}>📊 Fill Level:</AutoText>
                             <Text style={styles.resultValue}>{result.fill_level}%</Text>
@@ -225,7 +225,7 @@ export default function ReportScreen({ route, navigation }) {
 
                 {/* Step 1 — Select Bin */}
                 <View style={styles.stepCard}>
-                    <Text style={styles.stepHeader}>Step 1 — {t('select_bin')}</Text>
+                    <AutoText style={styles.stepHeader}>Step 1 — Select Bin</AutoText>
                     <TouchableOpacity
                         style={styles.picker}
                         onPress={() => setShowBinPicker(true)}
@@ -246,12 +246,12 @@ export default function ReportScreen({ route, navigation }) {
 
                 {/* Step 2 — Photo */}
                 <View style={styles.stepCard}>
-                    <Text style={styles.stepHeader}>Step 2 — {t('take_photo')}</Text>
+                    <AutoText style={styles.stepHeader}>Step 2 — Take Photo</AutoText>
                     {photo ? (
                         <View style={styles.photoPreviewContainer}>
                             <Image source={{ uri: photo.uri }} style={styles.photoPreview} />
                             <TouchableOpacity style={styles.retakeBtn} onPress={() => setPhoto(null)}>
-                                <Text style={styles.retakeBtnText}>{t('retake')} ✕</Text>
+                                <AutoText style={styles.retakeBtnText}>Retake ✕</AutoText>
                             </TouchableOpacity>
                         </View>
                     ) : (
@@ -284,7 +284,7 @@ export default function ReportScreen({ route, navigation }) {
 
                 {/* Step 3 — Location */}
                 <View style={styles.stepCard}>
-                    <Text style={styles.stepHeader}>Step 3 — {t('location')}</Text>
+                    <AutoText style={styles.stepHeader}>Step 3 — Location</AutoText>
                     <View style={[styles.locRow, {
                         backgroundColor: locStatus === 'found' ? '#DCFCE7' : locStatus === 'detecting' ? '#EFF6FF' : '#FEE2E2'
                     }]}>
@@ -310,10 +310,10 @@ export default function ReportScreen({ route, navigation }) {
                     {submitting ? (
                         <>
                             <ActivityIndicator color="#fff" size="small" />
-                            <Text style={[styles.submitBtnText, { marginLeft: 8, fontSize: 14 }]}>{submitStatus || t('loading')}</Text>
+                            <AutoText style={[styles.submitBtnText, { marginLeft: 8, fontSize: 14 }]}>{submitStatus || 'Loading...'}</AutoText>
                         </>
                     ) : (
-                        <Text style={styles.submitBtnText}>🚀  {t('submit_report')}</Text>
+                        <AutoText style={styles.submitBtnText}>🚀  Submit Report</AutoText>
                     )}
                 </TouchableOpacity>
 
@@ -335,7 +335,7 @@ export default function ReportScreen({ route, navigation }) {
             <Modal visible={showBinPicker} animationType="slide" presentationStyle="pageSheet">
                 <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg }}>
                     <View style={styles.modalHeader}>
-                        <Text style={styles.modalTitle}>{t('select_bin')}</Text>
+                        <AutoText style={styles.modalTitle}>Select Bin</AutoText>
                         <TouchableOpacity onPress={() => setShowBinPicker(false)}>
                             <AutoText style={styles.modalClose}>✕ Close</AutoText>
                         </TouchableOpacity>

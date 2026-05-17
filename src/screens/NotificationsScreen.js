@@ -9,6 +9,7 @@ import { getNotifications, markAsRead, markAllAsRead, getUnreadCount } from '../
 import { useFocusEffect } from '@react-navigation/native';
 import { COLORS } from '../config';
 import { useTranslation } from '../i18n';
+import AutoText from '../components/AutoText';
 
 const NOTIFICATION_ICONS = {
     critical_bin: '🚨',
@@ -128,7 +129,7 @@ export default function NotificationsScreen({ navigation }) {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
                     <Text style={styles.backText}>← Back</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>{t('notifications')}</Text>
+                <AutoText style={styles.headerTitle}>Notifications</AutoText>
                 {unreadExists && (
                     <TouchableOpacity onPress={handleMarkAllRead} style={styles.markAllBtn}>
                         <Text style={styles.markAllText}>Read All</Text>
@@ -141,7 +142,7 @@ export default function NotificationsScreen({ navigation }) {
             ) : notifications.length === 0 ? (
                 <View style={styles.emptyContainer}>
                     <Text style={styles.emptyEmoji}>🔕</Text>
-                    <Text style={styles.emptyTitle}>{t('no_notifications')}</Text>
+                    <AutoText style={styles.emptyTitle}>No new notifications</AutoText>
                     <Text style={styles.emptyText}>
                         You'll receive alerts for routes, bin reports, and collection updates.
                     </Text>

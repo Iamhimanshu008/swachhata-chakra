@@ -76,7 +76,7 @@ export default function StatsScreen() {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.light} />}
             >
                 {/* Header */}
-                <Text style={styles.header}>{t('stats')} 📊</Text>
+                <AutoText style={styles.header}>Statistics 📊</AutoText>
                 <AutoText style={styles.subtitle}>Track your collection impact</AutoText>
 
                 {/* THIS MONTH */}
@@ -84,14 +84,14 @@ export default function StatsScreen() {
                 <View style={styles.row}>
                     <StatCard
                         emoji="🗑️"
-                        label={t('bins_collected')}
+                        label="Bins Collected"
                         value={stats?.collections_this_month ?? 0}
                         accent={COLORS.light}
                     />
                     <View style={styles.gap} />
                     <StatCard
                         emoji="⚖️"
-                        label={t('total_weight')}
+                        label="Total Weight"
                         value={`${stats?.kg_this_month ?? 0} kg`}
                         accent={COLORS.light}
                     />
@@ -102,14 +102,14 @@ export default function StatsScreen() {
                 <View style={styles.row}>
                     <StatCard
                         emoji="🏆"
-                        label={t('bins_collected')}
+                        label="Bins Collected"
                         value={stats?.total_collections_all_time ?? 0}
                         accent={COLORS.mid}
                     />
                     <View style={styles.gap} />
                     <StatCard
                         emoji="♻️"
-                        label={t('total_weight')}
+                        label="Total Weight"
                         value={`${stats?.total_kg_all_time ?? 0} kg`}
                         accent={COLORS.mid}
                     />

@@ -76,9 +76,9 @@ export default function HomeScreen({ navigation }) {
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return t('good_morning') || 'Good morning,';
-        if (hour < 17) return t('good_afternoon') || 'Good afternoon,';
-        return t('good_evening') || 'Good evening,';
+        if (hour < 12) return 'Good morning';
+        if (hour < 17) return 'Good afternoon';
+        return 'Good evening';
     };
 
     // Count priority bins (use urgency from stops, else derive from fill_level)
@@ -96,7 +96,7 @@ export default function HomeScreen({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader
-                title={t('dashboard')}
+                title={t('Dashboard')}
                 onMenuPress={() => setDrawerOpen(true)}
                 notificationCount={unreadCount}
                 navigation={navigation}
@@ -112,7 +112,7 @@ export default function HomeScreen({ navigation }) {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.light} />}
             >
                 <View style={styles.greetingSection}>
-                    <Text style={styles.greetingText}>{getGreeting()}</Text>
+                    <AutoText style={styles.greetingText}>{getGreeting()}</AutoText>
                     <Text style={styles.userName}>
                         {user?.full_name?.split(' ')[0] || 'User'} 
                     </Text>
@@ -123,7 +123,7 @@ export default function HomeScreen({ navigation }) {
                 ) : error === 'no_route' ? (
                     <View style={styles.emptyCard}>
                         <Text style={styles.emptyEmoji}>🎉</Text>
-                        <Text style={styles.emptyTitle}>{t('no_route_today')}</Text>
+                        <AutoText style={styles.emptyTitle}>No route assigned today</AutoText>
                         <AutoText style={styles.emptyText}>Check back later or contact your zone manager.</AutoText>
                     </View>
                 ) : todayRoute ? (
@@ -139,32 +139,32 @@ export default function HomeScreen({ navigation }) {
 
                         {/* Priority Breakdown */}
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>{t('priority_breakdown')}</Text>
+                            <Text style={styles.sectionTitle}>{t('Priority Breakdown')}</Text>
                             <View style={styles.priorityRow}>
                                 <View style={[styles.priorityChip, { backgroundColor: '#FEE2E2' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#EF4444' }]} />
                                     <Text style={[styles.priorityCount, { color: '#DC2626' }]}>{urgentCount}</Text>
-                                    <Text style={styles.priorityLabel}>{t('urgent')}</Text>
+                                    <Text style={styles.priorityLabel}>{t('Urgent')}</Text>
                                 </View>
                                 <View style={[styles.priorityChip, { backgroundColor: '#FFEDD5' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#F97316' }]} />
                                     <Text style={[styles.priorityCount, { color: '#EA580C' }]}>{highCount}</Text>
-                                    <Text style={styles.priorityLabel}>{t('high')}</Text>
+                                    <Text style={styles.priorityLabel}>{t('High')}</Text>
                                 </View>
                                 <View style={[styles.priorityChip, { backgroundColor: '#DCFCE7' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#22C55E' }]} />
                                     <Text style={[styles.priorityCount, { color: '#16A34A' }]}>{normalCount}</Text>
-                                    <Text style={styles.priorityLabel}>{t('normal')}</Text>
+                                    <Text style={styles.priorityLabel}>{t('Normal')}</Text>
                                 </View>
                             </View>
                         </View>
 
                         {/* Progress */}
                         <View style={styles.card}>
-                            <Text style={styles.cardLabel}>{t('progress')}</Text>
+                            <Text style={styles.cardLabel}>{t('Progress')}</Text>
                             <View style={styles.progressRow}>
-                                <Text style={styles.progressText}>{todayRoute.collected_stops} / {todayRoute.total_stops} {t('bins_collected_today')}</Text>
-                                <StatusBadge status={todayRoute.collected_stops === todayRoute.total_stops ? 'completed' : 'in_progress'} />
+                                <Text style={styles.progressText}>{todayRoute.collected_stops} / {todayRoute.total_stops} {t('bins collected today')}</Text>
+                                <StatusBadge status={todayRoute.collected_stops === todayRoute.total_stops ? 'completed' : 'IN PROGRESS'} />
                             </View>
                             <View style={styles.progressBar}>
                                 <View style={[styles.progressFill, {

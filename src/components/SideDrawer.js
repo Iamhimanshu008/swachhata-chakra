@@ -15,10 +15,10 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
   const logout = useStore(state => state.logout);
 
   const menuItems = [
-    { icon: '🏠', key: 'dashboard', screen: 'Home' },
-    { icon: '🗺️', key: 'my_route', screen: 'Map' },
-    { icon: '📊', key: 'stats', screen: 'Stats' },
-    { icon: '📋', key: 'history', screen: 'History' },
+    { icon: '🏠', key: 'Dashboard', screen: 'Home' },
+    { icon: '🗺️', key: 'My Route', screen: 'Map' },
+    { icon: '📊', key: 'Stats', screen: 'Stats' },
+    { icon: '📋', key: 'History', screen: 'History' },
     { icon: '🦺', key: 'Safety Checklist', screen: 'SafetyChecklist' },
     { icon: '📰', key: 'Swachhta Samachar', screen: 'NewsFeed' },
   ];
@@ -90,7 +90,7 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
             }}
           >
             <Text style={styles.menuIcon}>🔄</Text>
-            <Text style={styles.menuLabel}>{t('check_for_updates') || 'Check for Updates'}</Text>
+            <Text style={styles.menuLabel}>{t('Check for Updates') || 'Check for Updates'}</Text>
           </TouchableOpacity>
 
           {/* Logout */}
@@ -98,12 +98,12 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
             style={styles.logoutBtn}
             onPress={() => {
               Alert.alert(
-                t('logout'),
+                t('Logout'),
                 'Are you sure you want to logout?',
                 [
                   { text: 'Cancel', style: 'cancel' },
                   {
-                    text: t('logout'),
+                    text: t('Logout'),
                     style: 'destructive',
                     onPress: () => {
                       // 1. Close the drawer Modal FIRST
@@ -118,7 +118,7 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
             }}
           >
             <Text style={styles.logoutIcon}>🚪</Text>
-            <Text style={styles.logoutText}>{t('logout')}</Text>
+            <Text style={styles.logoutText}>{t('Logout')}</Text>
           </TouchableOpacity>
 
           <Text style={{ 

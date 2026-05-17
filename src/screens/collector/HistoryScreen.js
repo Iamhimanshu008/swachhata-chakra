@@ -74,7 +74,7 @@ export default function HistoryScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topBar}>
-                <Text style={styles.title}>{t('history')}</Text>
+                <AutoText style={styles.title}>History</AutoText>
             </View>
             <SectionList
                 sections={sections}
