@@ -1243,7 +1243,7 @@ export default function AdminDashboard() {
                 </div>
             </main>
 
-            <AIAnalysisModal isOpen={showAI} onClose={() => setShowAI(false)} onSubmit={(results) => console.log('AI Results:', results)} />
+            <AIAnalysisModal isOpen={showAI} onClose={() => setShowAI(false)} onSubmit={(results) => () => {}} />
         </div>
     );
 }
