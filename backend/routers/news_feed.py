@@ -24,7 +24,7 @@ def get_news(
 @router.get("/admin/all", response_model=List[NewsFeedRead])
 def get_all_news_admin(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(["admin", "subadmin"]))
+    current_user: User = Depends(require_role("admin", "sub_admin"))
 ):
     return db.query(NewsFeed).order_by(
         NewsFeed.created_at.desc()
@@ -34,7 +34,7 @@ def get_all_news_admin(
 def create_news(
     data: NewsFeedCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(["admin", "subadmin"]))
+    current_user: User = Depends(require_role("admin", "sub_admin"))
 ):
     news = NewsFeed(**data.dict(), created_by=current_user.id)
     db.add(news)
@@ -47,7 +47,7 @@ def update_news(
     news_id: int,
     data: NewsFeedUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(["admin", "subadmin"]))
+    current_user: User = Depends(require_role("admin", "sub_admin"))
 ):
     news = db.query(NewsFeed).filter(NewsFeed.id == news_id).first()
     if not news:
@@ -62,7 +62,7 @@ def update_news(
 def delete_news(
     news_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(["admin"]))
+    current_user: User = Depends(require_role("admin"))
 ):
     news = db.query(NewsFeed).filter(NewsFeed.id == news_id).first()
     if not news:

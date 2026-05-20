@@ -1245,7 +1245,7 @@ def get_admin_routes(db: Session = Depends(get_db), current_user: User = Depends
 @router.post("/reseed-zones")
 async def reseed_zones(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(["admin"]))
+    current_user: User = Depends(require_role("admin"))
 ):
     existing = db.query(Zone).count()
     if existing > 0:
@@ -1264,7 +1264,7 @@ async def reseed_zones(
 @router.post("/reset-sequences")
 async def reset_sequences(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(["admin"]))
+    current_user: User = Depends(require_role("admin"))
 ):
     db.execute(text("""
         SELECT setval('bins_id_seq', 
