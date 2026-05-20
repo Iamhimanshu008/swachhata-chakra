@@ -4,7 +4,6 @@ import {
     ScrollView, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { getReportStatus } from '../../api/publicApi';
 import { COLORS } from '../../config';
 
@@ -109,7 +108,7 @@ export default function StatusScreen({ route, navigation }) {
                         {/* Completion Message */}
                         {isComplete && (
                             <View style={styles.successCard}>
-                                <MaterialCommunityIcons name="leaf" size={48} color="#15803D" style={{ marginBottom: 8 }} />
+                                <Text style={styles.successEmoji}>🌿</Text>
                                 <Text style={styles.successTitle}>Thank you!</Text>
                                 <Text style={styles.successText}>
                                     Your report helped keep the city clean!
@@ -119,7 +118,7 @@ export default function StatusScreen({ route, navigation }) {
 
                         {isRejected && (
                             <View style={styles.rejectedCard}>
-                                <Ionicons name="alert-circle" size={40} color="#DC2626" style={{ marginBottom: 8 }} />
+                                <Text style={styles.rejectedEmoji}>⚠️</Text>
                                 <Text style={styles.rejectedTitle}>Report Not Verified</Text>
                                 <Text style={styles.rejectedText}>
                                     The report could not be verified. This may be due to photo quality or distance from the bin.
@@ -133,10 +132,7 @@ export default function StatusScreen({ route, navigation }) {
                                 style={styles.reportAnotherBtn}
                                 onPress={() => navigation.navigate('PublicMap')}
                             >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                                    <Ionicons name="location" size={18} color={COLORS.white} />
-                                    <Text style={styles.reportAnotherText}>Report Another Bin</Text>
-                                </View>
+                                <Text style={styles.reportAnotherText}>📍  Report Another Bin</Text>
                             </TouchableOpacity>
                         )}
                     </>
@@ -163,11 +159,11 @@ const styles = StyleSheet.create({
     infoLabel: { fontSize: 14, color: '#666', fontWeight: '500' },
     infoValue: { fontSize: 18, fontWeight: '800', color: COLORS.dark },
     successCard: { backgroundColor: '#DCFCE7', borderRadius: 20, padding: 24, alignItems: 'center', marginBottom: 16 },
-
+    successEmoji: { fontSize: 48, marginBottom: 8 },
     successTitle: { fontSize: 22, fontWeight: '800', color: '#15803D', marginBottom: 6 },
     successText: { fontSize: 14, color: '#166534', textAlign: 'center', lineHeight: 20 },
     rejectedCard: { backgroundColor: '#FEF2F2', borderRadius: 20, padding: 24, alignItems: 'center', marginBottom: 16 },
-
+    rejectedEmoji: { fontSize: 40, marginBottom: 8 },
     rejectedTitle: { fontSize: 18, fontWeight: '800', color: '#991B1B', marginBottom: 6 },
     rejectedText: { fontSize: 13, color: '#7F1D1D', textAlign: 'center', lineHeight: 18 },
     reportAnotherBtn: { backgroundColor: COLORS.mid, borderRadius: 16, padding: 18, alignItems: 'center', shadowColor: COLORS.mid, shadowOpacity: 0.25, shadowRadius: 8, elevation: 3 },

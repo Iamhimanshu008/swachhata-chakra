@@ -5,7 +5,6 @@ import {
     Image, Alert, ActivityIndicator, Modal, FlatList, TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { getBins, submitPublicReport } from '../../api/publicApi';
@@ -156,7 +155,7 @@ export default function ReportScreen({ route, navigation }) {
             // Wake up Render server (free tier spins down after inactivity)
             await wakeUpServer();
 
-            setSubmitStatus('Uploading... please wait');
+            setSubmitStatus(t('uploading'));
             const formData = new FormData();
             formData.append('bin_id', selectedBin.id);
             formData.append('image', {
@@ -168,7 +167,7 @@ export default function ReportScreen({ route, navigation }) {
             formData.append('longitude', String(location.longitude));
             formData.append('description', description.trim());
 
-            setSubmitStatus('AI is analyzing your photo...');
+            setSubmitStatus('🤖 AI is analyzing your photo...');
             const res = await submitPublicReport(formData);
             setResult(res);
             resetTimerRef.current = setTimeout(resetForm, 4000);
@@ -176,8 +175,8 @@ export default function ReportScreen({ route, navigation }) {
             const detail = err.response?.data?.detail;
             const msg = typeof detail === 'object'
                 ? (detail.rejection_reason || JSON.stringify(detail))
-                : (detail || err.message || 'Submission Failed');
-            Alert.alert('Submission Failed', msg);
+                : (detail || err.message || t('report_failed'));
+            Alert.alert(t('report_failed'), msg);
         }
         setSubmitting(false);
         setSubmitStatus('');
@@ -190,44 +189,26 @@ export default function ReportScreen({ route, navigation }) {
             <SafeAreaView style={styles.container}>
                 <ScrollView contentContainerStyle={styles.content}>
                     <View style={styles.resultCard}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                            <Ionicons name="checkmark-circle" size={24} color="#22c55e" />
-                            <AutoText style={styles.resultTitle}>Report submitted successfully!</AutoText>
-                        </View>
+                        <Text style={styles.resultTitle}>✅ {t('report_success')}</Text>
                         <View style={styles.resultRow}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                                <Ionicons name="stats-chart" size={16} color="#666" />
-                                <AutoText style={styles.resultLabel}>Fill Level:</AutoText>
-                            </View>
+                            <AutoText style={styles.resultLabel}>📊 Fill Level:</AutoText>
                             <Text style={styles.resultValue}>{result.fill_level}%</Text>
                         </View>
                         <View style={styles.resultRow}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                                <MaterialCommunityIcons name="trash-can-outline" size={16} color="#666" />
-                                <AutoText style={styles.resultLabel}>Waste Type:</AutoText>
-                            </View>
+                            <AutoText style={styles.resultLabel}>🗑️ Waste Type:</AutoText>
                             <Text style={styles.resultValue}>{result.waste_type || '—'}</Text>
                         </View>
                         <View style={styles.resultRow}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                                <Ionicons name="alert-circle" size={16} color="#666" />
-                                <AutoText style={styles.resultLabel}>Urgency:</AutoText>
-                            </View>
+                            <AutoText style={styles.resultLabel}>⚠️ Urgency:</AutoText>
                             <Text style={styles.resultValue}>{result.urgency || '—'}</Text>
                         </View>
                         <View style={styles.resultRow}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                                <MaterialIcons name="gps-fixed" size={16} color="#666" />
-                                <AutoText style={styles.resultLabel}>AI Confidence:</AutoText>
-                            </View>
+                            <AutoText style={styles.resultLabel}>🎯 AI Confidence:</AutoText>
                             <Text style={styles.resultValue}>{result.ai_confidence}%</Text>
                         </View>
                         {result.ai_observations ? (
                             <View style={styles.observationsBox}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                                    <MaterialCommunityIcons name="comment-text-outline" size={16} color="#666" />
-                                    <AutoText style={styles.resultLabel}>Observations:</AutoText>
-                                </View>
+                                <AutoText style={styles.resultLabel}>💬 Observations:</AutoText>
                                 <Text style={styles.observationsText}>{result.ai_observations}</Text>
                             </View>
                         ) : null}
@@ -244,7 +225,7 @@ export default function ReportScreen({ route, navigation }) {
 
                 {/* Step 1 — Select Bin */}
                 <View style={styles.stepCard}>
-                    <AutoText style={styles.stepHeader}>Step 1 — Select Bin</AutoText>
+                    <Text style={styles.stepHeader}>Step 1 — {t('select_bin')}</Text>
                     <TouchableOpacity
                         style={styles.picker}
                         onPress={() => setShowBinPicker(true)}
@@ -265,22 +246,22 @@ export default function ReportScreen({ route, navigation }) {
 
                 {/* Step 2 — Photo */}
                 <View style={styles.stepCard}>
-                    <AutoText style={styles.stepHeader}>Step 2 — Take Photo</AutoText>
+                    <Text style={styles.stepHeader}>Step 2 — {t('take_photo')}</Text>
                     {photo ? (
                         <View style={styles.photoPreviewContainer}>
                             <Image source={{ uri: photo.uri }} style={styles.photoPreview} />
                             <TouchableOpacity style={styles.retakeBtn} onPress={() => setPhoto(null)}>
-                                <AutoText style={styles.retakeBtnText}>Retake ✕</AutoText>
+                                <Text style={styles.retakeBtnText}>{t('retake')} ✕</Text>
                             </TouchableOpacity>
                         </View>
                     ) : (
                         <View style={styles.photoButtons}>
                             <TouchableOpacity style={styles.cameraBtn} onPress={takePhoto}>
-                                <Ionicons name="camera" size={32} color={COLORS.white} style={{ marginBottom: 6 }} />
+                                <Text style={styles.cameraBtnEmoji}>📷</Text>
                                 <AutoText style={styles.cameraBtnText}>Camera</AutoText>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.galleryBtn} onPress={pickPhoto}>
-                                <Ionicons name="images-outline" size={32} color={COLORS.dark} style={{ marginBottom: 6 }} />
+                                <Text style={styles.cameraBtnEmoji}>🖼️</Text>
                                 <AutoText style={styles.galleryBtnText}>Gallery</AutoText>
                             </TouchableOpacity>
                         </View>
@@ -303,13 +284,13 @@ export default function ReportScreen({ route, navigation }) {
 
                 {/* Step 3 — Location */}
                 <View style={styles.stepCard}>
-                    <AutoText style={styles.stepHeader}>Step 3 — Location</AutoText>
+                    <Text style={styles.stepHeader}>Step 3 — {t('location')}</Text>
                     <View style={[styles.locRow, {
                         backgroundColor: locStatus === 'found' ? '#DCFCE7' : locStatus === 'detecting' ? '#EFF6FF' : '#FEE2E2'
                     }]}>
                         {locStatus === 'detecting' && <ActivityIndicator size="small" color="#3B82F6" />}
-                        {locStatus === 'found' && <Ionicons name="checkmark-circle" size={18} color="#15803D" />}
-                        {locStatus === 'failed' && <Ionicons name="close-circle" size={18} color="#DC2626" />}
+                        {locStatus === 'found' && <Text style={styles.locEmoji}>✅</Text>}
+                        {locStatus === 'failed' && <Text style={styles.locEmoji}>❌</Text>}
                         <Text style={[styles.locText, {
                             color: locStatus === 'found' ? '#15803D' : locStatus === 'detecting' ? '#1D4ED8' : '#DC2626'
                         }]}>
@@ -329,13 +310,10 @@ export default function ReportScreen({ route, navigation }) {
                     {submitting ? (
                         <>
                             <ActivityIndicator color="#fff" size="small" />
-                            <AutoText style={[styles.submitBtnText, { marginLeft: 8, fontSize: 14 }]}>{submitStatus || 'Loading...'}</AutoText>
+                            <Text style={[styles.submitBtnText, { marginLeft: 8, fontSize: 14 }]}>{submitStatus || t('loading')}</Text>
                         </>
                     ) : (
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                            <Ionicons name="rocket-outline" size={18} color={COLORS.white} />
-                            <AutoText style={styles.submitBtnText}>Submit Report</AutoText>
-                        </View>
+                        <Text style={styles.submitBtnText}>🚀  {t('submit_report')}</Text>
                     )}
                 </TouchableOpacity>
 
@@ -345,10 +323,10 @@ export default function ReportScreen({ route, navigation }) {
                         fontWeight: distanceToBin <= 50 ? '600' : 'bold'
                     }]}>
                         {distanceToBin === null 
-                            ? "Fetching your location..." 
+                            ? "📍 Fetching your location..." 
                             : distanceToBin <= 50 
-                                ? `You are ${distanceToBin}m away — within range` 
-                                : `You are ${distanceToBin}m away — move closer`}
+                                ? `✅ You are ${distanceToBin}m away — within range` 
+                                : `❌ You are ${distanceToBin}m away — move closer`}
                     </Text>
                 )}
             </ScrollView>
@@ -357,7 +335,7 @@ export default function ReportScreen({ route, navigation }) {
             <Modal visible={showBinPicker} animationType="slide" presentationStyle="pageSheet">
                 <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg }}>
                     <View style={styles.modalHeader}>
-                        <AutoText style={styles.modalTitle}>Select Bin</AutoText>
+                        <Text style={styles.modalTitle}>{t('select_bin')}</Text>
                         <TouchableOpacity onPress={() => setShowBinPicker(false)}>
                             <AutoText style={styles.modalClose}>✕ Close</AutoText>
                         </TouchableOpacity>
@@ -401,7 +379,7 @@ const styles = StyleSheet.create({
     photoButtons: { flexDirection: 'row', gap: 12 },
     cameraBtn: { flex: 1, backgroundColor: COLORS.mid, borderRadius: 14, padding: 20, alignItems: 'center' },
     galleryBtn: { flex: 1, backgroundColor: '#F3F4F6', borderRadius: 14, padding: 20, alignItems: 'center' },
-
+    cameraBtnEmoji: { fontSize: 32, marginBottom: 6 },
     cameraBtnText: { fontSize: 13, fontWeight: '700', color: COLORS.white },
     galleryBtnText: { fontSize: 13, fontWeight: '700', color: COLORS.dark },
     descInput: { borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 12, padding: 12, fontSize: 14, minHeight: 70, textAlignVertical: 'top' },
@@ -410,7 +388,7 @@ const styles = StyleSheet.create({
     retakeBtn: { position: 'absolute', top: 8, right: 8, backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 5 },
     retakeBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
     locRow: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12, borderRadius: 12 },
-
+    locEmoji: { fontSize: 18 },
     locText: { fontSize: 13, fontWeight: '500', flex: 1 },
     submitBtn: { height: 56, backgroundColor: COLORS.mid, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginTop: 8, flexDirection: 'row', shadowColor: COLORS.mid, shadowOpacity: 0.3, shadowRadius: 10, elevation: 4 },
     submitBtnText: { color: COLORS.white, fontSize: 17, fontWeight: '800' },

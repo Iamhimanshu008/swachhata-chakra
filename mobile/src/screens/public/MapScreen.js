@@ -3,7 +3,6 @@ import {
     View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator,
 } from 'react-native';
 import AutoText from '../../components/AutoText';
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { getBins, getLiveStatus } from '../../api/publicApi';
 import BinPin from '../../components/BinPin';
@@ -86,7 +85,7 @@ export default function PublicMapScreen({ navigation }) {
         return (
             <View style={styles.container}>
                 <View style={styles.errorContainer}>
-                    <Ionicons name="map-outline" size={64} color="#9ca3af" />
+                    <Text style={styles.errorEmoji}>🗺️</Text>
                     <AutoText style={styles.errorTitle}>Map Unavailable</AutoText>
                     <AutoText style={styles.errorSub}>
                         Map could not load. Please check your internet connection and try again.
@@ -95,10 +94,7 @@ export default function PublicMapScreen({ navigation }) {
                         style={styles.retryBtn}
                         onPress={() => setMapError(false)}
                     >
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                            <Ionicons name="refresh" size={16} color={COLORS.white} />
-                            <Text style={styles.retryBtnText}>Retry</Text>
-                        </View>
+                        <Text style={styles.retryBtnText}>🔄  Retry</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -108,10 +104,7 @@ export default function PublicMapScreen({ navigation }) {
                         style={[styles.loginLink, { backgroundColor: '#F3E8FF', marginBottom: 8, width: '100%', alignItems: 'center' }]}
                         onPress={() => navigation.navigate('Recyclers')}
                     >
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <MaterialIcons name="factory" size={16} color="#7E22CE" />
-                        <AutoText style={[styles.loginLinkText, { color: '#7E22CE' }]}>Sell Waste to Recyclers</AutoText>
-                    </View>
+                        <AutoText style={[styles.loginLinkText, { color: '#7E22CE' }]}>🏭 Sell Waste to Recyclers</AutoText>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -119,20 +112,14 @@ export default function PublicMapScreen({ navigation }) {
                         onPress={() => navigation.navigate('Report', {})}
                         activeOpacity={0.85}
                     >
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                            <Ionicons name="camera-outline" size={18} color={COLORS.white} />
-                            <AutoText style={styles.fabText}>Report Full Bin</AutoText>
-                        </View>
+                        <AutoText style={styles.fabText}>📸  Report Full Bin</AutoText>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={styles.loginLink}
                         onPress={() => navigation.navigate('Login')}
                     >
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                        <AutoText style={styles.loginLinkText}>Collector? Sign In</AutoText>
-                        <Ionicons name="arrow-forward" size={14} color={COLORS.mid} />
-                    </View>
+                        <AutoText style={styles.loginLinkText}>Collector? Sign In →</AutoText>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -151,7 +138,7 @@ export default function PublicMapScreen({ navigation }) {
 
             <MapErrorBoundary fallback={
                 <View style={styles.errorContainer}>
-                    <Ionicons name="map-outline" size={64} color="#9ca3af" />
+                    <Text style={styles.errorEmoji}>🗺️</Text>
                     <AutoText style={styles.errorTitle}>Map Crashed</AutoText>
                     <AutoText style={styles.errorSub}>The map component encountered an error. You can still report bins below.</AutoText>
                 </View>
@@ -197,9 +184,7 @@ export default function PublicMapScreen({ navigation }) {
                         coordinate={{ latitude: col.latitude, longitude: col.longitude }}
                         zIndex={999}
                     >
-                        <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: '#22c55e', justifyContent: 'center', alignItems: 'center' }}>
-                            <MaterialCommunityIcons name="truck" size={18} color="#fff" />
-                        </View>
+                        <Text style={{fontSize: 28}}>🚚</Text>
                         <Callout tooltip>
                             <View style={styles.callout}>
                                 <Text style={styles.calloutTitle}>{col.name}</Text>
@@ -220,7 +205,7 @@ export default function PublicMapScreen({ navigation }) {
 
             <View style={styles.header} pointerEvents="none">
                 <View style={styles.headerCard}>
-                    <MaterialCommunityIcons name="recycle" size={26} color="#16a34a" />
+                    <Text style={styles.headerEmoji}>♻️</Text>
                     <View>
                         <AutoText style={styles.headerTitle}>SmartWaste AI</AutoText>
                         <AutoText style={styles.headerSub}>{bins.length} bins tracked in Raipur</AutoText>
@@ -239,10 +224,7 @@ export default function PublicMapScreen({ navigation }) {
                     style={[styles.loginLink, { backgroundColor: '#F3E8FF', marginBottom: 8, width: '100%', alignItems: 'center' }]}
                     onPress={() => navigation.navigate('Recyclers')}
                 >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <MaterialIcons name="factory" size={16} color="#7E22CE" />
-                        <AutoText style={[styles.loginLinkText, { color: '#7E22CE' }]}>Sell Waste to Recyclers</AutoText>
-                    </View>
+                    <AutoText style={[styles.loginLinkText, { color: '#7E22CE' }]}>🏭 Sell Waste to Recyclers</AutoText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -250,20 +232,14 @@ export default function PublicMapScreen({ navigation }) {
                     onPress={() => navigation.navigate('Report', {})}
                     activeOpacity={0.85}
                 >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <Ionicons name="camera-outline" size={18} color={COLORS.white} />
-                        <AutoText style={styles.fabText}>Report Full Bin</AutoText>
-                    </View>
+                    <AutoText style={styles.fabText}>📸  Report Full Bin</AutoText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.loginLink}
                     onPress={() => navigation.navigate('Login')}
                 >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                        <AutoText style={styles.loginLinkText}>Collector? Sign In</AutoText>
-                        <Ionicons name="arrow-forward" size={14} color={COLORS.mid} />
-                    </View>
+                    <AutoText style={styles.loginLinkText}>Collector? Sign In →</AutoText>
                 </TouchableOpacity>
             </View>
         </View>
@@ -277,7 +253,7 @@ const styles = StyleSheet.create({
     mapPlaceholderText: { color: COLORS.accent, fontSize: 14, marginTop: 12, fontWeight: '600' },
     header: { position: 'absolute', top: 52, left: 16, right: 16 },
     headerCard: { backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', gap: 10, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 12, elevation: 5 },
-
+    headerEmoji: { fontSize: 26 },
     headerTitle: { fontSize: 16, fontWeight: '800', color: COLORS.dark },
     headerSub: { fontSize: 12, color: '#666', marginTop: 1 },
     loadingOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center' },
@@ -294,7 +270,7 @@ const styles = StyleSheet.create({
     reportBtnText: { fontSize: 12, fontWeight: '700', color: COLORS.white },
     // Error fallback styles
     errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.dark, paddingHorizontal: 40 },
-
+    errorEmoji: { fontSize: 64, marginBottom: 16 },
     errorTitle: { fontSize: 22, fontWeight: '800', color: COLORS.white, marginBottom: 8 },
     errorSub: { fontSize: 14, color: COLORS.accent, textAlign: 'center', lineHeight: 20 },
     retryBtn: { marginTop: 20, backgroundColor: COLORS.gold, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 28 },

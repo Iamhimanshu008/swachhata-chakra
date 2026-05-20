@@ -3,11 +3,8 @@ import {
   View, Text, TouchableOpacity, StyleSheet,
   Modal, Animated, Dimensions, ScrollView, Alert
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from '../i18n';
 import useStore from '../store';
-import { checkForUpdate } from '../utils/updateChecker';
-import appJson from '../../app.json';
 
 const { width } = Dimensions.get('window');
 
@@ -16,12 +13,12 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
   const logout = useStore(state => state.logout);
 
   const menuItems = [
-    { icon: <Ionicons name="home-outline" size={22} color="#16a34a" />, key: 'Dashboard', screen: 'Home' },
-    { icon: <MaterialCommunityIcons name="map-marker-path" size={22} color="#16a34a" />, key: 'My Route', screen: 'Map' },
-    { icon: <Ionicons name="stats-chart-outline" size={22} color="#16a34a" />, key: 'Stats', screen: 'Stats' },
-    { icon: <MaterialCommunityIcons name="clipboard-list-outline" size={22} color="#16a34a" />, key: 'History', screen: 'History' },
-    { icon: <MaterialCommunityIcons name="shield-check-outline" size={22} color="#16a34a" />, key: 'Safety Checklist', screen: 'SafetyChecklist' },
-    { icon: <MaterialCommunityIcons name="newspaper-variant-outline" size={22} color="#16a34a" />, key: 'Swachhta Samachar', screen: 'NewsFeed' },
+    { icon: '🏠', key: 'dashboard', screen: 'Home' },
+    { icon: '🗺️', key: 'my_route', screen: 'Map' },
+    { icon: '📊', key: 'stats', screen: 'Stats' },
+    { icon: '📋', key: 'history', screen: 'History' },
+    { icon: '🦺', key: 'Safety Checklist', screen: 'SafetyChecklist' },
+    { icon: '📰', key: 'Swachhta Samachar', screen: 'NewsFeed' },
   ];
 
   const handleNavigate = (screen) => {
@@ -74,7 +71,7 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
                 style={styles.menuItem}
                 onPress={() => handleNavigate(item.screen)}
               >
-                <View style={styles.menuIconContainer}>{item.icon}</View>
+                <Text style={styles.menuIcon}>{item.icon}</Text>
                 <Text style={styles.menuLabel}>{t(item.key)}</Text>
               </TouchableOpacity>
             ))}
@@ -83,30 +80,17 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
           {/* Divider */}
           <View style={styles.divider} />
 
-          <TouchableOpacity
-            style={[styles.menuItem, { marginTop: 8 }]}
-            onPress={async () => {
-              onClose();
-              await checkForUpdate(appJson.expo.version, true);
-            }}
-          >
-            <View style={styles.menuIconContainer}>
-              <Ionicons name="refresh-circle-outline" size={22} color="#6b7280" />
-            </View>
-            <Text style={styles.menuLabel}>{t('Check for Updates') || 'Check for Updates'}</Text>
-          </TouchableOpacity>
-
           {/* Logout */}
           <TouchableOpacity
             style={styles.logoutBtn}
             onPress={() => {
               Alert.alert(
-                t('Logout'),
+                t('logout'),
                 'Are you sure you want to logout?',
                 [
                   { text: 'Cancel', style: 'cancel' },
                   {
-                    text: t('Logout'),
+                    text: t('logout'),
                     style: 'destructive',
                     onPress: () => {
                       // 1. Close the drawer Modal FIRST
@@ -120,20 +104,9 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
               );
             }}
           >
-            <View style={styles.logoutIconContainer}>
-              <MaterialIcons name="logout" size={22} color="#dc2626" />
-            </View>
-            <Text style={styles.logoutText}>{t('Logout')}</Text>
+            <Text style={styles.logoutIcon}>🚪</Text>
+            <Text style={styles.logoutText}>{t('logout')}</Text>
           </TouchableOpacity>
-
-          <Text style={{ 
-            color: '#9ca3af', 
-            fontSize: 11, 
-            textAlign: 'center',
-            paddingBottom: 16 
-          }}>
-            SmartWaste AI v{appJson.expo.version}
-          </Text>
         </View>
       </View>
     </Modal>
@@ -183,7 +156,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center',
     paddingVertical: 14, paddingHorizontal: 20, gap: 14,
   },
-  menuIconContainer: { width: 28, alignItems: 'center' },
+  menuIcon: { fontSize: 20, width: 28 },
   menuLabel: {
     color: '#e2e8f0', fontSize: 15, fontWeight: '500',
   },
@@ -194,7 +167,7 @@ const styles = StyleSheet.create({
     margin: 12, borderRadius: 12,
     borderWidth: 1, borderColor: 'rgba(220,38,38,0.3)',
   },
-  logoutIconContainer: { width: 28, alignItems: 'center' },
+  logoutIcon: { fontSize: 20 },
   logoutText: {
     color: '#ef4444', fontSize: 15, fontWeight: '700',
   },

@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { View, Text, ScrollView, RefreshControl, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import useStore from '../../store';
 import { getBins } from '../../api/shgApi';
 import { COLORS } from '../../config';
@@ -46,13 +45,10 @@ export default function BinsScreen({ navigation }) {
                 <View style={styles.headerRow}>
                     <View style={styles.header}>
                         <Text style={styles.greeting}>SHG Dashboard</Text>
-                        <Text style={styles.name}>{user?.full_name?.split(' ')[0] || 'Member'}</Text>
+                        <Text style={styles.name}>{user?.full_name?.split(' ')[0] || 'Member'} 👋</Text>
                     </View>
                     <TouchableOpacity onPress={doLogout} style={styles.logoutBtn}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                            <Ionicons name="log-out-outline" size={16} color={COLORS.mid} />
-                            <Text style={styles.logoutText}>Logout</Text>
-                        </View>
+                        <Text style={styles.logoutText}>🚪 Logout</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -77,10 +73,7 @@ export default function BinsScreen({ navigation }) {
                                     <Text style={styles.badgeText}>{bin.status.toUpperCase()}</Text>
                                 </View>
                             </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                <Ionicons name="location-outline" size={14} color="#666" />
-                                <Text style={styles.address}>{bin.address}</Text>
-                            </View>
+                            <Text style={styles.address}>📍 {bin.address}</Text>
                             <View style={styles.fillContainer}>
                                 <View style={[styles.fillBar, { width: `${bin.fill_level}%`, backgroundColor: bin.fill_level > 80 ? '#EF4444' : COLORS.light }]} />
                             </View>

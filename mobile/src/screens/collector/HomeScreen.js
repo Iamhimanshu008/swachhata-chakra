@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import useStore from '../../store';
 import { getTodayRoute, updateLocation } from '../../api/collectorApi';
@@ -77,9 +76,9 @@ export default function HomeScreen({ navigation }) {
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return 'Good morning';
-        if (hour < 17) return 'Good afternoon';
-        return 'Good evening';
+        if (hour < 12) return t('good_morning') || 'Good morning,';
+        if (hour < 17) return t('good_afternoon') || 'Good afternoon,';
+        return t('good_evening') || 'Good evening,';
     };
 
     // Count priority bins (use urgency from stops, else derive from fill_level)
@@ -97,7 +96,7 @@ export default function HomeScreen({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader
-                title={t('Dashboard')}
+                title={t('dashboard')}
                 onMenuPress={() => setDrawerOpen(true)}
                 notificationCount={unreadCount}
                 navigation={navigation}
@@ -113,7 +112,7 @@ export default function HomeScreen({ navigation }) {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.light} />}
             >
                 <View style={styles.greetingSection}>
-                    <AutoText style={styles.greetingText}>{getGreeting()}</AutoText>
+                    <Text style={styles.greetingText}>{getGreeting()}</Text>
                     <Text style={styles.userName}>
                         {user?.full_name?.split(' ')[0] || 'User'} 
                     </Text>
@@ -123,8 +122,8 @@ export default function HomeScreen({ navigation }) {
                     <ActivityIndicator size="large" color={COLORS.light} style={{ marginTop: 60 }} />
                 ) : error === 'no_route' ? (
                     <View style={styles.emptyCard}>
-                        <MaterialCommunityIcons name="calendar-check-outline" size={48} color="#d1d5db" />
-                        <AutoText style={styles.emptyTitle}>No route assigned today</AutoText>
+                        <Text style={styles.emptyEmoji}>🎉</Text>
+                        <Text style={styles.emptyTitle}>{t('no_route_today')}</Text>
                         <AutoText style={styles.emptyText}>Check back later or contact your zone manager.</AutoText>
                     </View>
                 ) : todayRoute ? (
@@ -140,32 +139,32 @@ export default function HomeScreen({ navigation }) {
 
                         {/* Priority Breakdown */}
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>{t('Priority Breakdown')}</Text>
+                            <Text style={styles.sectionTitle}>{t('priority_breakdown')}</Text>
                             <View style={styles.priorityRow}>
                                 <View style={[styles.priorityChip, { backgroundColor: '#FEE2E2' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#EF4444' }]} />
                                     <Text style={[styles.priorityCount, { color: '#DC2626' }]}>{urgentCount}</Text>
-                                    <Text style={styles.priorityLabel}>{t('Urgent')}</Text>
+                                    <Text style={styles.priorityLabel}>{t('urgent')}</Text>
                                 </View>
                                 <View style={[styles.priorityChip, { backgroundColor: '#FFEDD5' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#F97316' }]} />
                                     <Text style={[styles.priorityCount, { color: '#EA580C' }]}>{highCount}</Text>
-                                    <Text style={styles.priorityLabel}>{t('High')}</Text>
+                                    <Text style={styles.priorityLabel}>{t('high')}</Text>
                                 </View>
                                 <View style={[styles.priorityChip, { backgroundColor: '#DCFCE7' }]}>
                                     <View style={[styles.dot, { backgroundColor: '#22C55E' }]} />
                                     <Text style={[styles.priorityCount, { color: '#16A34A' }]}>{normalCount}</Text>
-                                    <Text style={styles.priorityLabel}>{t('Normal')}</Text>
+                                    <Text style={styles.priorityLabel}>{t('normal')}</Text>
                                 </View>
                             </View>
                         </View>
 
                         {/* Progress */}
                         <View style={styles.card}>
-                            <Text style={styles.cardLabel}>{t('Progress')}</Text>
+                            <Text style={styles.cardLabel}>{t('progress')}</Text>
                             <View style={styles.progressRow}>
-                                <Text style={styles.progressText}>{todayRoute.collected_stops} / {todayRoute.total_stops} {t('bins collected today')}</Text>
-                                <StatusBadge status={todayRoute.collected_stops === todayRoute.total_stops ? 'completed' : 'IN PROGRESS'} />
+                                <Text style={styles.progressText}>{todayRoute.collected_stops} / {todayRoute.total_stops} {t('bins_collected_today')}</Text>
+                                <StatusBadge status={todayRoute.collected_stops === todayRoute.total_stops ? 'completed' : 'in_progress'} />
                             </View>
                             <View style={styles.progressBar}>
                                 <View style={[styles.progressFill, {
@@ -187,7 +186,8 @@ const styles = StyleSheet.create({
     greetingText: { fontSize: 16, color: '#6b7280' },
     userName: { fontSize: 28, fontWeight: '800', color: '#14532d' },
     emptyCard: { backgroundColor: COLORS.white, borderRadius: 20, padding: 32, alignItems: 'center', marginTop: 20 },
-    emptyTitle: { fontSize: 18, fontWeight: '700', color: COLORS.dark, textAlign: 'center', marginBottom: 8, marginTop: 12 },
+    emptyEmoji: { fontSize: 48, marginBottom: 12 },
+    emptyTitle: { fontSize: 18, fontWeight: '700', color: COLORS.dark, textAlign: 'center', marginBottom: 8 },
     emptyText: { fontSize: 14, color: '#777', textAlign: 'center', lineHeight: 20 },
     section: { marginTop: 20 },
     sectionTitle: { fontSize: 16, fontWeight: '700', color: COLORS.dark, marginBottom: 12 },

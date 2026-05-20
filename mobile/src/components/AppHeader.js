@@ -3,7 +3,6 @@ import {
   View, Text, TouchableOpacity, StyleSheet,
   SafeAreaView
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../i18n';
 import LanguagePickerModal from './LanguagePickerModal';
 
@@ -19,7 +18,9 @@ const AppHeader = ({ title, onMenuPress, notificationCount = 0, navigation }) =>
           style={styles.iconBtn} 
           onPress={onMenuPress}
         >
-          <Ionicons name="menu-outline" size={26} color="#ffffff" />
+          <View style={styles.hamburgerLine} />
+          <View style={styles.hamburgerLine} />
+          <View style={styles.hamburgerLine} />
         </TouchableOpacity>
 
         {/* Center — Title */}
@@ -33,14 +34,14 @@ const AppHeader = ({ title, onMenuPress, notificationCount = 0, navigation }) =>
             style={styles.iconBtn}
             onPress={() => setShowLangPicker(true)}
           >
-            <Ionicons name="language-outline" size={24} color="#ffffff" />
+            <Text style={styles.langIcon}>🌐</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.iconBtn}
             onPress={() => navigation?.navigate('Notifications')}
           >
-            <Ionicons name="notifications-outline" size={24} color="#ffffff" />
+            <Text style={styles.bellIcon}>🔔</Text>
             {notificationCount > 0 && (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>
@@ -74,12 +75,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,0.08)',
   },
+  hamburgerLine: {
+    width: 20, height: 2,
+    backgroundColor: '#ffffff',
+    marginVertical: 2, borderRadius: 2,
+  },
   title: {
     flex: 1, color: '#ffffff',
     fontSize: 16, fontWeight: '700',
     textAlign: 'center', marginHorizontal: 8,
   },
   rightIcons: { flexDirection: 'row', gap: 8 },
+  langIcon: { fontSize: 20 },
+  bellIcon: { fontSize: 20 },
   badge: {
     position: 'absolute', top: 4, right: 4,
     backgroundColor: '#dc2626',

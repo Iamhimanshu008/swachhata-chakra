@@ -5,7 +5,6 @@ import {
     RefreshControl, ActivityIndicator, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { getHistory } from '../../api/collectorApi';
 import { COLORS } from '../../config';
 import { useTranslation } from '../../i18n';
@@ -75,7 +74,7 @@ export default function HistoryScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topBar}>
-                <AutoText style={styles.title}>History</AutoText>
+                <Text style={styles.title}>{t('history')}</Text>
             </View>
             <SectionList
                 sections={sections}
@@ -93,7 +92,7 @@ export default function HistoryScreen() {
                 }
                 ListEmptyComponent={
                     <View style={styles.empty}>
-                        <MaterialCommunityIcons name="clipboard-text-outline" size={56} color="#d1d5db" />
+                        <Text style={styles.emptyEmoji}>📋</Text>
                         <AutoText style={styles.emptyTitle}>No collections yet</AutoText>
                         <AutoText style={styles.emptyText}>Completed collections will appear here.</AutoText>
                     </View>
@@ -132,6 +131,7 @@ const styles = StyleSheet.create({
     kgText: { fontSize: 15, fontWeight: '800', color: COLORS.dark },
     timeText: { fontSize: 12, color: '#888', marginTop: 2 },
     empty: { alignItems: 'center', paddingTop: 60 },
-    emptyTitle: { fontSize: 20, fontWeight: '700', color: COLORS.dark, marginBottom: 8, marginTop: 16 },
+    emptyEmoji: { fontSize: 56, marginBottom: 16 },
+    emptyTitle: { fontSize: 20, fontWeight: '700', color: COLORS.dark, marginBottom: 8 },
     emptyText: { fontSize: 14, color: '#777', textAlign: 'center' },
 });
