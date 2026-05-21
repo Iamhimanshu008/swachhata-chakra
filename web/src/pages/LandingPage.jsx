@@ -1,339 +1,621 @@
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-    Bot, MapPin, Recycle, ArrowRight, Download, Leaf, Shield,
-    BarChart3, Smartphone, Globe, ChevronRight, Zap, Github,
+  Bot,
+  MapPin,
+  Smartphone,
+  BarChart2,
+  Recycle,
+  Bell,
+  Leaf,
+  Download,
+  ArrowRight,
+  Shield,
+  Users,
+  Truck
 } from 'lucide-react';
 
-const APK_URL = import.meta.env.VITE_APK_DOWNLOAD_URL || 
+const APK_URL = import.meta.env.VITE_APK_DOWNLOAD_URL ||
   "https://github.com/Iamhimanshu008/smartwaste-ai/releases/download/v2.3.3/SmartWasteAI-v2.3.3.apk";
-const APK_DOWNLOAD_URL = APK_URL;
 
-/* ──────────── Reusable Glass Card ──────────── */
-function GlassCard({ children, className = '' }) {
-    return (
-        <div className={`
-            relative rounded-2xl p-6 
-            bg-white/[0.04] backdrop-blur-xl 
-            border border-white/[0.08] 
-            shadow-[0_8px_32px_rgba(0,0,0,0.3)]
-            hover:bg-white/[0.07] hover:border-green-400/20
-            hover:shadow-[0_8px_40px_rgba(34,197,94,0.08)]
-            transition-all duration-500 ease-out
-            group
-            ${className}
-        `}>
-            {children}
-        </div>
-    );
-}
-
-/* ──────────── Floating Particles Background ──────────── */
-function ParticleField() {
-    return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-            {[...Array(6)].map((_, i) => (
-                <div
-                    key={i}
-                    className="absolute rounded-full bg-green-400/10 blur-3xl animate-pulse-soft"
-                    style={{
-                        width: `${120 + i * 60}px`,
-                        height: `${120 + i * 60}px`,
-                        top: `${10 + i * 15}%`,
-                        left: `${5 + i * 16}%`,
-                        animationDelay: `${i * 0.7}s`,
-                        animationDuration: `${4 + i}s`,
-                    }}
-                />
-            ))}
-        </div>
-    );
-}
-
-/* ──────────── Stat Counter ──────────── */
-function StatItem({ value, label, icon: Icon }) {
-    return (
-        <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-1">
-                <Icon className="w-5 h-5 text-green-400" />
-                <span className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{value}</span>
-            </div>
-            <span className="text-sm text-gray-400 font-medium">{label}</span>
-        </div>
-    );
-}
-
-/* ════════════════════════════════════════════════════════════
-   LANDING PAGE
-   ════════════════════════════════════════════════════════════ */
 export default function LandingPage() {
-    return (
-        <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
-            <ParticleField />
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-            {/* ── NAVBAR ────────────────────────────────────── */}
-            <nav className="sticky top-0 z-50 backdrop-blur-xl bg-gray-950/70 border-b border-white/[0.06]">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                    {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2.5 group">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:shadow-green-500/40 transition-shadow duration-300">
-                            <Leaf className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="text-lg font-bold tracking-tight">
-                            Smart<span className="text-green-400">Waste</span> AI
-                        </span>
-                    </Link>
+  useEffect(() => {
+    // Dynamically append Noto Sans Devanagari font
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
 
-                    {/* Nav Actions */}
-                    <div className="flex items-center gap-3">
-                        <Link
-                            to="/public"
-                            className="hidden sm:flex items-center gap-1.5 text-sm text-gray-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all duration-200"
-                        >
-                            <Globe className="w-4 h-4" />
-                            Public View
-                        </Link>
-                        <Link
-                            to="/login"
-                            className="flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 hover:border-green-400/40 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300"
-                        >
-                            Login to Dashboard
-                            <ChevronRight className="w-4 h-4" />
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+    // Set page title for SEO best practices
+    document.title = "Chhattisgarh State Waste Management Portal | SmartWaste AI";
 
-            {/* ── HERO SECTION ──────────────────────────────── */}
-            <section className="relative pt-20 pb-28 md:pt-32 md:pb-36">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="max-w-3xl mx-auto text-center">
-                        {/* Badge */}
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold tracking-wide uppercase animate-fade-in">
-                            <Zap className="w-3.5 h-3.5" />
-                            AI-Powered Platform — Chhattisgarh, India
-                        </div>
+    // Set meta description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = "Official Chhattisgarh State Waste Management Portal. AI-powered real-time waste monitoring, route optimization, and recycling solutions.";
+  }, []);
 
-                        {/* Headline */}
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight mb-6 animate-slide-up">
-                            Revolutionizing{' '}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400">
-                                Rural Waste
-                            </span>
-                            <br />
-                            Management with AI
-                        </h1>
+  return (
+    <div className="min-h-screen bg-[#f8fafc] text-slate-800 font-sans antialiased selection:bg-green-100 selection:text-green-800">
 
-                        {/* Sub-headline */}
-                        <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                            AI-powered waste segregation, smart collection routing, real-time bin tracking, 
-                            and a direct marketplace connecting communities with recyclers.
-                        </p>
-
-                        {/* CTA Buttons */}
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                            <div className="flex flex-col items-center">
-                                <a
-                                  href={APK_URL}
-                                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M17.523 15.341a4.88 4.88 0 0 1-1.98.42c-.94 0-1.72-.28-2.34-.84v3.36H11.1V9.621h2.1v.78c.6-.6 1.44-.9 2.46-.9 2.04 0 3.36 1.44 3.36 3.48 0 .9-.18 1.68-.54 2.34h.04zm-2.16-4.14c-.9 0-1.56.66-1.56 1.74s.66 1.74 1.56 1.74 1.56-.66 1.56-1.74-.66-1.74-1.56-1.74z"/>
-                                  </svg>
-                                  Download Android App
-                                </a>
-                                <p style={{fontSize:'11px', color:'#9ca3af', marginTop:'4px', textAlign:'center'}}>
-                                  v2.3.3 • Free • Android 8.0+
-                                </p>
-                            </div>
-                            <Link
-                                to="/login"
-                                className="flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-base text-white border-2 border-white/15 hover:border-green-400/40 hover:bg-white/5 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
-                            >
-                                Open Web Dashboard
-                                <ArrowRight className="w-5 h-5" />
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Stats Bar */}
-                    <div className="mt-20 max-w-2xl mx-auto">
-                        <GlassCard className="!p-6">
-                            <div className="grid grid-cols-3 gap-6 divide-x divide-white/10">
-                                <StatItem value="4" label="Active Zones" icon={MapPin} />
-                                <StatItem value="100+" label="Smart Bins" icon={BarChart3} />
-                                <StatItem value="24/7" label="AI Monitoring" icon={Shield} />
-                            </div>
-                        </GlassCard>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── FEATURES GRID ─────────────────────────────── */}
-            <section className="relative py-24 md:py-32">
-                {/* Section divider gradient */}
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-green-500/30 to-transparent" />
-
-                <div className="max-w-7xl mx-auto px-6">
-                    {/* Section Header */}
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">
-                            How It <span className="text-green-400">Works</span>
-                        </h2>
-                        <p className="text-gray-400 text-lg max-w-xl mx-auto">
-                            End-to-end waste management — from detection to recycling.
-                        </p>
-                    </div>
-
-                    {/* Cards */}
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {/* Card 1 */}
-                        <GlassCard>
-                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400/20 to-green-400/5 flex items-center justify-center mb-5 group-hover:from-green-400/30 group-hover:to-green-400/10 transition-all duration-500">
-                                <Bot className="w-7 h-7 text-green-400" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-3 text-white">AI Waste Segregation</h3>
-                            <p className="text-gray-400 text-sm leading-relaxed">
-                                Gemini AI analyzes uploaded photos to identify waste types, estimate fill levels, 
-                                and flag urgency — all from a single photo taken by residents.
-                            </p>
-                            <div className="mt-5 flex flex-wrap gap-2">
-                                {['Gemini Vision', 'Auto-classify', '95% Accuracy'].map(tag => (
-                                    <span key={tag} className="text-xs px-2.5 py-1 rounded-lg bg-green-400/10 text-green-400/80 font-medium">
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </GlassCard>
-
-                        {/* Card 2 */}
-                        <GlassCard>
-                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-emerald-400/5 flex items-center justify-center mb-5 group-hover:from-emerald-400/30 group-hover:to-emerald-400/10 transition-all duration-500">
-                                <MapPin className="w-7 h-7 text-emerald-400" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-3 text-white">Real-time Bin Tracking</h3>
-                            <p className="text-gray-400 text-sm leading-relaxed">
-                                Live map showing every smart bin's status across zones. Collectors get 
-                                AI-optimized routes so they reach the fullest bins first.
-                            </p>
-                            <div className="mt-5 flex flex-wrap gap-2">
-                                {['Live Map', 'Smart Routes', 'GPS Verified'].map(tag => (
-                                    <span key={tag} className="text-xs px-2.5 py-1 rounded-lg bg-emerald-400/10 text-emerald-400/80 font-medium">
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </GlassCard>
-
-                        {/* Card 3 */}
-                        <GlassCard>
-                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400/20 to-teal-400/5 flex items-center justify-center mb-5 group-hover:from-teal-400/30 group-hover:to-teal-400/10 transition-all duration-500">
-                                <Recycle className="w-7 h-7 text-teal-400" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-3 text-white">Recycler Marketplace</h3>
-                            <p className="text-gray-400 text-sm leading-relaxed">
-                                Verified recyclers bid on collected waste in real-time. 
-                                Self-Help Groups earn fair prices, creating a circular economy for rural India.
-                            </p>
-                            <div className="mt-5 flex flex-wrap gap-2">
-                                {['Live Bids', 'Fair Pricing', 'Direct Sale'].map(tag => (
-                                    <span key={tag} className="text-xs px-2.5 py-1 rounded-lg bg-teal-400/10 text-teal-400/80 font-medium">
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </GlassCard>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── PLATFORM SECTION ──────────────────────────── */}
-            <section className="relative py-24">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="text-center mb-14">
-                        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">
-                            One System, <span className="text-green-400">Every Stakeholder</span>
-                        </h2>
-                        <p className="text-gray-400 text-lg max-w-xl mx-auto">
-                            Dedicated dashboards for every role in the waste management chain.
-                        </p>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="rounded-xl p-5 bg-green-500/[0.06] border border-green-500/10 hover:border-green-400/25 transition-all duration-300">
-                            <div className="text-sm font-bold text-green-400 mb-1.5">Admin</div>
-                            <p className="text-xs text-gray-500 leading-relaxed">Full platform control, analytics &amp; AI insights</p>
-                        </div>
-                        <div className="rounded-xl p-5 bg-emerald-500/[0.06] border border-emerald-500/10 hover:border-emerald-400/25 transition-all duration-300">
-                            <div className="text-sm font-bold text-emerald-400 mb-1.5">Sub-Admin</div>
-                            <p className="text-xs text-gray-500 leading-relaxed">Zone management, collector assignment &amp; routing</p>
-                        </div>
-                        <div className="rounded-xl p-5 bg-teal-500/[0.06] border border-teal-500/10 hover:border-teal-400/25 transition-all duration-300">
-                            <div className="text-sm font-bold text-teal-400 mb-1.5">SHG</div>
-                            <p className="text-xs text-gray-500 leading-relaxed">Bin monitoring, waste reporting &amp; scheduling</p>
-                        </div>
-                        <div className="rounded-xl p-5 bg-cyan-500/[0.06] border border-cyan-500/10 hover:border-cyan-400/25 transition-all duration-300">
-                            <div className="text-sm font-bold text-cyan-400 mb-1.5">Collector</div>
-                            <p className="text-xs text-gray-500 leading-relaxed">Route navigation, bin collection &amp; GPS tracking</p>
-                        </div>
-                    </div>
-
-                    {/* Mobile App Callout */}
-                    <GlassCard className="mt-12 !p-8">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/20">
-                                    <Smartphone className="w-7 h-7 text-white" />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-white">Mobile App for Android</h3>
-                                    <p className="text-sm text-gray-400">
-                                        Public reporting, collector routes, and SHG tools — all in one app.
-                                    </p>
-                                </div>
-                            </div>
-                            <a
-                                href={APK_DOWNLOAD_URL}
-                                download="SmartWaste-AI.apk"
-                                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg shadow-green-500/20 hover:shadow-green-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 whitespace-nowrap"
-                            >
-                                <Download className="w-5 h-5" />
-                                Download APK
-                            </a>
-                        </div>
-                    </GlassCard>
-                </div>
-            </section>
-
-            {/* ── FOOTER ────────────────────────────────────── */}
-            <footer className="relative py-10 border-t border-white/[0.06]">
-                <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <Leaf className="w-4 h-4 text-green-500" />
-                        <span>© {new Date().getFullYear()} SmartWaste AI — Chhattisgarh, India</span>
-                    </div>
-                    <div className="flex items-center gap-5">
-                        <Link to="/public" className="text-sm text-gray-500 hover:text-green-400 transition-colors">
-                            Public View
-                        </Link>
-                        <Link to="/recyclers" className="text-sm text-gray-500 hover:text-green-400 transition-colors">
-                            Recycler Portal
-                        </Link>
-                        <a
-                            href="https://github.com/Iamhimanshu008/smartwaste-ai"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-white transition-colors"
-                        >
-                            <Github className="w-4 h-4" />
-                            GitHub
-                        </a>
-                    </div>
-                </div>
-            </footer>
+      {/* 1. TOP GOVERNMENT BAR */}
+      <div id="top-gov-bar" className="bg-[#14532d] text-white py-2 px-4 sm:px-6 md:px-8 text-xs font-semibold flex flex-col sm:flex-row justify-between items-center gap-1.5 sm:gap-0 shadow-inner">
+        <div className="flex items-center gap-1.5">
+          <span>Government of Chhattisgarh</span>
+          <span className="text-white/40">|</span>
+          <span
+            style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
+            className="tracking-wide"
+          >
+            छत्तीसगढ़ शासन
+          </span>
         </div>
-    );
+        <div className="flex items-center gap-1.5">
+          <span>Swachh Chhattisgarh Mission</span>
+          <span className="text-white/40">|</span>
+          <span
+            style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
+            className="tracking-wide"
+          >
+            स्वच्छ छत्तीसगढ़ मिशन
+          </span>
+        </div>
+      </div>
+
+      {/* 2. HEADER / NAVBAR */}
+      <header id="main-header" className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-[#16a34a] shadow-sm transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          {/* Logo Brand area */}
+          <Link to="/" id="brand-logo" className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-green-500 rounded-lg p-1">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#16a34a] to-[#14532d] flex items-center justify-center shadow-md shadow-green-500/20 group-hover:scale-105 transition-transform duration-300">
+              <Leaf className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-slate-900 tracking-tight">SmartWaste AI</span>
+                <span className="bg-green-100 text-green-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded border border-green-200">
+                  V2.3.3
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium">Chhattisgarh Waste Management System</p>
+            </div>
+          </Link>
+
+          {/* Desktop Nav Links */}
+          <nav className="hidden md:flex items-center gap-6">
+            <a href="#top" className="text-sm font-semibold text-slate-600 hover:text-[#16a34a] transition-colors py-2">Home</a>
+            <a href="#features" className="text-sm font-semibold text-slate-600 hover:text-[#16a34a] transition-colors py-2">Features</a>
+            <a href="#download" className="text-sm font-semibold text-slate-600 hover:text-[#16a34a] transition-colors py-2">Download</a>
+            <Link
+              to="/public"
+              id="nav-link-public"
+              className="text-sm font-semibold text-slate-600 hover:text-[#16a34a] transition-colors py-2"
+            >
+              Public Map
+            </Link>
+            <Link
+              to="/login"
+              id="nav-link-login"
+              className="inline-flex items-center gap-1.5 text-sm font-bold bg-[#16a34a] hover:bg-[#14532d] text-white px-5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
+            >
+              Login
+            </Link>
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            id="mobile-menu-toggle"
+            className="md:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+            aria-label="Toggle Navigation Menu"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {isMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile Navigation Drawer */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-slate-100 px-4 py-4 space-y-3 shadow-inner">
+            <a
+              href="#top"
+              onClick={() => setIsMenuOpen(false)}
+              className="block text-base font-semibold text-slate-600 hover:text-[#16a34a] px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+            >
+              Home
+            </a>
+            <a
+              href="#features"
+              onClick={() => setIsMenuOpen(false)}
+              className="block text-base font-semibold text-slate-600 hover:text-[#16a34a] px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+            >
+              Features
+            </a>
+            <a
+              href="#download"
+              onClick={() => setIsMenuOpen(false)}
+              className="block text-base font-semibold text-slate-600 hover:text-[#16a34a] px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+            >
+              Download
+            </a>
+            <Link
+              to="/public"
+              onClick={() => setIsMenuOpen(false)}
+              className="block text-base font-semibold text-slate-600 hover:text-[#16a34a] px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+            >
+              Public Map
+            </Link>
+            <Link
+              to="/login"
+              onClick={() => setIsMenuOpen(false)}
+              className="block text-center text-base font-bold bg-[#16a34a] hover:bg-[#14532d] text-white py-3 rounded-xl transition-colors"
+            >
+              Login
+            </Link>
+          </div>
+        )}
+      </header>
+
+      {/* 3. HERO SECTION */}
+      <section id="hero" className="relative pt-12 pb-20 md:py-24 bg-gradient-to-b from-green-50/70 via-white to-[#f8fafc] overflow-hidden">
+        {/* Subtle decorative background shapes */}
+        <div className="absolute top-1/4 right-0 w-72 h-72 bg-orange-100/30 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div className="absolute bottom-10 left-0 w-80 h-80 bg-green-100/30 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-orange-50 border border-orange-200 text-[#f97316] text-xs font-bold shadow-sm">
+            <span>🏆 Climatathon 2026 — NIT Raipur</span>
+          </div>
+
+          {/* Hindi Slogan - Large & Bold with Noto Sans Devanagari */}
+          <h1
+            style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-wide text-[#f97316] mb-4 drop-shadow-sm"
+          >
+            स्वच्छ छत्तीसगढ़, स्मार्ट छत्तीसगढ़
+          </h1>
+
+          {/* English Headline */}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight max-w-4xl mx-auto mb-6 leading-tight">
+            AI-Powered Waste Management for Chhattisgarh
+          </h2>
+
+          {/* English Description */}
+          <p className="text-base sm:text-lg md:text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto mb-10">
+            Empowering collectors, SHG workers, and administrators across Chhattisgarh with real-time AI waste monitoring and route optimization.
+          </p>
+
+          {/* Three CTA Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16">
+            <a
+              href={APK_URL}
+              download
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#16a34a] hover:bg-[#14532d] text-white font-bold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <Download className="w-5 h-5" />
+              Download App v2.3.3
+            </a>
+            <Link
+              to="/login"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-[#16a34a] border-2 border-[#16a34a] font-bold px-8 py-4 rounded-2xl shadow-sm hover:-translate-y-0.5 transition-all duration-300"
+            >
+              Open Dashboard
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              to="/public"
+              className="text-slate-600 hover:text-[#16a34a] font-semibold text-sm hover:underline px-4 py-2 transition-all"
+            >
+              View Public Map →
+            </Link>
+          </div>
+
+          {/* Stats Bar */}
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-6">
+            {[
+              { label: "Bins Monitored", count: "500+" },
+              { label: "Active Collectors", count: "50+" },
+              { label: "Zones Covered", count: "10+" },
+              { label: "Collection Rate", count: "95%" }
+            ].map((stat, idx) => (
+              <div
+                key={idx}
+                className="bg-white p-6 rounded-2xl border-2 border-[#16a34a]/20 shadow-sm hover:border-[#16a34a] hover:shadow-md transition-all duration-300 text-center"
+              >
+                <div className="text-2xl sm:text-3xl font-extrabold text-[#16a34a] mb-1">{stat.count}</div>
+                <div className="text-xs sm:text-sm font-semibold text-slate-500">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* 4. FEATURES SECTION */}
+      <section id="features" className="py-20 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Section header */}
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block bg-green-100 text-green-800 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border border-green-200 mb-3">
+              Features
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+              Why SmartWaste AI for Chhattisgarh?
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg">
+              Built for the unique waste management challenges of Chhattisgarh's urban and rural zones
+            </p>
+          </div>
+
+          {/* Feature Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {[
+              {
+                icon: Bot,
+                title: "AI Image Analysis",
+                desc: "Gemini 1.5 Flash powered bin scanning and fill level detection"
+              },
+              {
+                icon: MapPin,
+                title: "Route Optimization",
+                desc: "VRP algorithm ensures efficient collection across all zones"
+              },
+              {
+                icon: Smartphone,
+                title: "Mobile App",
+                desc: "Dedicated interface for collectors and SHG field workers"
+              },
+              {
+                icon: BarChart2,
+                title: "Real-time Dashboard",
+                desc: "Admin analytics, zone monitoring, and export reports"
+              },
+              {
+                icon: Recycle,
+                title: "Recycler Marketplace",
+                desc: "Connect collected waste directly to local recyclers"
+              },
+              {
+                icon: Bell,
+                title: "Push Notifications",
+                desc: "Instant alerts to collectors when routes are generated"
+              }
+            ].map((feat, idx) => {
+              const IconComp = feat.icon;
+              return (
+                <div
+                  key={idx}
+                  className="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-green-500/30 hover:-translate-y-1 transition-all duration-300 group"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-green-50 text-[#16a34a] flex items-center justify-center mb-6 group-hover:bg-[#16a34a] group-hover:text-white transition-colors duration-300 shadow-inner">
+                    <IconComp className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{feat.title}</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed">{feat.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* 5. HOW IT WORKS */}
+      <section id="how-it-works" className="py-20 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Section header */}
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+              How It Works
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg">
+              From bin report to collection — fully automated
+            </p>
+          </div>
+
+          {/* Timeline Steps */}
+          <div className="relative">
+            {/* Desktop Horizontal Line */}
+            <div className="hidden lg:block absolute top-10 left-[12%] right-[12%] h-0.5 bg-gradient-to-r from-green-200 via-orange-200 to-green-200 -z-10" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+              {[
+                { step: "1", title: "Report", desc: "Citizen or SHG worker reports a bin via mobile app" },
+                { step: "2", title: "AI Scan", desc: "Gemini 1.5 Flash analyzes fill level and waste type" },
+                { step: "3", title: "Route Assigned", desc: "Optimizer assigns optimal route to collector" },
+                { step: "4", title: "Collected", desc: "Collector completes route, data synced to dashboard" }
+              ].map((item, idx) => (
+                <div key={idx} className="flex flex-col items-center text-center group">
+                  <div className="w-20 h-20 rounded-full bg-slate-50 border-4 border-slate-100 flex items-center justify-center text-slate-800 font-extrabold text-2xl shadow-inner group-hover:scale-105 group-hover:border-[#16a34a]/30 group-hover:bg-green-50 transition-all duration-300 mb-6 relative">
+                    <span className="text-[#16a34a]">{item.step}</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed max-w-[240px]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 6. ROLE-BASED ACCESS SECTION */}
+      <section id="role-access" className="py-20 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Section header */}
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+              Who Is It For?
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg">
+              SmartWaste AI serves every stakeholder in the waste management chain
+            </p>
+          </div>
+
+          {/* Roles Cards Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {[
+              {
+                icon: Shield,
+                title: "Admin",
+                desc: "Full platform control, analytics, user management"
+              },
+              {
+                icon: Users,
+                title: "SHG Worker",
+                desc: "Submit bin reports, track collection points"
+              },
+              {
+                icon: Truck,
+                title: "Collector",
+                desc: "View assigned routes, navigate to bins, log collections"
+              },
+              {
+                icon: Recycle,
+                title: "Recycler",
+                desc: "Browse marketplace, place bids on collected waste"
+              }
+            ].map((role, idx) => {
+              const RoleIcon = role.icon;
+              return (
+                <div
+                  key={idx}
+                  className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-[#16a34a]/30 transition-all duration-300"
+                >
+                  <div>
+                    <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#f97316] flex items-center justify-center mb-5">
+                      <RoleIcon className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 mb-2">{role.title}</h3>
+                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">{role.desc}</p>
+                  </div>
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center gap-1 text-sm font-bold text-[#16a34a] hover:text-[#14532d] transition-colors mt-auto group"
+                  >
+                    Login
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* 7. DOWNLOAD SECTION */}
+      <section id="download" className="py-20 bg-white border-t border-slate-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+            {/* LEFT - App Info */}
+            <div className="flex flex-col items-start">
+              <span className="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full border border-green-200 mb-4">
+                v2.3.3
+              </span>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
+                Download SmartWaste AI App
+              </h2>
+              <p className="text-slate-600 text-base mb-6">
+                Available free for Android devices
+              </p>
+
+              {/* Requirements & Info */}
+              <div className="text-sm font-semibold text-slate-500 mb-8 flex flex-wrap gap-x-4 gap-y-2 border-y border-slate-100 py-3 w-full">
+                <span>Android 8.0+</span>
+                <span className="text-slate-300">|</span>
+                <span>Free</span>
+                <span className="text-slate-300">|</span>
+                <span>~88 MB</span>
+              </div>
+
+              {/* What's New List */}
+              <div className="mb-8 w-full bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                <h4 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wider">What's new in v2.3.3:</h4>
+                <ul className="space-y-3 text-slate-600 text-sm">
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-emerald-500">✅</span>
+                    <span>Vector icons throughout app</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-emerald-500">✅</span>
+                    <span>Hindi / English bilingual support</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-emerald-500">✅</span>
+                    <span>Google Translate integration</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-emerald-500">✅</span>
+                    <span>News Feed screen</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-emerald-500">✅</span>
+                    <span>Safety Checklist for collectors</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Download CTA */}
+              <a
+                href={APK_URL}
+                download
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#16a34a] hover:bg-[#14532d] text-white font-bold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-2"
+              >
+                <Download className="w-5 h-5" />
+                Download APK v2.3.3
+              </a>
+              <span className="text-xs text-slate-400 font-medium">Direct APK download — no Play Store required</span>
+            </div>
+
+            {/* RIGHT - CSS Phone Mockup */}
+            <div className="flex justify-center items-center">
+              <div className="relative w-[280px] h-[550px] rounded-[48px] border-[10px] border-slate-800 bg-slate-950 shadow-2xl p-4 overflow-hidden flex flex-col justify-between items-center select-none">
+
+                {/* Phone Notch/Speaker */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-2xl z-20 flex items-center justify-center">
+                  <div className="w-12 h-1 bg-slate-900 rounded-full mb-1" />
+                </div>
+
+                {/* Subtle shine effect overlay */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent pointer-events-none z-10" />
+
+                {/* Header mock screen */}
+                <div className="w-full pt-8 flex justify-between items-center text-[10px] text-white/50 px-2 font-mono">
+                  <span>9:41 AM</span>
+                  <div className="flex items-center gap-1.5">
+                    <span>5G</span>
+                    <div className="w-4 h-2.5 border border-white/40 rounded-sm flex items-center px-0.5">
+                      <div className="w-full h-full bg-white/70 rounded-2xs" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main Screen Content */}
+                <div className="flex-1 flex flex-col items-center justify-center text-center px-4 w-full">
+                  <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[#16a34a] to-[#14532d] flex items-center justify-center mb-4 shadow-lg shadow-green-500/20">
+                    <Leaf className="w-9 h-9 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight mb-1">SmartWaste AI</h3>
+                  <span className="text-[10px] bg-green-500/10 text-green-400 px-2 py-0.5 rounded border border-green-500/20 font-bold mb-8">
+                    v2.3.3
+                  </span>
+
+                  {/* Tiny mock widgets */}
+                  <div className="w-full space-y-2">
+                    <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-3 text-left">
+                      <div className="text-[9px] text-white/40 uppercase font-semibold">Active Zone</div>
+                      <div className="text-xs text-white font-medium flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-[#16a34a]" /> Raipur, Sector 5
+                      </div>
+                    </div>
+                    <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-3 text-left">
+                      <div className="text-[9px] text-white/40 uppercase font-semibold">Today's collection</div>
+                      <div className="text-xs text-white font-medium flex items-center gap-1">
+                        <Truck className="w-3 h-3 text-[#f97316]" /> Route 14 Assigned
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Home Indicator */}
+                <div className="w-full pb-2 flex justify-center">
+                  <div className="w-24 h-1 bg-white/30 rounded-full" />
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 8. FOOTER */}
+      <footer id="main-footer" className="bg-[#14532d] text-white pt-16 pb-8 border-t-4 border-[#f97316]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pb-12">
+
+            {/* Column 1 */}
+            <div>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-md">
+                  <Leaf className="w-5 h-5 text-[#14532d]" />
+                </div>
+                <span className="text-lg font-bold tracking-tight text-white">SmartWaste AI V2</span>
+              </div>
+              <p className="text-sm text-green-100/80 leading-relaxed max-w-sm">
+                Chhattisgarh Waste Management System tagline. A smart AI-powered utility system for citizens, SHGs, and collectors.
+              </p>
+            </div>
+
+            {/* Column 2 */}
+            <div>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-[#f97316] pb-2 inline-block">
+                Quick Links
+              </h4>
+              <ul className="space-y-3 text-sm text-green-100/90">
+                <li>
+                  <Link to="/public" className="hover:text-orange-300 hover:underline transition-all">Public Map</Link>
+                </li>
+                <li>
+                  <Link to="/public" className="hover:text-orange-300 hover:underline transition-all">Report Bin</Link>
+                </li>
+                <li>
+                  <Link to="/login" className="hover:text-orange-300 hover:underline transition-all">Login</Link>
+                </li>
+                <li>
+                  <a href={APK_URL} download className="hover:text-orange-300 hover:underline transition-all">Download App</a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3 */}
+            <div>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-[#f97316] pb-2 inline-block">
+                Contact &amp; About
+              </h4>
+              <ul className="space-y-3 text-sm text-green-100/90">
+                <li>Team CodeX</li>
+                <li>Kalinga University</li>
+                <li>Climatathon 2026</li>
+                <li>NIT Raipur</li>
+              </ul>
+            </div>
+
+          </div>
+
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-green-200">
+            <div>
+              © 2026 SmartWaste AI V2 | Team CodeX | Kalinga University | Climatathon 2026 — NIT Raipur
+            </div>
+            <div className="flex gap-4">
+              <span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span>
+              <span>•</span>
+              <span className="hover:text-white transition-colors cursor-pointer">Terms of Service</span>
+            </div>
+          </div>
+
+        </div>
+      </footer>
+
+    </div>
+  );
 }
