@@ -6,10 +6,11 @@ export const login = async (email, password, role) => {
         const res = await client.post('/auth/login', payload);
         return res.data;
     } catch (err) {
+        console.error('[SmartWaste] Login error:', err.code, err.message, err.config?.baseURL);
         if (err.code === 'ECONNABORTED') {
             throw new Error('Server is waking up, please wait 30 seconds and try again');
         } else if (!err.response) {
-            throw new Error('Cannot reach server. Check your internet connection.');
+            throw new Error(`Cannot reach server (${err.code || 'NETWORK_ERROR'}). URL: ${err.config?.baseURL || 'unknown'}. Check your internet connection.`);
         } else if (err.response.status === 401) {
             throw new Error('Invalid email or password');
         } else {

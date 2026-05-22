@@ -9,6 +9,8 @@ const BASE_URL = (
     "https://smartwaste-ai-f0i9.onrender.com"
 ) + "/api";
 
+console.log('[SmartWaste] API BASE_URL:', BASE_URL);
+
 const client = axios.create({
     baseURL: BASE_URL,
     headers: {

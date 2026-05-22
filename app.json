@@ -53,6 +53,7 @@
       "expo-notifications"
     ],
     "extra": {
+      "apiUrl": "https://smartwaste-ai-f0i9.onrender.com",
       "eas": {
         "projectId": "41ccdf6f-e09b-4cda-8540-a1afb4425748"
       }
