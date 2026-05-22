@@ -1,8 +1,13 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import useStore from '../store';
 
-const BASE_URL = (process.env.EXPO_PUBLIC_API_URL || "http://localhost:8000") + "/api";
+const BASE_URL = (
+    Constants.expoConfig?.extra?.apiUrl ||
+    process.env.EXPO_PUBLIC_API_URL ||
+    "https://smartwaste-ai-f0i9.onrender.com"
+) + "/api";
 
 const client = axios.create({
     baseURL: BASE_URL,

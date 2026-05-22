@@ -11,6 +11,7 @@ import PublicNavigator from './PublicNavigator';
 import { COLORS } from '../config';
 import { registerForPushNotifications, setupNotificationListeners } from '../utils/notifications';
 import { getUnreadCount } from '../api/notificationApi';
+import { checkForUpdate } from '../utils/updateChecker';
 
 import LandingScreen from '../screens/LandingScreen';
 
@@ -30,6 +31,12 @@ export default function AppNavigator() {
             setLoading(false);
         }
         return unsub;
+    }, []);
+
+    // Check for app updates on startup
+    useEffect(() => {
+        const currentVersion = Constants.expoConfig?.version || "2.3.4";
+        checkForUpdate(currentVersion);
     }, []);
 
     // Register for push notifications after login
