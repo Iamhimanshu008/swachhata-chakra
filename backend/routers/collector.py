@@ -1,3 +1,4 @@
+# DEPRECATED: V2 collector router, replaced by sync.py in V3
 """
 Collector router: assigned route execution, collection logging, and history.
 """

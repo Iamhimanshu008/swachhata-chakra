@@ -1,3 +1,4 @@
+# DEPRECATED: V2 recycler router
 """
 Recycler router: dashboards and bid management for Recylers.
 """

@@ -14,6 +14,7 @@ import { getUnreadCount } from '../api/notificationApi';
 import { checkForUpdate } from '../utils/updateChecker';
 
 import LandingScreen from '../screens/LandingScreen';
+import CitizenNavigator from './CitizenNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -92,6 +93,8 @@ export default function AppNavigator() {
                 <Stack.Screen name="CollectorTabs" component={CollectorNavigator} />
             ) : user?.role === 'shg' ? (
                 <Stack.Screen name="SHGTabs" component={SHGNavigator} />
+            ) : user?.role === 'citizen' ? (
+                <Stack.Screen name="CitizenStack" component={CitizenNavigator} />
             ) : (
                 <>
                     <Stack.Screen name="Landing" component={LandingScreen} />

@@ -95,6 +95,9 @@ from routers.recycler import router as recycler_router
 from routers.notifications import router as notifications_router
 from routers.news_feed import router as news_router
 from routers.app_version import router as version_router
+from routers.citizen import router as citizen_router
+from routers.sync import router as sync_router
+from routers.points import router as points_router
 
 app.include_router(auth_router)
 app.include_router(public_router)
@@ -106,6 +109,9 @@ app.include_router(recycler_router)
 app.include_router(notifications_router)
 app.include_router(news_router, prefix="/api")
 app.include_router(version_router, prefix="/api")
+app.include_router(citizen_router)
+app.include_router(sync_router)
+app.include_router(points_router)
 
 
 @app.get("/")

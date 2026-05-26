@@ -11,4 +11,9 @@ from models.settings import SystemSettings
 from models.otp import OTPRecord
 from models.news_feed import NewsFeed
 
-__all__ = ["Zone", "User", "Bin", "BinReport", "SHGReport", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed"]
+# Add new models
+from models.transaction import Transaction
+from models.redemption import Redemption
+from models.daily_route import DailyRoute
+
+__all__ = ["Zone", "User", "Bin", "BinReport", "SHGReport", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "Redemption", "DailyRoute"]

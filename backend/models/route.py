@@ -1,3 +1,4 @@
+# DEPRECATED: V2 Route/RouteStop
 import enum
 from sqlalchemy import Column, Integer, String, Float, Enum, ForeignKey, DateTime, Date, Boolean, func
 from sqlalchemy.orm import relationship

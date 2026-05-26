@@ -1,3 +1,4 @@
+# DEPRECATED: V2 Collection
 from sqlalchemy import Column, Integer, Float, Text, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
 

@@ -98,6 +98,12 @@ const useStore = create(
             setUnreadCount: (count) => set({ unreadCount: count }),
             notifications: [],
             setNotifications: (list) => set({ notifications: list }),
+
+            // ── Citizen ──────────────────────────────────────────────
+            citizenProfile: null,
+            citizenWallet: null,
+            setCitizenProfile: (profile) => set({ citizenProfile: profile }),
+            setCitizenWallet: (wallet) => set({ citizenWallet: wallet }),
         }),
         {
             name: 'smartwaste-mobile-storage',

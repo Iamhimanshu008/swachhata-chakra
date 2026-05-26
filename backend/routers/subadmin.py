@@ -1,3 +1,4 @@
+# DEPRECATED: V2 subadmin router
 """
 Sub-admin router: zone-scoped report verification and operational dashboard.
 """

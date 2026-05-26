@@ -1,3 +1,4 @@
+# DEPRECATED: V2 SHG router, replaced by citizen.py in V3
 """
 SHG (Self-Help Group) router: bin reporting and collection history.
 """
