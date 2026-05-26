@@ -8,6 +8,9 @@ import StatsScreen from '../screens/collector/StatsScreen';
 import SafetyChecklistScreen from '../screens/collector/SafetyChecklistScreen';
 import NewsFeedScreen from '../screens/public/NewsFeedScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
+import MorningSyncScreen from '../screens/collector/MorningSyncScreen';
+import CollectionScreen from '../screens/collector/CollectionScreen';
+import AfternoonSyncScreen from '../screens/collector/AfternoonSyncScreen';
 import { COLORS } from '../config';
 
 // Inline SVG-style icon component using unicode
@@ -29,6 +32,9 @@ function HomeStackNavigator() {
             <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
             <HomeStack.Screen name="SafetyChecklist" component={SafetyChecklistScreen} />
             <HomeStack.Screen name="NewsFeed" component={NewsFeedScreen} />
+            <HomeStack.Screen name="MorningSync" component={MorningSyncScreen} />
+            <HomeStack.Screen name="CollectionScreen" component={CollectionScreen} />
+            <HomeStack.Screen name="AfternoonSync" component={AfternoonSyncScreen} />
         </HomeStack.Navigator>
     );
 }

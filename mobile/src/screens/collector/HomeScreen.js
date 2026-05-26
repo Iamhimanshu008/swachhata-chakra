@@ -173,6 +173,15 @@ export default function HomeScreen({ navigation }) {
                                 }]} />
                             </View>
                         </View>
+
+                        {/* V3 Offline Flow Button */}
+                        <TouchableOpacity 
+                            style={styles.offlineEntryBtn}
+                            onPress={() => navigation.navigate('MorningSync')}
+                        >
+                            <MaterialCommunityIcons name="cloud-sync-outline" size={24} color="#ffffff" />
+                            <Text style={styles.offlineEntryText}>Offline Field Mode (V3)</Text>
+                        </TouchableOpacity>
                     </>
                 ) : null}
             </ScrollView>
@@ -203,4 +212,10 @@ const styles = StyleSheet.create({
     progressText: { fontSize: 14, fontWeight: '600', color: COLORS.dark },
     progressBar: { height: 10, backgroundColor: '#E5E7EB', borderRadius: 5, overflow: 'hidden' },
     progressFill: { height: '100%', backgroundColor: COLORS.light, borderRadius: 5 },
+    offlineEntryBtn: {
+        flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
+        backgroundColor: '#16a34a', borderRadius: 16, padding: 18, marginTop: 16,
+        elevation: 4, shadowColor: '#16a34a', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8,
+    },
+    offlineEntryText: { fontSize: 16, fontWeight: '700', color: '#ffffff' },
 });
