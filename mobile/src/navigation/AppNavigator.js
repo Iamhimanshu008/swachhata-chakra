@@ -36,7 +36,8 @@ export default function AppNavigator() {
 
     // Check for app updates on startup
     useEffect(() => {
-        const currentVersion = Constants.expoConfig?.version || "2.3.4";
+        // Hardcoded to prevent Constants crash in bare release builds
+        const currentVersion = "2.3.6";
         checkForUpdate(currentVersion);
     }, []);
 
