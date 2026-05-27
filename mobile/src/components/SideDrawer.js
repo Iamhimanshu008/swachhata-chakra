@@ -13,18 +13,43 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
   const { t } = useTranslation();
   const logout = useStore(state => state.logout);
 
-  const menuItems = [
-    { icon: <Ionicons name="home-outline" size={22} color="#16a34a" />, key: 'dashboard', screen: 'Home' },
-    { icon: <MaterialCommunityIcons name="map-marker-path" size={22} color="#16a34a" />, key: 'my_route', screen: 'Map' },
-    { icon: <Ionicons name="stats-chart-outline" size={22} color="#16a34a" />, key: 'stats', screen: 'Stats' },
-    { icon: <MaterialCommunityIcons name="clipboard-list-outline" size={22} color="#16a34a" />, key: 'history', screen: 'History' },
-    { icon: <MaterialCommunityIcons name="shield-check-outline" size={22} color="#16a34a" />, key: 'Safety Checklist', screen: 'SafetyChecklist' },
-    { icon: <MaterialCommunityIcons name="newspaper-variant-outline" size={22} color="#16a34a" />, key: 'Swachhta Samachar', screen: 'NewsFeed' },
-  ];
+  const { citizenProfile } = useStore();
 
-  const handleNavigate = (screen) => {
+  const getMenuItems = () => {
+    if (user?.role === 'citizen') {
+      return [
+        { icon: <MaterialCommunityIcons name="account-edit-outline" size={22} color="#16a34a" />, key: 'Edit Profile', screen: 'CitizenEditProfile' },
+        { icon: <MaterialCommunityIcons name="clock-outline" size={22} color="#16a34a" />, key: 'History', screen: 'CitizenHistory' },
+        { icon: <MaterialCommunityIcons name="chart-bar" size={22} color="#16a34a" />, key: 'Statistics', screen: 'CitizenLeaderboard' },
+        { icon: <MaterialCommunityIcons name="bell-outline" size={22} color="#16a34a" />, key: 'Notifications', screen: 'CitizenNotifications' },
+        { divider: true },
+        { icon: <MaterialCommunityIcons name="cog-outline" size={22} color="#16a34a" />, key: 'Settings', screen: 'CitizenSettings' },
+        { icon: <MaterialCommunityIcons name="bullhorn-outline" size={22} color="#16a34a" />, key: 'Complaints', screen: 'CitizenComplaints' },
+        { icon: <MaterialCommunityIcons name="refresh" size={22} color="#16a34a" />, key: 'Check for Update', action: 'update' },
+      ];
+    }
+    return [
+      { icon: <Ionicons name="home-outline" size={22} color="#16a34a" />, key: 'dashboard', screen: 'Home' },
+      { icon: <MaterialCommunityIcons name="map-marker-path" size={22} color="#16a34a" />, key: 'my_route', screen: 'Map' },
+      { icon: <Ionicons name="stats-chart-outline" size={22} color="#16a34a" />, key: 'stats', screen: 'Stats' },
+      { icon: <MaterialCommunityIcons name="clipboard-list-outline" size={22} color="#16a34a" />, key: 'history', screen: 'History' },
+      { icon: <MaterialCommunityIcons name="shield-check-outline" size={22} color="#16a34a" />, key: 'Safety Checklist', screen: 'SafetyChecklist' },
+      { icon: <MaterialCommunityIcons name="newspaper-variant-outline" size={22} color="#16a34a" />, key: 'Swachhta Samachar', screen: 'NewsFeed' },
+    ];
+  };
+
+  const menuItems = getMenuItems();
+
+  const handleNavigate = (item) => {
     onClose();
-    navigation.navigate(screen);
+    if (item.action === 'update') {
+      // Do update check logic here
+      Alert.alert('Update Check', 'You are on the latest version.');
+      return;
+    }
+    if (item.screen) {
+      navigation.navigate(item.screen);
+    }
   };
 
   const handleLogout = () => {
@@ -61,21 +86,37 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
         <View style={styles.drawer}>
           {/* User Profile Section */}
           <View style={styles.profileSection}>
-            <View style={styles.avatar}>
+            <View style={user?.role === 'citizen' ? styles.avatarCitizen : styles.avatar}>
               <Text style={styles.avatarText}>
-                {user?.full_name?.[0]?.toUpperCase() || '?'}
+                {user?.role === 'citizen' 
+                  ? (citizenProfile?.name?.[0] || user?.full_name?.[0]?.toUpperCase() || '?')
+                  : (user?.full_name?.[0]?.toUpperCase() || '?')}
               </Text>
             </View>
             <View style={styles.profileInfo}>
               <Text style={styles.userName}>
-                {user?.full_name || 'Staff'}
+                {user?.role === 'citizen' ? (citizenProfile?.name || user?.full_name || 'Citizen') : (user?.full_name || 'Staff')}
               </Text>
-              <Text style={styles.userRole}>
-                {user?.role?.replace('_', ' ')?.toUpperCase()}
-              </Text>
-              <Text style={styles.userEmail} numberOfLines={1}>
-                {user?.email}
-              </Text>
+              
+              {user?.role === 'citizen' ? (
+                <>
+                  <Text style={styles.userEmail} numberOfLines={1}>
+                    House ID: #{citizenProfile?.house_id || 'SW-XXXXX'}
+                  </Text>
+                  <View style={styles.citizenBadge}>
+                    <Text style={styles.citizenBadgeText}>CITIZEN</Text>
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.userRole}>
+                    {user?.role?.replace('_', ' ')?.toUpperCase()}
+                  </Text>
+                  <Text style={styles.userEmail} numberOfLines={1}>
+                    {user?.email}
+                  </Text>
+                </>
+              )}
             </View>
           </View>
 
@@ -84,16 +125,21 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
 
           {/* Menu Items */}
           <ScrollView style={styles.menuList}>
-            {menuItems.map(item => (
-              <TouchableOpacity
-                key={item.key}
-                style={styles.menuItem}
-                onPress={() => handleNavigate(item.screen)}
-              >
-                <View style={{ width: 28, marginRight: 8, alignItems: 'center' }}>{item.icon}</View>
-                <Text style={styles.menuLabel}>{t(item.key)}</Text>
-              </TouchableOpacity>
-            ))}
+            {menuItems.map((item, index) => {
+              if (item.divider) {
+                return <View key={`div-${index}`} style={styles.divider} />;
+              }
+              return (
+                <TouchableOpacity
+                  key={item.key}
+                  style={styles.menuItem}
+                  onPress={() => handleNavigate(item)}
+                >
+                  <View style={{ width: 28, marginRight: 8, alignItems: 'center' }}>{item.icon}</View>
+                  <Text style={styles.menuLabel}>{t(item.key) || item.key}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
 
           {/* Divider */}
@@ -134,6 +180,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#16a34a',
     justifyContent: 'center', alignItems: 'center',
   },
+  avatarCitizen: {
+    width: 52, height: 52, borderRadius: 26,
+    backgroundColor: '#0f172a',
+    borderWidth: 2, borderColor: '#16a34a',
+    justifyContent: 'center', alignItems: 'center',
+  },
   avatarText: {
     color: '#fff', fontSize: 22, fontWeight: '800',
   },
@@ -145,6 +197,10 @@ const styles = StyleSheet.create({
     color: '#4ade80', fontSize: 11,
     fontWeight: '600', marginTop: 2,
   },
+  citizenBadge: {
+    backgroundColor: '#16a34a20', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10, alignSelf: 'flex-start', marginTop: 4, borderWidth: 1, borderColor: '#16a34a40',
+  },
+  citizenBadgeText: { fontSize: 10, fontWeight: 'bold', color: '#4ade80', letterSpacing: 0.5 },
   userEmail: {
     color: '#94a3b8', fontSize: 12, marginTop: 2,
   },
