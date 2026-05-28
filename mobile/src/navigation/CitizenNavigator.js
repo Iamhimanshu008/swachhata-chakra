@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -16,7 +16,7 @@ import CitizenSubmitComplaintScreen from '../screens/citizen/CitizenSubmitCompla
 import CitizenEditProfileScreen from '../screens/citizen/CitizenEditProfileScreen';
 import CitizenSettingsScreen from '../screens/citizen/CitizenSettingsScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const DARK_GREEN = '#1B5E20';
@@ -77,7 +77,12 @@ function CitizenTabs() {
 
 export default function CitizenNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator 
+      screenOptions={{ 
+        headerShown: false,
+        ...(Platform.OS === 'android' ? TransitionPresets.FadeFromBottomAndroid : TransitionPresets.SlideFromRightIOS),
+      }}
+    >
       {/* The main tab navigator */}
       <Stack.Screen name="CitizenHome" component={CitizenTabs} />
       

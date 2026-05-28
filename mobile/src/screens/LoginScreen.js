@@ -37,6 +37,12 @@ const LoginScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
+      try {
+        await fetch('https://smartwaste-ai-f0i9.onrender.com/');
+      } catch (e) {
+        throw new Error('Server unreachable, please check internet');
+      }
+
       const tokenData = await loginApi(email, password);
       const { access_token, refresh_token } = tokenData;
       await login(null, access_token, refresh_token);
@@ -84,6 +90,12 @@ const LoginScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
+      try {
+        await fetch('https://smartwaste-ai-f0i9.onrender.com/');
+      } catch (e) {
+        throw new Error('Server unreachable, please check internet');
+      }
+
       const res = await client.post('/auth/login-otp', {
         phone_number: phone,
         otp: otp
@@ -249,27 +261,6 @@ const LoginScreen = ({ navigation }) => {
         >
           <Text style={styles.backLinkText}>{t('back')}</Text>
         </TouchableOpacity>
-
-        {/* Developer Bypass */}
-        {__DEV__ && (
-          <TouchableOpacity
-            style={[styles.loginBtn, { backgroundColor: '#3b82f6', marginTop: 20 }]}
-            onPress={async () => {
-              // Simulate citizen login
-              const dummyUser = {
-                id: 999,
-                full_name: 'Test Citizen',
-                role: 'citizen',
-                house_id: 'SW-101-1234',
-                ward_no: 101,
-                wallet_balance_points: 1500
-              };
-              await login(dummyUser, 'dummy_token', 'dummy_refresh');
-            }}
-          >
-            <Text style={styles.loginBtnText}>Bypass as Citizen (Dev Mode)</Text>
-          </TouchableOpacity>
-        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
