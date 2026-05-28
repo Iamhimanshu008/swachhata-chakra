@@ -24,6 +24,7 @@ const LoginScreen = ({ navigation }) => {
   const [devOtp, setDevOtp] = useState(''); // remove in prod
   
   const [loading, setLoading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState('');
   const [otpLoading, setOtpLoading] = useState(false);
 
   const { login } = useStore();
@@ -36,14 +37,11 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
     setLoading(true);
+    setStatusMsg('Connecting to server...');
     try {
-      try {
-        await fetch('https://smartwaste-ai-f0i9.onrender.com/');
-      } catch (e) {
-        throw new Error('Server unreachable, please check internet');
-      }
-
-      const tokenData = await loginApi(email, password);
+      const tokenData = await loginApi(email, password, null, (attempt) => {
+        setStatusMsg(`Server waking up, retrying... (${attempt}/${2})`);
+      });
       const { access_token, refresh_token } = tokenData;
       await login(null, access_token, refresh_token);
       const user = await getMe();
@@ -52,6 +50,7 @@ const LoginScreen = ({ navigation }) => {
       Alert.alert('Login Failed', err.message || 'Invalid credentials');
     } finally {
       setLoading(false);
+      setStatusMsg('');
     }
   };
 
@@ -90,11 +89,6 @@ const LoginScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      try {
-        await fetch('https://smartwaste-ai-f0i9.onrender.com/');
-      } catch (e) {
-        throw new Error('Server unreachable, please check internet');
-      }
 
       const res = await client.post('/auth/login-otp', {
         phone_number: phone,
@@ -190,6 +184,11 @@ const LoginScreen = ({ navigation }) => {
                 : <Text style={styles.loginBtnText}>{t('login')}</Text>
               }
             </TouchableOpacity>
+            {statusMsg ? (
+              <Text style={{ color: '#16a34a', textAlign: 'center', marginTop: 8, fontSize: 13 }}>
+                {statusMsg}
+              </Text>
+            ) : null}
           </View>
         )}
 
