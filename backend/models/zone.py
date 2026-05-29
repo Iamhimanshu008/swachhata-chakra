@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, func
+from sqlalchemy import Column, Integer, String, Float, DateTime, func, ForeignKey
+from sqlalchemy.orm import relationship
 from database import Base
 
 
@@ -19,3 +20,6 @@ class Zone(Base):
     depot_address = Column(String(500), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    panchayat_id = Column(Integer, ForeignKey("panchayats.id"), nullable=True)
+    panchayat = relationship("Panchayat", backref="zones")

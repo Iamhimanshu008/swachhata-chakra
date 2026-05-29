@@ -16,6 +16,7 @@ import OptimizedRouteMap from '../components/Map/OptimizedRouteMap';
 import AddZoneFeature from '../components/Map/AddZoneFeature';
 import RuralAnalytics from '../components/RuralAnalytics';
 import QRManager from '../components/QRManager';
+import PanchayatOnboarding from '../components/PanchayatOnboarding';
 import * as adminApi from '../api/adminApi';
 import * as recyclerApi from '../api/recyclerApi';
 import {
@@ -1210,6 +1211,7 @@ export default function AdminDashboard() {
 
     const tabs = [
         { key: 'overview', label: 'Overview', icon: BarChart3 },
+        { key: 'panchayat', label: 'Panchayat Onboarding', icon: Building },
         { key: 'rural', label: 'Rural Analytics', icon: Leaf },
         { key: 'qrmanager', label: 'Household & QR', icon: UserCheck },
         { key: 'bins', label: 'Bins', icon: Trash2 },
@@ -1238,6 +1240,7 @@ export default function AdminDashboard() {
                     </div>
 
                     {tab === 'overview' && <Overview />}
+                    {tab === 'panchayat' && <PanchayatOnboarding />}
                     {tab === 'rural' && <RuralAnalytics />}
                     {tab === 'qrmanager' && <QRManager />}
                     {tab === 'bins' && <BinsManagement />}

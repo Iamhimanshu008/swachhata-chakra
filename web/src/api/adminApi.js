@@ -70,6 +70,38 @@ export const getAnalytics = async () => {
     return res.data;
 };
 
+export const getQRStatusStats = async () => {
+    const res = await client.get('/admin/qr/status');
+    return res.data;
+};
+
+// --- Panchayat Endpoints ---
+
+export const registerPanchayat = async (data) => {
+    const res = await client.post('/admin/panchayat/register', data);
+    return res.data;
+};
+
+export const getPanchayats = async () => {
+    const res = await client.get('/admin/panchayats');
+    return res.data;
+};
+
+export const approvePanchayat = async (id) => {
+    const res = await client.patch(`/admin/panchayat/${id}/approve`);
+    return res.data;
+};
+
+export const getPanchayatVitals = async (id) => {
+    const res = await client.get(`/admin/panchayat/${id}/vitals`);
+    return res.data;
+};
+
+export const createSubAdmin = async (id, data) => {
+    const res = await client.post(`/admin/panchayat/${id}/sub_admin`, data);
+    return res.data;
+};
+
 export const getRoutes = async () => {
     const res = await client.get('/admin/routes');
     return res.data;

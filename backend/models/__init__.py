@@ -1,5 +1,6 @@
 from models.zone import Zone
 from models.user import User
+from models.panchayat import Panchayat
 
 from models.route import Route, RouteStop
 from models.collection import Collection
@@ -15,4 +16,4 @@ from models.transaction import Transaction
 from models.redemption import Redemption
 from models.daily_route import DailyRoute
 
-__all__ = ["Zone", "User", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "Redemption", "DailyRoute"]
+__all__ = ["Zone", "User", "Panchayat", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "Redemption", "DailyRoute"]
