@@ -15,6 +15,7 @@ import AIAnalysisModal from '../components/AIAnalysisModal';
 import OptimizedRouteMap from '../components/Map/OptimizedRouteMap';
 import AddZoneFeature from '../components/Map/AddZoneFeature';
 import RuralAnalytics from '../components/RuralAnalytics';
+import QRManager from '../components/QRManager';
 import * as adminApi from '../api/adminApi';
 import * as recyclerApi from '../api/recyclerApi';
 import {
@@ -1210,6 +1211,7 @@ export default function AdminDashboard() {
     const tabs = [
         { key: 'overview', label: 'Overview', icon: BarChart3 },
         { key: 'rural', label: 'Rural Analytics', icon: Leaf },
+        { key: 'qrmanager', label: 'Household & QR', icon: UserCheck },
         { key: 'bins', label: 'Bins', icon: Trash2 },
         { key: 'users', label: 'Users', icon: Users },
         { key: 'routes', label: 'Routes', icon: Zap },
@@ -1237,6 +1239,7 @@ export default function AdminDashboard() {
 
                     {tab === 'overview' && <Overview />}
                     {tab === 'rural' && <RuralAnalytics />}
+                    {tab === 'qrmanager' && <QRManager />}
                     {tab === 'bins' && <BinsManagement />}
                     {tab === 'users' && <UsersManagement />}
                     {tab === 'routes' && <RouteGeneration />}

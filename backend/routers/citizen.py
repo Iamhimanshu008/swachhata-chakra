@@ -66,17 +66,20 @@ def register_citizen(
     name: str,
     phone_number: str,
     ward_no: int,
+    lat: float = None,
+    lng: float = None,
+    socio_category: str = "APL",
     db: Session = Depends(get_db)
 ):
     existing = db.query(User).filter(User.phone_number == phone_number).first()
     if existing:
         raise HTTPException(status_code=400, detail="Phone number already registered")
     
-    # Generate unique house_id: SW-WARD-{ward_no}-{random4digits}
+    # Generate unique house_id: CG-W{ward_no:02d}-{Random/Seq}
     import random
-    house_id = f"SW-{ward_no:03d}-{random.randint(1000,9999)}"
+    house_id = f"CG-W{ward_no:02d}-{random.randint(1000,9999)}"
     while db.query(User).filter(User.house_id == house_id).first():
-        house_id = f"SW-{ward_no:03d}-{random.randint(1000,9999)}"
+        house_id = f"CG-W{ward_no:02d}-{random.randint(1000,9999)}"
     
     # Generate QR hash
     qr_hash = hashlib.sha256(f"{house_id}{secrets.token_hex(8)}".encode()).hexdigest()[:32]
@@ -91,7 +94,10 @@ def register_citizen(
         ward_no=ward_no,
         wallet_balance_points=0.0,
         qr_hash=qr_hash,
-        is_citizen=True
+        is_citizen=True,
+        lat=lat,
+        lng=lng,
+        socio_category=socio_category
     )
     db.add(citizen)
     db.commit()

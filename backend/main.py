@@ -97,6 +97,7 @@ from routers.app_version import router as version_router
 from routers.citizen import router as citizen_router
 from routers.sync import router as sync_router
 from routers.points import router as points_router
+from routers.qr_manager import router as qr_manager_router
 
 app.include_router(auth_router)
 app.include_router(public_router)
@@ -110,6 +111,7 @@ app.include_router(version_router, prefix="/api")
 app.include_router(citizen_router)
 app.include_router(sync_router)
 app.include_router(points_router)
+app.include_router(qr_manager_router)
 
 
 @app.get("/")

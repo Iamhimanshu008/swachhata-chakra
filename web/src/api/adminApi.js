@@ -110,3 +110,13 @@ export const getWardSummary = async (wardNo) => {
     const res = await client.get('/points/ward_summary', { params: { ward_no: wardNo } });
     return res.data;
 };
+
+export const updateQRStatus = async (houseId, status) => {
+    const res = await client.patch('/admin/qr/status', { house_id: houseId, status });
+    return res.data;
+};
+
+export const getCitizensByWard = async (wardNo) => {
+    const res = await client.get('/admin/qr/citizens', { params: { ward_no: wardNo } });
+    return res.data;
+};

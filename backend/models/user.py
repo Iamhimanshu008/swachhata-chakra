@@ -32,6 +32,10 @@ class User(Base):
     wallet_balance_points = Column(Float, default=0.0)
     qr_hash = Column(String(255), nullable=True, unique=True)
     is_citizen = Column(Boolean, default=False)
+    qr_status = Column(String(20), default="active")
+    lat = Column(Float, nullable=True)
+    lng = Column(Float, nullable=True)
+    socio_category = Column(String(20), default="APL")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

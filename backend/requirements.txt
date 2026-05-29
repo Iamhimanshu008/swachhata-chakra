@@ -18,3 +18,5 @@ openpyxl
 httpx
 alembic
 cloudinary==1.36.0
+qrcode
+fpdf2
