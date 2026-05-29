@@ -89,18 +89,20 @@ const LoginScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-
       const res = await client.post('/auth/login-otp', {
         phone_number: phone,
         otp: otp
       });
       const { access_token, refresh_token } = res.data;
-      // Store tokens same as email login
-      await login(
-        res.data.user,
-        access_token,
-        refresh_token
-      );
+
+      // Step 1: Store tokens first (same pattern as email login)
+      await login(null, access_token, refresh_token);
+
+      // Step 2: Fetch user from /auth/me for consistent role format
+      const user = await getMe();
+
+      // Step 3: Store user — AppNavigator reacts to user.role
+      await login(user, access_token, refresh_token);
     } catch (err) {
       Alert.alert(
         'Login Failed',
