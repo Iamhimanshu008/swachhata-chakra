@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/collector/HomeScreen';
 import MapScreen from '../screens/collector/MapScreen';
-import BinDetailScreen from '../screens/collector/BinDetailScreen';
 import HistoryScreen from '../screens/collector/HistoryScreen';
 import StatsScreen from '../screens/collector/StatsScreen';
 import SafetyChecklistScreen from '../screens/collector/SafetyChecklistScreen';
@@ -43,16 +42,6 @@ function MapStackNavigator() {
     return (
         <MapStack.Navigator>
             <MapStack.Screen name="MapMain" component={MapScreen} options={{ headerShown: false }} />
-            <MapStack.Screen
-                name="BinDetail"
-                component={BinDetailScreen}
-                options={{
-                    title: 'Bin Details',
-                    headerStyle: { backgroundColor: COLORS.dark },
-                    headerTintColor: COLORS.white,
-                    headerTitleStyle: { fontWeight: '700' },
-                }}
-            />
             <MapStack.Screen
                 name="Notifications"
                 component={NotificationsScreen}

@@ -12,7 +12,7 @@ from sqlalchemy import text
 
 from config import settings
 from database import engine, Base, SessionLocal
-from models import Zone, User, Bin, BinReport, SHGReport, Route, RouteStop, Collection, Recycler, RecyclerBid, Notification
+from models import Zone, User, Route, RouteStop, Collection, Recycler, RecyclerBid, Notification
 import logging
 
 logger = logging.getLogger("smartwaste")
@@ -89,7 +89,6 @@ from routers.auth import router as auth_router
 from routers.public import router as public_router
 from routers.admin import router as admin_router
 from routers.subadmin import router as subadmin_router
-from routers.shg import router as shg_router
 from routers.collector import router as collector_router
 from routers.recycler import router as recycler_router
 from routers.notifications import router as notifications_router
@@ -103,7 +102,6 @@ app.include_router(auth_router)
 app.include_router(public_router)
 app.include_router(admin_router)
 app.include_router(subadmin_router)
-app.include_router(shg_router)
 app.include_router(collector_router)
 app.include_router(recycler_router)
 app.include_router(notifications_router)

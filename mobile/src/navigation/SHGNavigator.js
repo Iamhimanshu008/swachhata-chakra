@@ -1,77 +1,31 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text } from 'react-native';
-import BinsScreen from '../screens/shg/BinsScreen';
-import ReportScreen from '../screens/shg/ReportScreen';
-import HistoryScreen from '../screens/shg/HistoryScreen';
-import ScheduleScreen from '../screens/shg/ScheduleScreen';
-import NotificationsScreen from '../screens/NotificationsScreen';
-import NotificationBell from '../components/NotificationBell';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { COLORS } from '../config';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-const TabIcon = ({ emoji, focused }) => (
-    <View style={{ alignItems: 'center' }}>
-        <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.5 }}>{emoji}</Text>
-    </View>
-);
-
-const Tab = createBottomTabNavigator();
-const AlertsStack = createNativeStackNavigator();
-
-function AlertsStackNavigator() {
-    return (
-        <AlertsStack.Navigator screenOptions={{ headerShown: false }}>
-            <AlertsStack.Screen name="Notifications" component={NotificationsScreen} />
-        </AlertsStack.Navigator>
-    );
-}
 
 export default function SHGNavigator() {
     return (
-        <Tab.Navigator
-            screenOptions={{
-                headerShown: false,
-                tabBarStyle: {
-                    backgroundColor: COLORS.dark,
-                    borderTopColor: 'transparent',
-                    paddingBottom: 8,
-                    paddingTop: 8,
-                    height: 65,
-                },
-                tabBarActiveTintColor: COLORS.light,
-                tabBarInactiveTintColor: 'rgba(255,255,255,0.4)',
-                tabBarLabelStyle: { fontSize: 11, fontWeight: '600', marginTop: 2 },
-            }}
-        >
-            <Tab.Screen
-                name="MyBins"
-                component={BinsScreen}
-                options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} />, tabBarLabel: 'My Bins' }}
-            />
-            <Tab.Screen
-                name="Report"
-                component={ReportScreen}
-                options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📝" focused={focused} />, tabBarLabel: 'Report' }}
-            />
-            <Tab.Screen
-                name="Alerts"
-                component={AlertsStackNavigator}
-                options={{
-                    tabBarIcon: () => <NotificationBell />,
-                    tabBarLabel: 'Alerts',
-                }}
-            />
-            <Tab.Screen
-                name="History"
-                component={HistoryScreen}
-                options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🕐" focused={focused} />, tabBarLabel: 'History' }}
-            />
-            <Tab.Screen
-                name="Schedule"
-                component={ScheduleScreen}
-                options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📅" focused={focused} />, tabBarLabel: 'Schedule' }}
-            />
-        </Tab.Navigator>
+        <View style={styles.container}>
+            <Text style={styles.text}>SHG Dashboard Placeholder</Text>
+            <Text style={styles.subtext}>V3 Payroll/Hub coming soon</Text>
+        </View>
     );
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.bg,
+    },
+    text: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: COLORS.dark,
+    },
+    subtext: {
+        fontSize: 14,
+        color: COLORS.gray,
+        marginTop: 8,
+    }
+});

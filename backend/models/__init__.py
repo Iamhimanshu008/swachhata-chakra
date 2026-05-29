@@ -1,7 +1,6 @@
 from models.zone import Zone
 from models.user import User
-from models.bin import Bin
-from models.report import BinReport, SHGReport
+
 from models.route import Route, RouteStop
 from models.collection import Collection
 from models.recycler import Recycler, RecyclerBid
@@ -16,4 +15,4 @@ from models.transaction import Transaction
 from models.redemption import Redemption
 from models.daily_route import DailyRoute
 
-__all__ = ["Zone", "User", "Bin", "BinReport", "SHGReport", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "Redemption", "DailyRoute"]
+__all__ = ["Zone", "User", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "Redemption", "DailyRoute"]
