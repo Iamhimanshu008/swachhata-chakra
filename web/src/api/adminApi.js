@@ -105,3 +105,8 @@ export const exportExcel = async () => {
     const res = await client.get('/admin/export/excel', { responseType: 'blob' });
     return res.data;
 };
+
+export const getWardSummary = async (wardNo) => {
+    const res = await client.get('/points/ward_summary', { params: { ward_no: wardNo } });
+    return res.data;
+};

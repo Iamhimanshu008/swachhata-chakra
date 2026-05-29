@@ -94,12 +94,13 @@ def get_ward_summary(
     db: Session = Depends(get_db)
 ):
     from models.transaction import Transaction
-    from sqlalchemy import func as sqlfunc
+    from sqlalchemy import func as sqlfunc, Integer
     
     stats = db.query(
         sqlfunc.count(Transaction.id).label("total_transactions"),
         sqlfunc.sum(Transaction.weight_grams).label("total_grams"),
-        sqlfunc.sum(Transaction.points_awarded).label("total_points")
+        sqlfunc.sum(Transaction.points_awarded).label("total_points"),
+        sqlfunc.sum(sqlfunc.cast(Transaction.is_manual_override, Integer)).label("manual_overrides")
     ).filter(Transaction.ward_no == ward_no).first()
     
     total_kg = round((stats.total_grams or 0) / 1000, 2)
@@ -114,6 +115,7 @@ def get_ward_summary(
         "total_weight_grams": stats.total_grams or 0,
         "total_weight_kg": total_kg,
         "total_points_issued": stats.total_points or 0,
+        "manual_overrides": stats.manual_overrides or 0,
         "financials": {
             "total_revenue_inr": revenue_inr,
             "citizen_incentive_fund": citizen_fund,

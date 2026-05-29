@@ -14,6 +14,7 @@ import StatusBadge from '../components/StatusBadge';
 import AIAnalysisModal from '../components/AIAnalysisModal';
 import OptimizedRouteMap from '../components/Map/OptimizedRouteMap';
 import AddZoneFeature from '../components/Map/AddZoneFeature';
+import RuralAnalytics from '../components/RuralAnalytics';
 import * as adminApi from '../api/adminApi';
 import * as recyclerApi from '../api/recyclerApi';
 import {
@@ -1208,6 +1209,7 @@ export default function AdminDashboard() {
 
     const tabs = [
         { key: 'overview', label: 'Overview', icon: BarChart3 },
+        { key: 'rural', label: 'Rural Analytics', icon: Leaf },
         { key: 'bins', label: 'Bins', icon: Trash2 },
         { key: 'users', label: 'Users', icon: Users },
         { key: 'routes', label: 'Routes', icon: Zap },
@@ -1234,6 +1236,7 @@ export default function AdminDashboard() {
                     </div>
 
                     {tab === 'overview' && <Overview />}
+                    {tab === 'rural' && <RuralAnalytics />}
                     {tab === 'bins' && <BinsManagement />}
                     {tab === 'users' && <UsersManagement />}
                     {tab === 'routes' && <RouteGeneration />}
