@@ -2,7 +2,7 @@
   "expo": {
     "name": "SmartWaste AI",
     "slug": "smartwaste-ai",
-    "version": "2.3.8",
+    "version": "2.3.9",
     "sdkVersion": "54.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
