@@ -99,6 +99,8 @@ from routers.sync import router as sync_router
 from routers.points import router as points_router
 from routers.qr_manager import router as qr_manager_router
 from routers.panchayat import router as panchayat_router
+from routers.collector_management import router as collector_management_router
+from routers.iot_telemetry import router as iot_telemetry_router
 
 app.include_router(auth_router)
 app.include_router(public_router)
@@ -114,6 +116,11 @@ app.include_router(sync_router)
 app.include_router(points_router)
 app.include_router(qr_manager_router)
 app.include_router(panchayat_router)
+app.include_router(collector_management_router)
+app.include_router(iot_telemetry_router, prefix="/api")
+
+from routers.ai_analytics import router as ai_analytics_router
+app.include_router(ai_analytics_router, prefix="/api")
 
 
 @app.get("/")

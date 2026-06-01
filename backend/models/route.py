@@ -37,7 +37,6 @@ class RouteStop(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     route_id = Column(Integer, ForeignKey("routes.id", ondelete="CASCADE"), nullable=False)
-    bin_id = Column(Integer, ForeignKey("bins.id"), nullable=False)
     sequence = Column(Integer, nullable=False)
     estimated_arrival = Column(DateTime(timezone=True), nullable=True)
     actual_arrival = Column(DateTime(timezone=True), nullable=True)
@@ -46,4 +45,3 @@ class RouteStop(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     route = relationship("Route", back_populates="stops")
-    bin = relationship("Bin", backref="route_stops")

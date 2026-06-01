@@ -152,3 +152,49 @@ export const getCitizensByWard = async (wardNo) => {
     const res = await client.get('/admin/qr/citizens', { params: { ward_no: wardNo } });
     return res.data;
 };
+
+// --- Collector Management ---
+
+export const getCollectorsAttendance = async () => {
+    const res = await client.get('/admin/collectors/attendance');
+    return res.data;
+};
+
+export const getCollectorsPerformance = async () => {
+    const res = await client.get('/admin/collectors/performance');
+    return res.data;
+};
+
+export const getCollectorsSyncStatus = async () => {
+    const res = await client.get('/admin/collectors/sync_status');
+    return res.data;
+};
+
+// --- IoT Telemetry ---
+
+export const getIoTScalesStatus = async () => {
+    const res = await client.get('/admin/iot/status');
+    return res.data;
+};
+
+export const registerIoTScale = async (data) => {
+    const res = await client.post('/admin/iot/register', data);
+    return res.data;
+};
+
+export const pairIoTScale = async (scaleId, collectorId) => {
+    const res = await client.post(`/admin/iot/${scaleId}/pair`, { collector_id: collectorId });
+    return res.data;
+};
+
+// --- AI Analytics ---
+
+export const getAIStats = async () => {
+    const res = await client.get('/admin/ai/stats');
+    return res.data;
+};
+
+export const getRecentAILogs = async () => {
+    const res = await client.get('/admin/ai/recent_logs');
+    return res.data;
+};

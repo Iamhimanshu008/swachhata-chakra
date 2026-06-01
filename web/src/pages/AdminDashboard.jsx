@@ -5,7 +5,7 @@ import {
     Trash2, Users, BarChart3, Settings as SettingsIcon,
     Plus, Search, X, Loader2, Save, Zap, Wind, Package, CheckCircle2,
     Building, DollarSign, TrendingUp, Phone, MapPin, Sparkles,
-    ClipboardCheck, UserCheck, Download, FileSpreadsheet, Leaf, Pencil
+    ClipboardCheck, UserCheck, Download, FileSpreadsheet, Leaf, Pencil, Cpu, BrainCircuit
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import EcoQuote from '../components/EcoQuote';
@@ -17,6 +17,9 @@ import AddZoneFeature from '../components/Map/AddZoneFeature';
 import RuralAnalytics from '../components/RuralAnalytics';
 import QRManager from '../components/QRManager';
 import PanchayatOnboarding from '../components/PanchayatOnboarding';
+import CollectorManagement from '../components/CollectorManagement';
+import IoTDashboard from '../components/IoTDashboard';
+import AIAnalytics from '../components/AIAnalytics';
 import * as adminApi from '../api/adminApi';
 import * as recyclerApi from '../api/recyclerApi';
 import {
@@ -1216,7 +1219,10 @@ export default function AdminDashboard() {
         { key: 'qrmanager', label: 'Household & QR', icon: UserCheck },
         { key: 'bins', label: 'Bins', icon: Trash2 },
         { key: 'users', label: 'Users', icon: Users },
+        { key: 'swachhta', label: 'Swachhta Mitras', icon: Users },
         { key: 'routes', label: 'Routes', icon: Zap },
+        { key: 'iot', label: 'IoT Telemetry', icon: Cpu },
+        { key: 'ai', label: 'AI Plastic Grading', icon: BrainCircuit },
         { key: 'recyclers', label: 'Recyclers', icon: Building },
         { key: 'analytics', label: 'Analytics', icon: BarChart3 },
         { key: 'settings', label: 'Settings', icon: SettingsIcon },
@@ -1245,7 +1251,10 @@ export default function AdminDashboard() {
                     {tab === 'qrmanager' && <QRManager />}
                     {tab === 'bins' && <BinsManagement />}
                     {tab === 'users' && <UsersManagement />}
+                    {tab === 'swachhta' && <CollectorManagement />}
                     {tab === 'routes' && <RouteGeneration />}
+                    {tab === 'iot' && <IoTDashboard />}
+                    {tab === 'ai' && <AIAnalytics />}
                     {tab === 'recyclers' && <RecyclersManagement />}
                     {tab === 'analytics' && <Analytics />}
                     {tab === 'settings' && <SettingsTab />}
