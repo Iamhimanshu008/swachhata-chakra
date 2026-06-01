@@ -217,3 +217,27 @@ export const configureGamificationMultiplier = async (config) => {
   const res = await client.post('/admin/gamification/configure_multiplier', config);
   return res.data;
 };
+
+// ==========================================
+// Redemption Store
+// ==========================================
+
+export const getStoreItems = async () => {
+  const res = await client.get('/admin/store/items');
+  return res.data;
+};
+
+export const addStoreItem = async (itemData) => {
+  const res = await client.post('/admin/store/items', itemData);
+  return res.data;
+};
+
+export const getStoreRedemptions = async () => {
+  const res = await client.get('/admin/store/redemptions');
+  return res.data;
+};
+
+export const fulfillRedemption = async (redemptionId) => {
+  const res = await client.post(`/admin/store/redemptions/${redemptionId}/fulfill`);
+  return res.data;
+};

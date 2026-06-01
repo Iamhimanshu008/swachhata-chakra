@@ -21,6 +21,7 @@ import CollectorManagement from '../components/CollectorManagement';
 import IoTDashboard from '../components/IoTDashboard';
 import AIAnalytics from '../components/AIAnalytics';
 import GamificationAdmin from '../components/GamificationAdmin';
+import RedemptionStoreAdmin from '../components/RedemptionStoreAdmin';
 import * as adminApi from '../api/adminApi';
 import * as recyclerApi from '../api/recyclerApi';
 import {
@@ -1225,6 +1226,7 @@ export default function AdminDashboard() {
         { key: 'iot', label: 'IoT Telemetry', icon: Cpu },
         { key: 'ai', label: 'AI Plastic Grading', icon: BrainCircuit },
         { key: 'gamification', label: 'Gamification & Rewards', icon: Trophy },
+        { key: 'store', label: 'Redemption Store', icon: Gift },
         { key: 'recyclers', label: 'Recyclers', icon: Building },
         { key: 'analytics', label: 'Analytics', icon: BarChart3 },
         { key: 'settings', label: 'Settings', icon: SettingsIcon },
@@ -1258,6 +1260,7 @@ export default function AdminDashboard() {
                     {tab === 'iot' && <IoTDashboard />}
                     {tab === 'ai' && <AIAnalytics />}
                     {tab === 'gamification' && <GamificationAdmin />}
+                    {tab === 'store' && <RedemptionStoreAdmin />}
                     {tab === 'recyclers' && <RecyclersManagement />}
                     {tab === 'analytics' && <Analytics />}
                     {tab === 'settings' && <SettingsTab />}

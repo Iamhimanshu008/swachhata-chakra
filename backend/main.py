@@ -103,6 +103,7 @@ from routers.collector_management import router as collector_management_router
 from routers.iot_telemetry import router as iot_telemetry_router
 from routers.ai_analytics import router as ai_analytics_router
 from routers.gamification import router as gamification_router
+from routers.store import router as store_router
 app.include_router(auth_router)
 app.include_router(public_router)
 app.include_router(admin_router)
@@ -121,6 +122,7 @@ app.include_router(collector_management_router)
 app.include_router(iot_telemetry_router, prefix="/api")
 app.include_router(ai_analytics_router, prefix="/api")
 app.include_router(gamification_router, prefix="/api")
+app.include_router(store_router, prefix="/api")
 
 
 @app.get("/")
