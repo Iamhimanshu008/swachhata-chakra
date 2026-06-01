@@ -18,5 +18,6 @@ from models.daily_route import DailyRoute
 from models.attendance import Attendance
 from models.iot_scale import IoTScale
 from models.ai_grading import AIGradingLog
+from models.wallet import GreenWallet, PointLedger
 
-__all__ = ["Zone", "User", "Panchayat", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "Redemption", "DailyRoute", "Attendance", "IoTScale", "AIGradingLog"]
+__all__ = ["Zone", "User", "Panchayat", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "Redemption", "DailyRoute", "Attendance", "IoTScale", "AIGradingLog", "GreenWallet", "PointLedger"]

@@ -195,6 +195,25 @@ export const getAIStats = async () => {
 };
 
 export const getRecentAILogs = async () => {
-    const res = await client.get('/admin/ai/recent_logs');
-    return res.data;
+  const res = await client.get('/admin/ai/recent_logs');
+  return res.data;
+};
+
+// ==========================================
+// Gamification
+// ==========================================
+
+export const getGamificationLeaderboard = async () => {
+  const res = await client.get('/admin/gamification/leaderboard');
+  return res.data;
+};
+
+export const getGamificationStats = async () => {
+  const res = await client.get('/admin/gamification/stats');
+  return res.data;
+};
+
+export const configureGamificationMultiplier = async (config) => {
+  const res = await client.post('/admin/gamification/configure_multiplier', config);
+  return res.data;
 };
