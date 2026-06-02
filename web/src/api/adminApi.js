@@ -199,6 +199,21 @@ export const getRecentAILogs = async () => {
   return res.data;
 };
 
+export const fetchAITrends = async () => {
+  const res = await client.get('/ai_analytics/admin/ai/trends');
+  return res.data;
+};
+
+export const fetchAnomalies = async () => {
+  const res = await client.get('/ai_analytics/admin/ai/anomalies');
+  return res.data;
+};
+
+export const fetchCollectorPerformance = async () => {
+  const res = await client.get('/ai_analytics/admin/ai/collector_performance');
+  return res.data;
+};
+
 // ==========================================
 // Gamification
 // ==========================================
