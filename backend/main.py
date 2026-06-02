@@ -68,13 +68,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://smartwaste-ai-omega.vercel.app",
-        "https://smartwaste-ai-f0i9.onrender.com",
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "http://localhost:19006",
-    ],
+    allow_origin_regex=".*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

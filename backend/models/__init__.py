@@ -1,6 +1,8 @@
 from models.zone import Zone
 from models.user import User
 from models.panchayat import Panchayat
+from models.bin import Bin, BinStatus
+from models.report import BinReport, SHGReport
 
 from models.route import Route, RouteStop
 from models.collection import Collection
@@ -20,4 +22,4 @@ from models.ai_grading import AIGradingLog
 from models.wallet import GreenWallet, PointLedger
 from models.store import RewardItem, Redemption
 
-__all__ = ["Zone", "User", "Panchayat", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "DailyRoute", "Attendance", "IoTScale", "AIGradingLog", "GreenWallet", "PointLedger", "RewardItem", "Redemption"]
+__all__ = ["Zone", "User", "Panchayat", "Bin", "BinStatus", "BinReport", "SHGReport", "Route", "RouteStop", "Collection", "Recycler", "RecyclerBid", "CollectorLocation", "Notification", "SystemSettings", "OTPRecord", "NewsFeed", "Transaction", "DailyRoute", "Attendance", "IoTScale", "AIGradingLog", "GreenWallet", "PointLedger", "RewardItem", "Redemption"]

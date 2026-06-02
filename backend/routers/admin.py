@@ -34,7 +34,11 @@ from models.settings import SystemSettings
 from models.recycler import Recycler, RecyclerBid, BidStatus
 from services.notification_service import save_and_send_notification
 
-router = APIRouter(prefix="/api/admin", tags=["Admin"])
+router = APIRouter(
+    prefix="/api/admin",
+    tags=["Admin"],
+    dependencies=[Depends(require_role("admin"))],
+)
 
 HEADER_FILL = PatternFill(fill_type="solid", fgColor="2D6A4F")
 HEADER_FONT = Font(color="FFFFFF", bold=True)
