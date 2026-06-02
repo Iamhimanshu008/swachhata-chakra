@@ -11,6 +11,7 @@ import MorningSyncScreen from '../screens/collector/MorningSyncScreen';
 import CollectionScreen from '../screens/collector/CollectionScreen';
 import AfternoonSyncScreen from '../screens/collector/AfternoonSyncScreen';
 import BleWeightScreen from '../screens/collector/BleWeightScreen';
+import CaptureImageScreen from '../screens/collector/CaptureImageScreen';
 import { COLORS } from '../config';
 
 // Inline SVG-style icon component using unicode
@@ -35,6 +36,7 @@ function HomeStackNavigator() {
             <HomeStack.Screen name="MorningSync" component={MorningSyncScreen} />
             <HomeStack.Screen name="CollectionScreen" component={CollectionScreen} />
             <HomeStack.Screen name="BleWeightScreen" component={BleWeightScreen} />
+            <HomeStack.Screen name="CaptureImageScreen" component={CaptureImageScreen} />
             <HomeStack.Screen name="AfternoonSync" component={AfternoonSyncScreen} />
         </HomeStack.Navigator>
     );

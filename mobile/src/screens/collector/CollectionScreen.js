@@ -27,6 +27,7 @@ export default function CollectionScreen({ navigation, route }) {
   const [weightInput, setWeightInput] = useState('');
   const [isManualOverride, setIsManualOverride] = useState(false);
   const [isBLEVerified, setIsBLEVerified] = useState(false);
+  const [aiGrade, setAiGrade] = useState(null);
 
   // Stats state
   const [todayStats, setTodayStats] = useState({ total_collections: 0, total_grams: 0, manual_count: 0 });
@@ -44,7 +45,12 @@ export default function CollectionScreen({ navigation, route }) {
       // Reset params so it doesn't trigger again
       navigation.setParams({ weight_grams: undefined, ble_verified: undefined, device_id: undefined });
     }
-  }, [route.params?.weight_grams]);
+    
+    if (route.params?.grade) {
+      setAiGrade(route.params.grade);
+      navigation.setParams({ grade: undefined });
+    }
+  }, [route.params?.weight_grams, route.params?.grade]);
 
   const refreshStats = async () => {
     const stats = await getTodayStats();
@@ -129,6 +135,7 @@ export default function CollectionScreen({ navigation, route }) {
       // Reset for next scan
       setSelectedCitizen(null);
       setWeightInput('');
+      setAiGrade(null);
       setScanned(false);
       setIsManualOverride(false);
       await refreshStats();
@@ -252,6 +259,29 @@ export default function CollectionScreen({ navigation, route }) {
             </Text>
             <Ionicons name="chevron-forward" size={16} color="#3b82f6" />
           </TouchableOpacity>
+
+          {/* Capture AI Image Button */}
+          <TouchableOpacity 
+            style={[styles.bleBanner, { backgroundColor: '#f0fdf4', borderColor: '#dcfce7', marginTop: -6 }]}
+            onPress={() => navigation.navigate('CaptureImageScreen')}
+          >
+            <Ionicons name="camera" size={20} color="#16a34a" />
+            <Text style={[styles.bleBannerText, { color: '#14532d', fontWeight: '600' }]}>
+              Capture Waste Photo (AI)
+            </Text>
+            <Ionicons name="chevron-forward" size={16} color="#16a34a" />
+          </TouchableOpacity>
+
+          {/* AI Grade Display */}
+          {aiGrade && (
+            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#fef3c7', padding: 12, borderRadius: 8, marginBottom: 14, borderWidth: 1, borderColor: '#fde68a' }}>
+              <MaterialCommunityIcons name="robot-outline" size={20} color="#d97706" style={{ marginRight: 8 }} />
+              <Text style={{ color: '#b45309', fontWeight: 'bold', flex: 1 }}>AI Grade: {aiGrade}</Text>
+              <TouchableOpacity onPress={() => setAiGrade(null)}>
+                <Ionicons name="close-circle" size={20} color="#d97706" />
+              </TouchableOpacity>
+            </View>
+          )}
 
           <View style={styles.weightInputRow}>
             <TextInput

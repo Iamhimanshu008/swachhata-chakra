@@ -38,3 +38,22 @@ export const updateLocation = async (lat, lng) => {
     });
     return res.data;
 };
+
+export const uploadWasteImage = async (imageUri, transactionId) => {
+    const formData = new FormData();
+    const filename = imageUri.split('/').pop();
+    const match = /\.(\w+)$/.exec(filename);
+    const type = match ? `image/${match[1]}` : `image`;
+    
+    formData.append('file', { uri: imageUri, name: filename, type });
+    if (transactionId) {
+        formData.append('transaction_id', transactionId);
+    }
+
+    const res = await client.post('/ai_grading/grade_waste', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return res.data;
+};
