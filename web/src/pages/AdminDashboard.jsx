@@ -5,7 +5,7 @@ import {
     Trash2, Users, BarChart3, Settings as SettingsIcon,
     Plus, Search, X, Loader2, Save, Zap, Wind, Package, CheckCircle2,
     Building, DollarSign, TrendingUp, Phone, MapPin, Sparkles,
-    ClipboardCheck, UserCheck, Download, FileSpreadsheet, Leaf, Pencil, Cpu, BrainCircuit, Trophy
+    ClipboardCheck, UserCheck, Download, FileSpreadsheet, Leaf, Pencil, Cpu, BrainCircuit, Trophy, Gift
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import EcoQuote from '../components/EcoQuote';
