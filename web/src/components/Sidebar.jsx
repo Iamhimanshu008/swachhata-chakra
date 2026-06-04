@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import useStore from '../store';
 import {
     LayoutDashboard, Users, Trash2, MapPin, FileText,
@@ -35,10 +35,14 @@ const roleNavItems = {
     ],
 };
 
-export default function Sidebar() {
+export default function Sidebar({ activeTab, onTabChange, tabs }) {
     const { user, logout, sidebarOpen, toggleSidebar } = useStore();
     const navigate = useNavigate();
+    const location = useLocation();
     const navItems = roleNavItems[user?.role] || [];
+
+    // Show dashboard tabs when on the /admin page (exact match)
+    const isAdminDashboard = location.pathname === '/admin';
 
     const handleLogout = () => {
         logout();
@@ -75,24 +79,62 @@ export default function Sidebar() {
                 </div>
 
                 {/* Nav Items */}
-                <nav className="flex-1 py-4 space-y-1 px-3 overflow-y-auto">
-                    {navItems.map((item) => (
-                        <NavLink
-                            key={item.to}
-                            to={item.to}
-                            end={item.end}
-                            className={({ isActive }) =>
-                                `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
-                                    isActive
-                                        ? 'bg-sw-light text-sw-dark font-semibold shadow-lg shadow-sw-light/20'
-                                        : 'text-white/60 hover:text-white hover:bg-white/8'
-                                }`
-                            }
-                        >
-                            <item.icon className="w-5 h-5 flex-shrink-0" />
-                            {sidebarOpen && <span className="truncate text-sm">{item.label}</span>}
-                        </NavLink>
-                    ))}
+                <nav className="flex-1 py-4 px-3 overflow-y-auto">
+                    {/* Regular nav links — always shown */}
+                    <div className="space-y-1">
+                        {navItems.map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                end={item.end}
+                                className={({ isActive }) =>
+                                    `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
+                                        isActive
+                                            ? 'bg-sw-light text-sw-dark font-semibold shadow-lg shadow-sw-light/20'
+                                            : 'text-white/60 hover:text-white hover:bg-white/8'
+                                    }`
+                                }
+                            >
+                                <item.icon className="w-5 h-5 flex-shrink-0" />
+                                {sidebarOpen && <span className="truncate text-sm">{item.label}</span>}
+                            </NavLink>
+                        ))}
+                    </div>
+
+                    {/* Dashboard tabs — only shown on /admin route, when tabs are provided */}
+                    {isAdminDashboard && tabs && tabs.length > 0 && (
+                        <>
+                            {sidebarOpen && (
+                                <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest px-3 mt-5 mb-2">
+                                    Dashboard
+                                </p>
+                            )}
+                            {!sidebarOpen && (
+                                <div className="my-3 border-t border-white/10" />
+                            )}
+                            <div className="space-y-0.5">
+                                {tabs.map((t) => {
+                                    const Icon = t.icon;
+                                    const isActive = activeTab === t.key;
+                                    return (
+                                        <button
+                                            key={t.key}
+                                            onClick={() => onTabChange && onTabChange(t.key)}
+                                            title={!sidebarOpen ? t.label : undefined}
+                                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 w-full text-left ${
+                                                isActive
+                                                    ? 'bg-sw-light text-sw-dark font-semibold shadow-lg shadow-sw-light/20'
+                                                    : 'text-white/60 hover:text-white hover:bg-white/8'
+                                            }`}
+                                        >
+                                            <Icon className="w-5 h-5 flex-shrink-0" />
+                                            {sidebarOpen && <span className="truncate text-sm">{t.label}</span>}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    )}
                 </nav>
 
                 {/* User Info + Logout */}
