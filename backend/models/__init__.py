@@ -6,7 +6,7 @@ from models.report import BinReport, SHGReport
 
 from models.route import Route, RouteStop
 from models.collection import Collection
-from models.recycler import Recycler, RecyclerBid
+from models.recycler import Recycler, RecyclerBid, BidStatus
 from models.collector_location import CollectorLocation
 from models.notification import Notification
 from models.settings import SystemSettings

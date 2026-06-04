@@ -84,7 +84,7 @@ from routers.public import router as public_router
 from routers.admin import router as admin_router
 from routers.subadmin import router as subadmin_router
 from routers.collector import router as collector_router
-from routers.recycler import router as recycler_router
+from routers.recycler import router as recycler_router, revenue_router
 from routers.notifications import router as notifications_router
 from routers.news_feed import router as news_router
 from routers.app_version import router as version_router
@@ -104,6 +104,7 @@ app.include_router(admin_router)
 app.include_router(subadmin_router)
 app.include_router(collector_router)
 app.include_router(recycler_router)
+app.include_router(revenue_router)
 app.include_router(notifications_router)
 app.include_router(news_router, prefix="/api")
 app.include_router(version_router, prefix="/api")
