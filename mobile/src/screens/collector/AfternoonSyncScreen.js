@@ -12,6 +12,26 @@ import {
   getTodayStats
 } from '../../services/localDB';
 
+// Matches backend WASTE_TYPE_MULTIPLIER in sync.py
+const WASTE_TYPE_MULTIPLIER = {
+  plastic: 1.0,
+  organic: 0.5,
+  paper:   0.8,
+  other:   0.3,
+};
+
+const calculateEstimatedPoints = (transactions) => {
+  return transactions.reduce((total, t) => {
+    const basePoints = (t.weight_grams || 0) / 100; // 100g = 1 point
+    const gradeMultiplier =
+      t.ai_grade === 'A' ? 1.5 :
+      t.ai_grade === 'B' ? 1.0 : 0.5;
+    const typeMultiplier =
+      WASTE_TYPE_MULTIPLIER[t.waste_type] ?? 1.0;
+    return total + Math.min(basePoints * gradeMultiplier * typeMultiplier, 30);
+  }, 0);
+};
+
 export default function AfternoonSyncScreen({ navigation, route }) {
   const wardNo = route?.params?.ward_no || 0;
   const [pending, setPending] = useState([]);
@@ -67,7 +87,7 @@ export default function AfternoonSyncScreen({ navigation, route }) {
 
   const totalGrams = pending.reduce((s, t) => s + (t.weight_grams || 0), 0);
   const manualCount = pending.filter(t => t.is_manual_override).length;
-  const estimatedPoints = Math.round(totalGrams / 100 * 10) / 10;
+  const estimatedPoints = Math.round(calculateEstimatedPoints(pending) * 10) / 10;
 
   return (
     <View style={styles.container}>

@@ -5,20 +5,12 @@ export const getTodayRoute = async () => {
     return res.data;
 };
 
-export const collectBin = async (binId, kg_collected = 0, notes = null, collector_lat = null, collector_lng = null) => {
-    const payload = {
-        kg_collected,
-        notes,
-    };
-    
-    // Pass location as query parameters to match backend expectations
-    const res = await client.post(`/collector/bins/${binId}/collect`, payload, {
-        params: {
-            collector_lat: collector_lat ? parseFloat(collector_lat) : null,
-            collector_lng: collector_lng ? parseFloat(collector_lng) : null
-        }
-    });
-    return res.data;
+// V1 bins endpoint deprecated — collection is now handled via
+// QR scan + weight entry in CollectionScreen → AfternoonSync upload flow.
+export const collectBin = async (binId) => {
+    // No-op: V1 /collector/bins/:id/collect no longer used.
+    // Return success silently so any legacy callers don't crash.
+    return { success: true, deprecated: true };
 };
 
 export const getHistory = async () => {

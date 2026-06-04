@@ -1,7 +1,8 @@
 import client from './client';
 import axios from 'axios';
 
-const WAKE_URL = "https://smartwaste-ai-f0i9.onrender.com/";
+const WAKE_URL = process.env.EXPO_PUBLIC_API_URL
+  || 'https://smartwaste-ai-f0i9.onrender.com';
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 5000;
 

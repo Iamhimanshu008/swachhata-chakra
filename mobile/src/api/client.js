@@ -1,8 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// 🚨 HARDCODED FOR PRODUCTION APK TO PREVENT 0B NETWORK ERRORS 🚨
-const BASE_URL = "https://smartwaste-ai-f0i9.onrender.com/api";
+// Read from .env (EXPO_PUBLIC_API_URL) with production fallback
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL
+  ? `${process.env.EXPO_PUBLIC_API_URL}/api`
+  : 'https://smartwaste-ai-f0i9.onrender.com/api';
 
 console.log('[SmartWaste] API BASE_URL:', BASE_URL);
 

@@ -2,7 +2,7 @@
   "expo": {
     "name": "SmartWaste AI",
     "slug": "smartwaste-ai",
-    "version": "2.3.4",
+    "version": "2.4.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -12,10 +12,14 @@
     },
     "android": {
       "package": "com.smartwaste.ai",
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#052e16"
       }
+    },
+    "ios": {
+      "buildNumber": "2.4.0"
     },
     "extra": {
       "apiUrl": "https://smartwaste-ai-f0i9.onrender.com"

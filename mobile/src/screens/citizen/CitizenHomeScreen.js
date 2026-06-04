@@ -14,11 +14,34 @@ const LIGHT_GREEN = '#A5D6A7';
 const BG = '#F5F5F5';
 const WHITE = '#FFFFFF';
 
+// Returns next pickup day — default schedule: Mon (1) and Thu (4)
+const getNextPickupDay = () => {
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon ... 6=Sat
+  let daysUntilNext;
+  if (dayOfWeek < 1) daysUntilNext = 1;
+  else if (dayOfWeek < 4) daysUntilNext = 4 - dayOfWeek;
+  else daysUntilNext = 8 - dayOfWeek; // next Monday
+
+  const nextPickup = new Date(today);
+  nextPickup.setDate(today.getDate() + daysUntilNext);
+
+  const day = nextPickup.getDate();
+  const month = nextPickup.toLocaleString('en-IN', { month: 'short' }).toUpperCase();
+  const isTomorrow = daysUntilNext === 1;
+  const timeStr = isTomorrow
+    ? 'Tomorrow 08:30 AM'
+    : `${nextPickup.toLocaleString('en-IN', { weekday: 'long' })} 08:30 AM`;
+
+  return { day, month, timeStr };
+};
+
 export default function CitizenHomeScreen({ navigation }) {
   const { user, citizenWallet, setCitizenWallet, citizenProfile, setCitizenProfile } = useStore();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const nextPickup = getNextPickupDay();
 
   const loadData = useCallback(async () => {
     try {
@@ -135,12 +158,12 @@ export default function CitizenHomeScreen({ navigation }) {
         </View>
         <TouchableOpacity style={styles.pickupCard}>
           <View style={styles.pickupDateBadge}>
-            <Text style={styles.pickupDateDay}>28</Text>
-            <Text style={styles.pickupDateMonth}>OCT</Text>
+            <Text style={styles.pickupDateDay}>{nextPickup.day}</Text>
+            <Text style={styles.pickupDateMonth}>{nextPickup.month}</Text>
           </View>
           <View style={styles.pickupInfo}>
-            <Text style={styles.pickupType}>Organic Waste</Text>
-            <Text style={styles.pickupTime}>Tomorrow • 08:30 AM</Text>
+            <Text style={styles.pickupType}>Mixed Waste Collection</Text>
+            <Text style={styles.pickupTime}>{nextPickup.timeStr}</Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#CCCCCC" />
         </TouchableOpacity>

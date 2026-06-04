@@ -11,7 +11,8 @@ export default function RecyclersScreen() {
     useEffect(() => {
         const fetchRecyclers = async () => {
             try {
-                const response = await api.get('/recyclers');
+                // V3: correct endpoint (was /recyclers → 404)
+                const response = await api.get('/recycler/list');
                 setRecyclers(response.data);
             } catch (err) {
                 console.error('Failed to load recyclers:', err);
@@ -24,10 +25,12 @@ export default function RecyclersScreen() {
     }, []);
 
     const handleCall = (phone) => {
+        if (!phone) return;
         Linking.openURL(`tel:${phone}`);
     };
 
     const handleDirections = (lat, lng, name) => {
+        if (!lat || !lng) return;
         const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
         const latLng = `${lat},${lng}`;
         const label = name;
@@ -38,52 +41,115 @@ export default function RecyclersScreen() {
         Linking.openURL(url);
     };
 
-    const renderItem = ({ item }) => (
-        <View style={styles.card}>
-            <View style={styles.cardHeader}>
-                <View>
-                    <Text style={styles.name}>{item.name}</Text>
-                    <Text style={styles.contactPerson}>{item.contact_person}</Text>
+    // V3: price_per_kg is now a dict {"plastic": 12.5, "paper": 8.0}
+    const getPriceDisplay = (price_per_kg) => {
+        if (!price_per_kg || typeof price_per_kg !== 'object') return null;
+        const entries = Object.entries(price_per_kg).filter(([, v]) => v > 0);
+        if (entries.length === 0) return null;
+        return entries.map(([type, price]) => `${type}: ₹${price}/kg`).join('  •  ');
+    };
+
+    // V3: waste_types_accepted is an array ["plastic", "paper"]
+    const getWasteTypes = (item) => {
+        // Support both V3 (waste_types_accepted) and V1 (accepted_types) fields
+        return item.waste_types_accepted || item.accepted_types || [];
+    };
+
+    const WASTE_TYPE_COLOR = {
+        plastic: '#3b82f6',
+        organic: '#16a34a',
+        paper:   '#f59e0b',
+        other:   '#6b7280',
+    };
+
+    const renderItem = ({ item }) => {
+        const types = getWasteTypes(item);
+        const priceDisplay = getPriceDisplay(item.price_per_kg);
+
+        return (
+            <View style={styles.card}>
+                <View style={styles.cardHeader}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={styles.name}>{item.name}</Text>
+                        {item.contact_person ? (
+                            <Text style={styles.contactPerson}>{item.contact_person}</Text>
+                        ) : null}
+                    </View>
+                    {/* Active badge */}
+                    <View style={[styles.activeBadge, !item.is_active && styles.inactiveBadge]}>
+                        <Text style={[styles.activeBadgeText, !item.is_active && styles.inactiveBadgeText]}>
+                            {item.is_active ? 'Active' : 'Inactive'}
+                        </Text>
+                    </View>
                 </View>
-                <View style={styles.priceTag}>
-                    <Text style={styles.priceText}>₹{item.price_per_kg}/kg</Text>
+
+                {/* Waste type chips */}
+                {types.length > 0 && (
+                    <View style={styles.chipsRow}>
+                        {types.map((t) => (
+                            <View
+                                key={t}
+                                style={[styles.chip, { backgroundColor: (WASTE_TYPE_COLOR[t] || '#6b7280') + '20', borderColor: WASTE_TYPE_COLOR[t] || '#6b7280' }]}
+                            >
+                                <Text style={[styles.chipText, { color: WASTE_TYPE_COLOR[t] || '#6b7280' }]}>
+                                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                <View style={styles.detailsContainer}>
+                    {/* Prices */}
+                    {priceDisplay ? (
+                        <View style={styles.detailRow}>
+                            <Ionicons name="pricetag-outline" size={16} color="#6B7280" />
+                            <Text style={styles.detailText}>{priceDisplay}</Text>
+                        </View>
+                    ) : null}
+
+                    {/* Address */}
+                    {item.address ? (
+                        <View style={styles.detailRow}>
+                            <Ionicons name="location-outline" size={16} color="#6B7280" />
+                            <Text style={styles.detailText}>{item.address}</Text>
+                        </View>
+                    ) : null}
+
+                    {/* Min qty — legacy field kept if present */}
+                    {item.min_quantity_kg ? (
+                        <View style={styles.detailRow}>
+                            <Ionicons name="scale-outline" size={16} color="#6B7280" />
+                            <Text style={styles.detailText}>Min Qty: {item.min_quantity_kg}kg</Text>
+                        </View>
+                    ) : null}
+                </View>
+
+                <View style={styles.actionButtons}>
+                    <TouchableOpacity
+                        style={[styles.actionBtn, styles.callBtn, !item.phone && styles.disabledBtn]}
+                        onPress={() => handleCall(item.phone)}
+                        disabled={!item.phone}
+                    >
+                        <Ionicons name="call" size={18} color={item.phone ? '#059669' : '#9ca3af'} />
+                        <Text style={[styles.callBtnText, !item.phone && styles.disabledBtnText]}>
+                            {item.phone || 'No phone'}
+                        </Text>
+                    </TouchableOpacity>
+
+                    {(item.latitude && item.longitude) ? (
+                        <TouchableOpacity
+                            style={[styles.actionBtn, styles.dirBtn]}
+                            onPress={() => handleDirections(item.latitude, item.longitude, item.name)}
+                        >
+                            <Ionicons name="navigate" size={18} color="#FFF" />
+                            <Text style={styles.dirBtnText}>Directions</Text>
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
             </View>
-
-            <View style={styles.detailsContainer}>
-                <View style={styles.detailRow}>
-                    <Ionicons name="location-outline" size={16} color="#6B7280" />
-                    <Text style={styles.detailText}>{item.address}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                    <Ionicons name="leaf-outline" size={16} color="#6B7280" />
-                    <Text style={styles.detailText}>Accepts: <Text style={{textTransform: 'capitalize'}}>{item.accepted_types.join(', ')}</Text></Text>
-                </View>
-                <View style={styles.detailRow}>
-                    <Ionicons name="scale-outline" size={16} color="#6B7280" />
-                    <Text style={styles.detailText}>Min Qty: {item.min_quantity_kg}kg</Text>
-                </View>
-            </View>
-
-            <View style={styles.actionButtons}>
-                <TouchableOpacity 
-                    style={[styles.actionBtn, styles.callBtn]} 
-                    onPress={() => handleCall(item.phone)}
-                >
-                    <Ionicons name="call" size={18} color="#059669" />
-                    <Text style={styles.callBtnText}>Call Now</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                    style={[styles.actionBtn, styles.dirBtn]} 
-                    onPress={() => handleDirections(item.latitude, item.longitude, item.name)}
-                >
-                    <Ionicons name="navigate" size={18} color="#FFF" />
-                    <Text style={styles.dirBtnText}>Directions</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
+        );
+    };
 
     if (loading) {
         return (
@@ -97,7 +163,7 @@ export default function RecyclersScreen() {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Find Recyclers</Text>
-                <Text style={styles.subtitle}>Sell your collected plastic waste to verified partners.</Text>
+                <Text style={styles.subtitle}>Sell your collected waste to verified partners.</Text>
             </View>
 
             <FlatList
@@ -106,7 +172,7 @@ export default function RecyclersScreen() {
                 renderItem={renderItem}
                 contentContainerStyle={styles.list}
                 ListEmptyComponent={() => (
-                    <Text style={styles.emptyText}>No registered recyclers found nearby.</Text>
+                    <Text style={styles.emptyText}>No registered recyclers found.</Text>
                 )}
             />
         </View>
@@ -159,7 +225,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        marginBottom: 16,
+        marginBottom: 10,
     },
     name: {
         fontSize: 18,
@@ -171,16 +237,39 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#6B7280',
     },
-    priceTag: {
+    activeBadge: {
         backgroundColor: '#ECFDF5',
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 8,
+        marginLeft: 8,
     },
-    priceText: {
+    inactiveBadge: {
+        backgroundColor: '#FEF2F2',
+    },
+    activeBadgeText: {
         color: '#059669',
         fontWeight: '700',
-        fontSize: 14,
+        fontSize: 12,
+    },
+    inactiveBadgeText: {
+        color: '#DC2626',
+    },
+    chipsRow: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 6,
+        marginBottom: 12,
+    },
+    chip: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 20,
+        borderWidth: 1,
+    },
+    chipText: {
+        fontSize: 12,
+        fontWeight: '600',
     },
     detailsContainer: {
         marginBottom: 16,
@@ -225,10 +314,16 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 14,
     },
+    disabledBtn: {
+        backgroundColor: '#F3F4F6',
+    },
+    disabledBtnText: {
+        color: '#9ca3af',
+    },
     emptyText: {
         textAlign: 'center',
         color: '#6B7280',
         marginTop: 40,
         fontSize: 16,
-    }
+    },
 });
