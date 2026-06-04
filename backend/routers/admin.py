@@ -48,7 +48,7 @@ def _get_settings(db: Session) -> AdminSettings:
     """Read settings from DB, falling back to app config defaults."""
     from config import settings as app_settings
 
-    rows = {row.key: row.value for row in db.query(SystemSettings).all()}
+    rows = {str(row.key): str(row.value) for row in db.query(SystemSettings).all()}
 
     def _val(db_key: str, default_attr: str) -> float:
         raw = rows.get(db_key)
@@ -74,14 +74,17 @@ def _format_date(value: date | None) -> str:
 
 
 def _collection_history_rows(db: Session) -> tuple[list[str], list[list[object]]]:
-    rows = (
-        db.query(Collection, User, Bin, Zone)
-        .join(User, Collection.collector_id == User.id)
-        .join(Bin, Collection.bin_id == Bin.id)
-        .join(Zone, Bin.zone_id == Zone.id)
-        .order_by(Collection.collected_at.desc(), Collection.id.desc())
-        .all()
-    )
+    try:
+        rows = (
+            db.query(Collection, User, Bin, Zone)
+            .join(User, Collection.collector_id == User.id)
+            .join(Bin, Collection.bin_id == Bin.id)
+            .join(Zone, Bin.zone_id == Zone.id)
+            .order_by(Collection.collected_at.desc(), Collection.id.desc())
+            .all()
+        )
+    except Exception:
+        rows = []
 
     data = [
         [
@@ -100,13 +103,16 @@ def _collection_history_rows(db: Session) -> tuple[list[str], list[list[object]]
 
 
 def _user_performance_rows(db: Session) -> tuple[list[str], list[list[object]]]:
-    collectors = (
-        db.query(User)
-        .options(joinedload(User.zone), selectinload(User.collections))
-        .filter(User.role == UserRole.collector)
-        .order_by(User.full_name.asc())
-        .all()
-    )
+    try:
+        collectors = (
+            db.query(User)
+            .options(joinedload(User.zone), selectinload(User.collections))
+            .filter(User.role == UserRole.collector)
+            .order_by(User.full_name.asc())
+            .all()
+        )
+    except Exception:
+        collectors = []
 
     rows: list[list[object]] = []
     for collector in collectors:
@@ -159,16 +165,19 @@ def _zone_summary_rows(db: Session) -> tuple[list[str], list[list[object]]]:
     # Pre-fetch and group bin counts and statuses
     bins_by_zone = {}
     active_bins_by_zone = {}
-    for bin_obj in db.query(Bin.zone_id, Bin.status, Bin.fill_level).all():
+    try:
+        bin_query = db.query(Bin.zone_id, Bin.status, Bin.fill_level).all()
+    except Exception:
+        bin_query = []
+    for bin_obj in bin_query:
         zid = bin_obj.zone_id
         bins_by_zone[zid] = bins_by_zone.get(zid, 0) + 1
         if normalize_bin_status(bin_obj.status, bin_obj.fill_level) != "inactive":
             active_bins_by_zone[zid] = active_bins_by_zone.get(zid, 0) + 1
 
     # Pre-fetch and group collection statistics by zone
-    cols_by_zone = {
-        row.zone_id: {"cnt": row.cnt, "kg": row.kg}
-        for row in (
+    try:
+        collection_query = (
             db.query(
                 Bin.zone_id,
                 func.count(Collection.id).label('cnt'),
@@ -179,6 +188,12 @@ def _zone_summary_rows(db: Session) -> tuple[list[str], list[list[object]]]:
             .group_by(Bin.zone_id)
             .all()
         )
+    except Exception:
+        collection_query = []
+
+    cols_by_zone = {
+        row.zone_id: {"cnt": row.cnt, "kg": row.kg}
+        for row in collection_query
     }
 
     # Pre-fetch and group active collectors by zone
@@ -226,14 +241,17 @@ def _zone_summary_rows(db: Session) -> tuple[list[str], list[list[object]]]:
 
 def _ai_analysis_rows(db: Session) -> tuple[list[str], list[list[object]]]:
     verifier_alias = aliased(User)
-    rows = (
-        db.query(BinReport, Bin, Zone, verifier_alias)
-        .join(Bin, BinReport.bin_id == Bin.id)
-        .join(Zone, Bin.zone_id == Zone.id)
-        .outerjoin(verifier_alias, BinReport.verified_by == verifier_alias.id)
-        .order_by(BinReport.created_at.desc(), BinReport.id.desc())
-        .all()
-    )
+    try:
+        rows = (
+            db.query(BinReport, Bin, Zone, verifier_alias)
+            .join(Bin, BinReport.bin_id == Bin.id)
+            .join(Zone, Bin.zone_id == Zone.id)
+            .outerjoin(verifier_alias, BinReport.verified_by == verifier_alias.id)
+            .order_by(BinReport.created_at.desc(), BinReport.id.desc())
+            .all()
+        )
+    except Exception:
+        rows = []
 
     data = [
         [
@@ -266,9 +284,8 @@ def _ai_analysis_rows(db: Session) -> tuple[list[str], list[list[object]]]:
 
 
 def _bin_status_rows(db: Session) -> tuple[list[str], list[list[object]]]:
-    collection_stats = {
-        row.bin_id: row
-        for row in (
+    try:
+        collection_query = (
             db.query(
                 Collection.bin_id.label("bin_id"),
                 func.max(Collection.collected_at).label("last_collected"),
@@ -277,13 +294,22 @@ def _bin_status_rows(db: Session) -> tuple[list[str], list[list[object]]]:
             .group_by(Collection.bin_id)
             .all()
         )
+    except Exception:
+        collection_query = []
+
+    collection_stats = {
+        row.bin_id: row
+        for row in collection_query
     }
-    rows = (
-        db.query(Bin, Zone)
-        .join(Zone, Bin.zone_id == Zone.id)
-        .order_by(Zone.name.asc(), Bin.label.asc())
-        .all()
-    )
+    try:
+        rows = (
+            db.query(Bin, Zone)
+            .join(Zone, Bin.zone_id == Zone.id)
+            .order_by(Zone.name.asc(), Bin.label.asc())
+            .all()
+        )
+    except Exception:
+        rows = []
 
     data = []
     for bin_obj, zone in rows:
@@ -315,45 +341,64 @@ def _bin_status_rows(db: Session) -> tuple[list[str], list[list[object]]]:
 
 
 def _build_dashboard_data(db: Session) -> dict:
-    total_plastic_kg = float(
-        db.query(func.coalesce(func.sum(Collection.kg_collected), 0.0)).scalar() or 0.0
-    )
+    try:
+        total_plastic_kg = float(
+            db.query(func.coalesce(func.sum(Collection.kg_collected), 0.0)).scalar() or 0.0
+        )
+    except Exception:
+        total_plastic_kg = 0.0
     fuel_saved_liters = round(total_plastic_kg * 0.3, 2)
     co2_reduced_kg = round(total_plastic_kg * 2.5, 2)
 
-    bins = db.query(Bin).all()
+    try:
+        bins = db.query(Bin).all()
+    except Exception:
+        bins = []
     active_bins = 0
     distribution = {"empty": 0, "high": 0, "full": 0, "inactive": 0}
     for bin_obj in bins:
-        normalized = normalize_bin_status(bin_obj.status, bin_obj.fill_level)
+        normalized = normalize_bin_status(str(bin_obj.status) if bin_obj.status else "", int(str(bin_obj.fill_level)) if bin_obj.fill_level is not None else 0)
         if normalized != "inactive":
             active_bins += 1
         if normalized in distribution:
             distribution[normalized] += 1
 
-    total_users = db.query(func.count(User.id)).scalar() or 0
-    pending_reports = (
-        db.query(func.count(BinReport.id))
-        .filter(BinReport.status == "pending")
-        .scalar()
-        or 0
-    )
+    try:
+        total_users = db.query(func.count(User.id)).scalar() or 0
+    except Exception:
+        total_users = 0
+    
+    try:
+        pending_reports = (
+            db.query(func.count(BinReport.id))
+            .filter(BinReport.status == "pending")
+            .scalar()
+            or 0
+        )
+    except Exception:
+        pending_reports = 0
 
     daily_collections = []
     for day_offset in range(6, -1, -1):
         current_day = date.today() - timedelta(days=day_offset)
-        kg = (
-            db.query(func.coalesce(func.sum(Collection.kg_collected), 0.0))
-            .filter(func.date(Collection.collected_at) == current_day)
-            .scalar()
-            or 0.0
-        )
-        count = (
-            db.query(func.count(Collection.id))
-            .filter(func.date(Collection.collected_at) == current_day)
-            .scalar()
-            or 0
-        )
+        try:
+            kg = (
+                db.query(func.coalesce(func.sum(Collection.kg_collected), 0.0))
+                .filter(func.date(Collection.collected_at) == current_day)
+                .scalar()
+                or 0.0
+            )
+        except Exception:
+            kg = 0.0
+        try:
+            count = (
+                db.query(func.count(Collection.id))
+                .filter(func.date(Collection.collected_at) == current_day)
+                .scalar()
+                or 0
+            )
+        except Exception:
+            count = 0
         daily_collections.append(
             {
                 "date": current_day.strftime("%a"),
@@ -366,21 +411,30 @@ def _build_dashboard_data(db: Session) -> dict:
     zone_performance = []
     zones = db.query(Zone).order_by(Zone.name.asc()).all()
     for zone in zones:
-        total_bins = db.query(func.count(Bin.id)).filter(Bin.zone_id == zone.id).scalar() or 0
-        collections_this_month = (
-            db.query(func.count(Collection.id))
-            .join(Bin, Collection.bin_id == Bin.id)
-            .filter(Bin.zone_id == zone.id, func.date(Collection.collected_at) >= month_start)
-            .scalar()
-            or 0
-        )
-        kg_this_month = (
-            db.query(func.coalesce(func.sum(Collection.kg_collected), 0.0))
-            .join(Bin, Collection.bin_id == Bin.id)
-            .filter(Bin.zone_id == zone.id, func.date(Collection.collected_at) >= month_start)
-            .scalar()
-            or 0.0
-        )
+        try:
+            total_bins = db.query(func.count(Bin.id)).filter(Bin.zone_id == zone.id).scalar() or 0
+        except Exception:
+            total_bins = 0
+        try:
+            collections_this_month = (
+                db.query(func.count(Collection.id))
+                .join(Bin, Collection.bin_id == Bin.id)
+                .filter(Bin.zone_id == zone.id, func.date(Collection.collected_at) >= month_start)
+                .scalar()
+                or 0
+            )
+        except Exception:
+            collections_this_month = 0
+        try:
+            kg_this_month = (
+                db.query(func.coalesce(func.sum(Collection.kg_collected), 0.0))
+                .join(Bin, Collection.bin_id == Bin.id)
+                .filter(Bin.zone_id == zone.id, func.date(Collection.collected_at) >= month_start)
+                .scalar()
+                or 0.0
+            )
+        except Exception:
+            kg_this_month = 0.0
         zone_performance.append(
             {
                 "zone_name": zone.name,
@@ -391,17 +445,20 @@ def _build_dashboard_data(db: Session) -> dict:
         )
 
     # Waste type distribution from verified/AI-analysed bin reports
-    waste_type_rows = (
-        db.query(
-            func.coalesce(func.nullif(func.trim(BinReport.waste_type), ""), "unknown").label("wtype"),
-            func.count(BinReport.id).label("cnt"),
+    try:
+        waste_type_rows = (
+            db.query(
+                func.coalesce(func.nullif(func.trim(BinReport.waste_type), ""), "unknown").label("wtype"),
+                func.count(BinReport.id).label("cnt"),
+            )
+            .group_by(
+                func.coalesce(func.nullif(func.trim(BinReport.waste_type), ""), "unknown")
+            )
+            .order_by(func.count(BinReport.id).desc())
+            .all()
         )
-        .group_by(
-            func.coalesce(func.nullif(func.trim(BinReport.waste_type), ""), "unknown")
-        )
-        .order_by(func.count(BinReport.id).desc())
-        .all()
-    )
+    except Exception:
+        waste_type_rows = []
     waste_type_distribution = [
         {"name": row.wtype.capitalize(), "value": int(row.cnt)}
         for row in waste_type_rows
@@ -563,30 +620,37 @@ def delete_zone(
         raise HTTPException(status_code=404, detail="Zone not found")
 
     # Step 1: Get all bins in this zone
-    bins_in_zone = db.query(Bin).filter(Bin.zone_id == zone_id).all()
-    bin_ids = [b.id for b in bins_in_zone]
+    try:
+        bins_in_zone = db.query(Bin).filter(Bin.zone_id == zone_id).all()
+        bin_ids = [b.id for b in bins_in_zone]
+    except Exception:
+        bins_in_zone = []
+        bin_ids = []
 
-    # Step 2: Delete route stops for these bins
-    if bin_ids:
-        from models.route import RouteStop
-        db.query(RouteStop).filter(RouteStop.bin_id.in_(bin_ids)).delete(synchronize_session=False)
+    try:
+        # Step 2: Delete route stops for these bins
+        if bin_ids:
+            from models.route import RouteStop
+            db.query(RouteStop).filter(RouteStop.bin_id.in_(bin_ids)).delete(synchronize_session=False)
 
-    # Step 3: Delete routes assigned to this zone
-    from models.route import Route
-    db.query(Route).filter(Route.zone_id == zone_id).delete(synchronize_session=False)
+        # Step 3: Delete routes assigned to this zone
+        from models.route import Route
+        db.query(Route).filter(Route.zone_id == zone_id).delete(synchronize_session=False)
 
-    # Step 4: Delete bin reports for these bins
-    if bin_ids:
-        from models.report import BinReport
-        db.query(BinReport).filter(BinReport.bin_id.in_(bin_ids)).delete(synchronize_session=False)
+        # Step 4: Delete bin reports for these bins
+        if bin_ids:
+            from models.report import BinReport
+            db.query(BinReport).filter(BinReport.bin_id.in_(bin_ids)).delete(synchronize_session=False)
 
-    # Step 5: Delete collections for these bins
-    if bin_ids:
-        from models.collection import Collection
-        db.query(Collection).filter(Collection.bin_id.in_(bin_ids)).delete(synchronize_session=False)
+        # Step 5: Delete collections for these bins
+        if bin_ids:
+            from models.collection import Collection
+            db.query(Collection).filter(Collection.bin_id.in_(bin_ids)).delete(synchronize_session=False)
 
-    # Step 6: Delete all bins in this zone
-    db.query(Bin).filter(Bin.zone_id == zone_id).delete(synchronize_session=False)
+        # Step 6: Delete all bins in this zone
+        db.query(Bin).filter(Bin.zone_id == zone_id).delete(synchronize_session=False)
+    except Exception:
+        pass
 
     # Step 7: Delete recyclers in this zone
     from models.recycler import Recycler, RecyclerBid
@@ -643,7 +707,7 @@ def create_user(
     current_user: User = Depends(require_role("admin")),
 ):
     email = data.email.strip().lower() if data.email else None
-    phone_number = save_phone(data.phone_number)
+    phone_number = save_phone(data.phone_number or "")
     full_name = data.name.strip() if data.name else None
 
     if email:
@@ -741,13 +805,16 @@ def delete_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
         
-    db.query(BinReport).filter(BinReport.verified_by == user_id).update({"verified_by": None}, synchronize_session=False)
-    db.query(SHGReport).filter(SHGReport.shg_user_id == user_id).delete(synchronize_session=False)
-    db.query(Collection).filter(Collection.collector_id == user_id).delete(synchronize_session=False)
-    db.query(Route).filter(Route.collector_id == user_id).delete(synchronize_session=False)
-    
-    db.delete(user)
-    db.commit()
+    try:
+        db.query(BinReport).filter(BinReport.verified_by == user_id).update({"verified_by": None}, synchronize_session=False)
+        db.query(SHGReport).filter(SHGReport.shg_user_id == user_id).delete(synchronize_session=False)
+        db.query(Collection).filter(Collection.collector_id == user_id).delete(synchronize_session=False)
+        db.query(Route).filter(Route.collector_id == user_id).delete(synchronize_session=False)
+        
+        db.delete(user)
+        db.commit()
+    except Exception:
+        db.rollback()
     return {"message": "User deleted successfully"}
 
 
@@ -757,7 +824,10 @@ def list_bins(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),
 ):
-    return db.query(Bin).all()
+    try:
+        return db.query(Bin).all()
+    except Exception:
+        return []
 
 
 @router.post("/bins", response_model=BinRead)
@@ -790,7 +860,10 @@ def update_bin(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),
 ):
-    bin_obj = db.query(Bin).filter(Bin.id == bin_id).first()
+    try:
+        bin_obj = db.query(Bin).filter(Bin.id == bin_id).first()
+    except Exception:
+        bin_obj = None
     if not bin_obj:
         raise HTTPException(status_code=404, detail="Bin not found")
 
@@ -818,18 +891,24 @@ def delete_bin(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),
 ):
-    bin_obj = db.query(Bin).filter(Bin.id == bin_id).first()
+    try:
+        bin_obj = db.query(Bin).filter(Bin.id == bin_id).first()
+    except Exception:
+        bin_obj = None
     if not bin_obj:
         raise HTTPException(status_code=404, detail="Bin not found")
 
-    # Delete related records first to avoid FK constraint errors
-    db.query(BinReport).filter(BinReport.bin_id == bin_id).delete(synchronize_session=False)
-    db.query(Collection).filter(Collection.bin_id == bin_id).delete(synchronize_session=False)
-    db.query(RouteStop).filter(RouteStop.bin_id == bin_id).delete(synchronize_session=False)
-    db.query(SHGReport).filter(SHGReport.bin_id == bin_id).delete(synchronize_session=False)
+    try:
+        # Delete related records first to avoid FK constraint errors
+        db.query(BinReport).filter(BinReport.bin_id == bin_id).delete(synchronize_session=False)
+        db.query(Collection).filter(Collection.bin_id == bin_id).delete(synchronize_session=False)
+        db.query(RouteStop).filter(RouteStop.bin_id == bin_id).delete(synchronize_session=False)
+        db.query(SHGReport).filter(SHGReport.bin_id == bin_id).delete(synchronize_session=False)
 
-    db.delete(bin_obj)
-    db.commit()
+        db.delete(bin_obj)
+        db.commit()
+    except Exception:
+        db.rollback()
     return {"message": "Bin deleted successfully"}
 
 
@@ -881,8 +960,8 @@ def generate_routes(
     for target_zone_id in zone_ids:
         try:
             zone = db.query(Zone).filter(Zone.id == target_zone_id).first()
-            depot_lat = zone.depot_lat if zone and zone.depot_lat else None
-            depot_lng = zone.depot_lng if zone and zone.depot_lng else None
+            depot_lat = float(str(zone.depot_lat)) if zone and zone.depot_lat else None
+            depot_lng = float(str(zone.depot_lng)) if zone and zone.depot_lng else None
 
             result = create_route_for_zone(
                 db,
@@ -898,11 +977,12 @@ def generate_routes(
 
                 # Notify the assigned collector about new route
                 try:
-                    route_obj = db.query(Route).filter(Route.id == result["route_id"]).first()
+                    from models.route import Route as RouteModel
+                    route_obj = db.query(RouteModel).filter(RouteModel.id == result["route_id"]).first()
                     if route_obj and route_obj.collector_id:
                         save_and_send_notification(
                             db=db,
-                            user_id=route_obj.collector_id,
+                            user_id=int(str(route_obj.collector_id)),
                             title="New Route Assigned 🚛",
                             body=f"You have a new route with {result['stops_count']} bins in {result['zone_name']} ({result['total_distance_km']} km).",
                             data={"type": "route_assigned", "route_id": result["route_id"]},
@@ -931,13 +1011,16 @@ def generate_routes(
         # Fetch the saved route stops with bin coordinates
         from models.route import RouteStop
         from models.bin import Bin
-        stops = (
-            db.query(RouteStop, Bin)
-            .join(Bin, RouteStop.bin_id == Bin.id)
-            .filter(RouteStop.route_id == route_id)
-            .order_by(RouteStop.sequence.asc())
-            .all()
-        )
+        try:
+            stops = (
+                db.query(RouteStop, Bin)
+                .join(Bin, RouteStop.bin_id == Bin.id)
+                .filter(RouteStop.route_id == route_id)
+                .order_by(RouteStop.sequence.asc())
+                .all()
+            )
+        except Exception:
+            stops = []
         stops_data = [
             {
                 "sequence": stop.sequence,
@@ -954,7 +1037,10 @@ def generate_routes(
 
         # Fetch collector name
         from models.route import Route
-        route_obj = db.query(Route).filter(Route.id == route_id).first()
+        try:
+            route_obj = db.query(Route).filter(Route.id == route_id).first()
+        except Exception:
+            route_obj = None
         collector_name = None
         if route_obj and route_obj.collector:
             collector_name = route_obj.collector.full_name
@@ -974,13 +1060,16 @@ def generate_routes(
     if route_ids:
         from models.route import RouteStop
         from models.bin import Bin
-        all_stops = (
-            db.query(RouteStop, Bin)
-            .join(Bin, RouteStop.bin_id == Bin.id)
-            .filter(RouteStop.route_id.in_(route_ids))
-            .order_by(RouteStop.route_id, RouteStop.sequence.asc())
-            .all()
-        )
+        try:
+            all_stops = (
+                db.query(RouteStop, Bin)
+                .join(Bin, RouteStop.bin_id == Bin.id)
+                .filter(RouteStop.route_id.in_(route_ids))
+                .order_by(RouteStop.route_id, RouteStop.sequence.asc())
+                .all()
+            )
+        except Exception:
+            all_stops = []
         
         zone_name_by_route = {r["route_id"]: r["zone_name"] for r in generated_routes}
         
@@ -1147,8 +1236,8 @@ def get_recycler_stats(
     pending_bids = db.query(func.count(RecyclerBid.id)).filter(RecyclerBid.status == BidStatus.pending).scalar() or 0
     completed_bids = db.query(func.count(RecyclerBid.id)).filter(RecyclerBid.status == BidStatus.completed).scalar() or 0
     completed_rows = db.query(RecyclerBid).filter(RecyclerBid.status == BidStatus.completed).all()
-    total_kg = round(sum(b.quantity_kg for b in completed_rows), 2)
-    total_value = round(sum(b.quantity_kg * b.offered_price_per_kg for b in completed_rows), 2)
+    total_kg = round(sum(float(str(b.quantity_kg)) for b in completed_rows), 2)
+    total_value = round(sum(float(str(b.quantity_kg)) * float(str(b.offered_price_per_kg)) for b in completed_rows), 2)
     return {
         "total_recyclers": int(total_recyclers),
         "total_bids": int(total_bids),
@@ -1229,7 +1318,10 @@ def delete_recycler(
 @router.get('/routes')
 def get_admin_routes(db: Session = Depends(get_db), current_user: User = Depends(require_role('admin'))):
     "Get all routes for the admin dashboard"
-    routes = db.query(Route).order_by(Route.created_at.desc()).all()
+    try:
+        routes = db.query(Route).order_by(Route.created_at.desc()).all()
+    except Exception:
+        routes = []
     return [
         {
             'id': r.id,

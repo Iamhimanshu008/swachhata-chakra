@@ -88,7 +88,7 @@ async def submit_public_report(
     image_url = ""
     try:
         image_url = await asyncio.wait_for(
-            asyncio.to_thread(upload_image_sync, file_bytes, filename, upload.content_type),
+            asyncio.to_thread(upload_image_sync, file_bytes, filename, upload.content_type or "application/octet-stream"),
             timeout=30.0,
         )
     except asyncio.TimeoutError:
@@ -100,7 +100,7 @@ async def submit_public_report(
     analysis = DEFAULT_ANALYSIS.copy()
     try:
         analysis = await asyncio.wait_for(
-            asyncio.to_thread(analyze_bin_image, file_bytes, upload.content_type),
+            asyncio.to_thread(analyze_bin_image, file_bytes, upload.content_type or "application/octet-stream"),
             timeout=20.0,
         )
     except asyncio.TimeoutError:
@@ -139,9 +139,10 @@ async def submit_public_report(
         db.add(report)
         
         if update_bin:
-            bin_obj.fill_level = analysis["fill_level"]
+            fill_level_val = int(analysis.get("fill_level", 0))
+            bin_obj.fill_level = fill_level_val
             from services.report_utils import status_from_fill_level
-            bin_obj.status = BinStatus(status_from_fill_level(analysis["fill_level"]))
+            bin_obj.status = BinStatus(status_from_fill_level(fill_level_val))
             bin_obj.updated_at = datetime.now(timezone.utc)
 
         db.commit()
@@ -152,7 +153,8 @@ async def submit_public_report(
 
     # ── EVENT B: Notify sub-admin if bin is critical (>90% fill) ──
     try:
-        if int(report.fill_level or 0) > 90:
+        fill_level_val = int(analysis.get("fill_level", 0))
+        if fill_level_val > 90:
             sub_admin = (
                 db.query(User)
                 .filter(User.zone_id == bin_obj.zone_id, User.role == UserRole.sub_admin, User.is_active == True)

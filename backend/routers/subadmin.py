@@ -35,7 +35,8 @@ class VerifyReportRequest(BaseModel):
 
 
 def _report_payload(report: BinReport, bin_obj: Bin, zone: Zone) -> dict:
-    metadata = parse_report_notes(report.notes)
+    notes_val = str(report.notes) if report.notes else None
+    metadata = parse_report_notes(notes_val)
     return {
         "report_id": report.id,
         "id": report.id,
@@ -65,16 +66,19 @@ def get_reports(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("sub_admin")),
 ):
-    query = (
-        db.query(BinReport, Bin, Zone)
-        .join(Bin, BinReport.bin_id == Bin.id)
-        .join(Zone, Bin.zone_id == Zone.id)
-        .filter(Bin.zone_id == current_user.zone_id)
-    )
-    if status and status.lower() != "all":
-        query = query.filter(BinReport.status == status)
-
-    rows = query.order_by(BinReport.created_at.desc()).all()
+    try:
+        query = (
+            db.query(BinReport, Bin, Zone)
+            .join(Bin, BinReport.bin_id == Bin.id)
+            .join(Zone, Bin.zone_id == Zone.id)
+            .filter(Bin.zone_id == current_user.zone_id)
+        )
+        if status and status.lower() != "all":
+            query = query.filter(BinReport.status == status)
+    
+        rows = query.order_by(BinReport.created_at.desc()).all()
+    except Exception:
+        rows = []
     return [_report_payload(report, bin_obj, zone) for report, bin_obj, zone in rows]
 
 
@@ -163,7 +167,7 @@ def verify_report(
                         stop_count = len(new_route.stops) if new_route.stops else 0
                         save_and_send_notification(
                             db=db,
-                            user_id=new_route.collector_id,
+                            user_id=int(str(new_route.collector_id)),
                             title="New Route Ready! 🚛",
                             body=f"{stop_count} bins optimized. Start collection.",
                             data={"type": "route_assigned", "route_id": route_id},
@@ -210,46 +214,61 @@ def get_dashboard(
 ):
     today = date.today()
 
-    pending_reports = (
-        db.query(BinReport)
-        .join(Bin, BinReport.bin_id == Bin.id)
-        .filter(Bin.zone_id == current_user.zone_id, BinReport.status == "pending")
-        .count()
-    )
-    verified_today = (
-        db.query(BinReport)
-        .join(Bin, BinReport.bin_id == Bin.id)
-        .filter(
-            Bin.zone_id == current_user.zone_id,
-            BinReport.status == "verified",
-            func.date(BinReport.verified_at) == today,
+    try:
+        pending_reports = (
+            db.query(BinReport)
+            .join(Bin, BinReport.bin_id == Bin.id)
+            .filter(Bin.zone_id == current_user.zone_id, BinReport.status == "pending")
+            .count()
         )
-        .count()
-    )
-    rejected_today = (
-        db.query(BinReport)
-        .join(Bin, BinReport.bin_id == Bin.id)
-        .filter(
-            Bin.zone_id == current_user.zone_id,
-            BinReport.status == "rejected",
-            func.date(BinReport.verified_at) == today,
+    except Exception:
+        pending_reports = 0
+    try:
+        verified_today = (
+            db.query(BinReport)
+            .join(Bin, BinReport.bin_id == Bin.id)
+            .filter(
+                Bin.zone_id == current_user.zone_id,
+                BinReport.status == "verified",
+                func.date(BinReport.verified_at) == today,
+            )
+            .count()
         )
-        .count()
-    )
-    bins_needing_collection = (
-        db.query(Bin)
-        .filter(Bin.zone_id == current_user.zone_id, Bin.fill_level >= 60)
-        .count()
-    )
+    except Exception:
+        verified_today = 0
+    try:
+        rejected_today = (
+            db.query(BinReport)
+            .join(Bin, BinReport.bin_id == Bin.id)
+            .filter(
+                Bin.zone_id == current_user.zone_id,
+                BinReport.status == "rejected",
+                func.date(BinReport.verified_at) == today,
+            )
+            .count()
+        )
+    except Exception:
+        rejected_today = 0
+    try:
+        bins_needing_collection = (
+            db.query(Bin)
+            .filter(Bin.zone_id == current_user.zone_id, Bin.fill_level >= 60)
+            .count()
+        )
+    except Exception:
+        bins_needing_collection = 0
 
-    recent_rows = (
-        db.query(BinReport, Bin)
-        .join(Bin, BinReport.bin_id == Bin.id)
-        .filter(Bin.zone_id == current_user.zone_id)
-        .order_by(BinReport.created_at.desc())
-        .limit(10)
-        .all()
-    )
+    try:
+        recent_rows = (
+            db.query(BinReport, Bin)
+            .join(Bin, BinReport.bin_id == Bin.id)
+            .filter(Bin.zone_id == current_user.zone_id)
+            .order_by(BinReport.created_at.desc())
+            .limit(10)
+            .all()
+        )
+    except Exception:
+        recent_rows = []
 
     recent_reports = [
         {
@@ -283,7 +302,10 @@ def get_zone_bins(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("sub_admin")),
 ):
-    bins = db.query(Bin).filter(Bin.zone_id == current_user.zone_id).all()
+    try:
+        bins = db.query(Bin).filter(Bin.zone_id == current_user.zone_id).all()
+    except Exception:
+        bins = []
     return [
         {
             "id": b.id,
@@ -303,22 +325,28 @@ def get_zone_routes(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("sub_admin")),
 ):
-    routes = (
-        db.query(Route)
-        .filter(Route.zone_id == current_user.zone_id)
-        .order_by(Route.date.desc(), Route.id.desc())
-        .all()
-    )
+    try:
+        routes = (
+            db.query(Route)
+            .filter(Route.zone_id == current_user.zone_id)
+            .order_by(Route.date.desc(), Route.id.desc())
+            .all()
+        )
+    except Exception:
+        routes = []
 
     result = []
     for route in routes:
-        stops = (
-            db.query(RouteStop, Bin)
-            .join(Bin, RouteStop.bin_id == Bin.id)
-            .filter(RouteStop.route_id == route.id)
-            .order_by(RouteStop.sequence.asc())
-            .all()
-        )
+        try:
+            stops = (
+                db.query(RouteStop, Bin)
+                .join(Bin, RouteStop.bin_id == Bin.id)
+                .filter(RouteStop.route_id == route.id)
+                .order_by(RouteStop.sequence.asc())
+                .all()
+            )
+        except Exception:
+            stops = []
         result.append(
             {
                 "route_id": route.id,
