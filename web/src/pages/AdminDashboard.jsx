@@ -1236,34 +1236,56 @@ export default function AdminDashboard() {
         <div className="flex min-h-screen bg-sw-bg">
             <Sidebar />
             <main className={`flex-1 transition-all duration-300 main-content-mobile ${sidebarOpen ? 'ml-64' : 'ml-20'}`}>
-                <div className="p-6">
-                    <EcoQuote />
-
-                    {/* Tab Bar */}
-                    <div className="flex items-center gap-1 mb-6 bg-white rounded-xl p-1 border border-gray-100 w-fit overflow-x-auto">
+                <div className="flex h-full">
+                    {/* ── Vertical Tab Sidebar ── */}
+                    <div className="hidden md:flex flex-col w-52 shrink-0 bg-white border-r border-gray-100 min-h-screen py-4 px-2 gap-0.5">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-2">Navigation</p>
                         {tabs.map((t) => (
-                            <button key={t.key} onClick={() => setTab(t.key)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${tab === t.key ? 'bg-sw-mid text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}>
-                                <t.icon className="w-4 h-4" /> {t.label}
+                            <button
+                                key={t.key}
+                                onClick={() => setTab(t.key)}
+                                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left w-full ${
+                                    tab === t.key
+                                        ? 'bg-sw-mid text-white shadow-sm'
+                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                            >
+                                <t.icon className="w-4 h-4 shrink-0" />
+                                <span className="truncate">{t.label}</span>
                             </button>
                         ))}
                     </div>
 
-                    {tab === 'overview' && <Overview />}
-                    {tab === 'panchayat' && <PanchayatOnboarding />}
-                    {tab === 'rural' && <RuralAnalytics />}
-                    {tab === 'qrmanager' && <QRManager />}
-                    {tab === 'bins' && <BinsManagement />}
-                    {tab === 'users' && <UsersManagement />}
-                    {tab === 'swachhta' && <CollectorManagement />}
-                    {tab === 'routes' && <RouteGeneration />}
-                    {tab === 'iot' && <IoTDashboard />}
-                    {tab === 'ai' && <AIAnalytics />}
-                    {tab === 'gamification' && <GamificationAdmin />}
-                    {tab === 'store' && <RedemptionStoreAdmin />}
-                    {tab === 'recyclers' && <RecyclersManagement />}
-                    {tab === 'analytics' && <Analytics />}
-                    {tab === 'settings' && <SettingsTab />}
+                    {/* ── Mobile horizontal scrollable tab bar (small screens only) ── */}
+                    <div className="flex md:hidden items-center gap-1 bg-white border-b border-gray-100 px-3 py-2 overflow-x-auto w-full fixed top-0 left-0 right-0 z-30">
+                        {tabs.map((t) => (
+                            <button key={t.key} onClick={() => setTab(t.key)}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${tab === t.key ? 'bg-sw-mid text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}>
+                                <t.icon className="w-3.5 h-3.5" /> {t.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* ── Main Content ── */}
+                    <div className="flex-1 p-6 min-w-0 md:pt-6 pt-14">
+                        <EcoQuote />
+
+                        {tab === 'overview' && <Overview />}
+                        {tab === 'panchayat' && <PanchayatOnboarding />}
+                        {tab === 'rural' && <RuralAnalytics />}
+                        {tab === 'qrmanager' && <QRManager />}
+                        {tab === 'bins' && <BinsManagement />}
+                        {tab === 'users' && <UsersManagement />}
+                        {tab === 'swachhta' && <CollectorManagement />}
+                        {tab === 'routes' && <RouteGeneration />}
+                        {tab === 'iot' && <IoTDashboard />}
+                        {tab === 'ai' && <AIAnalytics />}
+                        {tab === 'gamification' && <GamificationAdmin />}
+                        {tab === 'store' && <RedemptionStoreAdmin />}
+                        {tab === 'recyclers' && <RecyclersManagement />}
+                        {tab === 'analytics' && <Analytics />}
+                        {tab === 'settings' && <SettingsTab />}
+                    </div>
                 </div>
             </main>
 
