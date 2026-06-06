@@ -98,7 +98,7 @@ export default function RecyclerPortal() {
             <div className="space-y-8 max-w-5xl mx-auto animate-fade-in">
                 {/* How it Works / Payment Flow Visualization */}
                 <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 overflow-hidden">
-                    <h2 className="text-xl font-bold text-gray-900 mb-8 font-display text-center">SmartWaste Partnership Flow</h2>
+                    <h2 className="text-xl font-bold text-gray-900 mb-8 font-display text-center">Swachhata Chakra Partnership Flow</h2>
                     
                     {/* Desktop Flow */}
                     <div className="hidden md:flex items-center justify-between gap-4 relative">

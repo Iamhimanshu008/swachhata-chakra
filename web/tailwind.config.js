@@ -8,18 +8,18 @@ export default {
         extend: {
             colors: {
                 sw: {
-                    'dark': '#1B4332',
-                    'mid': '#2D6A4F',
-                    'light': '#52B788',
-                    'accent': '#95D5B2',
-                    'gold': '#F4A261',
-                    'bg': '#F0FAF4',
+                    'dark': '#14532D',
+                    'mid': '#16A34A',
+                    'light': '#4ADE80',
+                    'accent': '#EA580C',
+                    'gold': '#EA580C',
+                    'bg': '#F0FDF4',
                     'white': '#FFFFFF',
-                    'text': '#1E3A2F',
-                    'text-secondary': '#6B7C6E',
+                    'text': '#14532D',
+                    'text-secondary': '#1E3A5F',
                     'danger': '#E63946',
-                    'warning': '#F4A261',
-                    'success': '#2DC653',
+                    'warning': '#EA580C',
+                    'success': '#16A34A',
                 },
             },
             fontFamily: {

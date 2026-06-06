@@ -248,12 +248,12 @@ export default function PublicView() {
             <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
                 <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-10 h-10 rounded-xl bg-sw-mid flex items-center justify-center">
-                            <Recycle className="w-6 h-6 text-white" />
+                        <div className="flex items-center justify-center">
+                            <img src="/logo.png" className="h-10 w-auto" alt="Logo" />
                         </div>
-                        <div>
-                            <span className="font-bold text-lg tracking-tight text-gray-900">SmartWaste</span>
-                            <span className="text-xs ml-1 px-2 py-0.5 bg-sw-mid/10 rounded text-sw-mid font-bold uppercase">Public</span>
+                        <div className="flex flex-col justify-center">
+                            <span className="font-bold text-lg tracking-tight text-gray-900 leading-tight">Swachhata Chakra</span>
+                            <span className="text-[10px] w-fit px-1.5 py-0.5 bg-[#16A34A]/10 rounded text-[#16A34A] font-bold uppercase mt-0.5">Public</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">

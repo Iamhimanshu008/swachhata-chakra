@@ -90,7 +90,7 @@ export default function Login() {
         setLoading(false);
     };
 
-    const isEmailMode = activeTab === 'admin' || activeTab === 'pwmu';
+    const isEmailMode = true;
 
     return (
         <div className="min-h-screen flex bg-gray-50 font-sans">
@@ -132,7 +132,7 @@ export default function Login() {
                     </div>
 
                     {/* ROLE TABS */}
-                    <div className="grid grid-cols-4 gap-2 mb-8 bg-gray-50 p-1.5 rounded-2xl border border-gray-100">
+                    <div className="grid grid-cols-3 gap-2 mb-8 bg-gray-50 p-1.5 rounded-2xl border border-gray-100">
                         <button 
                             onClick={() => handleTabChange('admin')}
                             className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all ${activeTab === 'admin' ? 'bg-white shadow-sm border-b-2 border-[#16A34A] text-[#16A34A]' : 'text-gray-500 hover:bg-gray-100 border-b-2 border-transparent'}`}
@@ -148,26 +148,18 @@ export default function Login() {
                             <span className="text-[10px] sm:text-xs font-bold text-center">PWMU Center</span>
                         </button>
                         <button 
-                            onClick={() => handleTabChange('shg')}
-                            className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all ${activeTab === 'shg' ? 'bg-white shadow-sm border-b-2 border-[#16A34A] text-[#16A34A]' : 'text-gray-500 hover:bg-gray-100 border-b-2 border-transparent'}`}
+                            onClick={() => handleTabChange('recycler')}
+                            className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all ${activeTab === 'recycler' ? 'bg-white shadow-sm border-b-2 border-[#16A34A] text-[#16A34A]' : 'text-gray-500 hover:bg-gray-100 border-b-2 border-transparent'}`}
                         >
                             <Home className="w-5 h-5 mb-1" />
-                            <span className="text-[10px] sm:text-xs font-bold text-center">Village Shed / SHG</span>
-                        </button>
-                        <button 
-                            onClick={() => handleTabChange('collector')}
-                            className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all ${activeTab === 'collector' ? 'bg-white shadow-sm border-b-2 border-[#16A34A] text-[#16A34A]' : 'text-gray-500 hover:bg-gray-100 border-b-2 border-transparent'}`}
-                        >
-                            <User className="w-5 h-5 mb-1" />
-                            <span className="text-[10px] sm:text-xs font-bold text-center">Collector</span>
+                            <span className="text-[10px] sm:text-xs font-bold text-center">Recycler</span>
                         </button>
                     </div>
 
                     <div className="text-center text-sm font-semibold text-[#16A34A] bg-[#F0FDF4] py-2 rounded-lg mb-8 border border-green-100">
                         {activeTab === 'admin' && 'Enter admin credentials'}
                         {activeTab === 'pwmu' && 'Enter PWMU center credentials'}
-                        {activeTab === 'shg' && 'Enter SHG worker phone number'}
-                        {activeTab === 'collector' && 'Enter collector phone number'}
+                        {activeTab === 'recycler' && 'Enter recycler credentials'}
                     </div>
 
                     {/* FORM */}
@@ -283,6 +275,10 @@ export default function Login() {
                     )}
 
                     <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+                        <p className="text-gray-500 text-sm italic mb-2">
+                            Are you a Collector or SHG Worker?<br/>
+                            Please use the Swachhata Chakra mobile app to login.
+                        </p>
                         <p className="text-gray-500 text-sm">
                             Don't have an account?{' '}
                             <a href="/public" className="text-[#EA580C] font-bold hover:underline underline-offset-2">

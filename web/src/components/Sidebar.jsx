@@ -53,7 +53,7 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
         <>
             {/* Desktop Sidebar */}
             <aside
-                className={`sidebar-desktop fixed left-0 top-0 h-full bg-gradient-to-b from-sw-dark to-[#143728] text-white z-40 transition-all duration-300 flex flex-col ${
+                className={`sidebar-desktop fixed left-0 top-0 h-full bg-[#14532D] text-white z-40 transition-all duration-300 flex flex-col ${
                     sidebarOpen ? 'w-64' : 'w-20'
                 }`}
             >
@@ -61,12 +61,11 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                 <div className="flex items-center justify-between p-4 border-b border-white/10">
                     {sidebarOpen && (
                         <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-sw-light/20 flex items-center justify-center">
-                                <Recycle className="w-5 h-5 text-sw-light" />
+                            <div className="flex items-center justify-center">
+                                <img src="/logo.png" className="h-10 w-auto" alt="Logo" />
                             </div>
                             <div>
-                                <span className="font-bold text-base tracking-tight">SmartWaste</span>
-                                <span className="text-[10px] ml-1 px-1.5 py-0.5 bg-sw-light/20 rounded text-sw-light font-semibold">AI</span>
+                                <span className="font-bold text-sm leading-tight block">Swachhata<br/>Chakra Portal</span>
                             </div>
                         </div>
                     )}
@@ -90,8 +89,8 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                                 className={({ isActive }) =>
                                     `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
                                         isActive
-                                            ? 'bg-sw-light text-sw-dark font-semibold shadow-lg shadow-sw-light/20'
-                                            : 'text-white/60 hover:text-white hover:bg-white/8'
+                                            ? 'bg-[#16A34A] text-white font-semibold shadow-lg shadow-[#16A34A]/20'
+                                            : 'text-[#D1FAE5] hover:text-white hover:bg-white/10'
                                     }`
                                 }
                             >
@@ -123,8 +122,8 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                                             title={!sidebarOpen ? t.label : undefined}
                                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 w-full text-left ${
                                                 isActive
-                                                    ? 'bg-sw-light text-sw-dark font-semibold shadow-lg shadow-sw-light/20'
-                                                    : 'text-white/60 hover:text-white hover:bg-white/8'
+                                                    ? 'bg-[#16A34A] text-white font-semibold shadow-lg shadow-[#16A34A]/20'
+                                                    : 'text-[#D1FAE5] hover:text-white hover:bg-white/10'
                                             }`}
                                         >
                                             <Icon className="w-5 h-5 flex-shrink-0" />

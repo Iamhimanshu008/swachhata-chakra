@@ -56,7 +56,7 @@ export default function LandingPage() {
             <div className="hidden md:flex items-center gap-8 font-medium">
               <Link to="/" className="text-[#16A34A] hover:text-[#14532D] transition-colors border-b-2 border-[#16A34A] py-1">Home</Link>
               <a href="#about" className="text-gray-600 hover:text-[#16A34A] transition-colors">About</a>
-              <Link to="/dashboard" className="text-gray-600 hover:text-[#16A34A] transition-colors">Dashboard</Link>
+              <Link to="/login" className="text-gray-600 hover:text-[#16A34A] transition-colors">Dashboard</Link>
               <Link to="/public" className="text-gray-600 hover:text-[#16A34A] transition-colors">Public Map</Link>
               <Link to="/login" className="text-gray-600 hover:text-[#16A34A] transition-colors">Login</Link>
               <Link to="/login" className="bg-[#EA580C] hover:bg-[#c2410a] text-white px-6 py-2.5 rounded-full font-bold shadow-md shadow-orange-500/20 transition-all hover:-translate-y-0.5">
@@ -95,7 +95,7 @@ export default function LandingPage() {
               <Link to="/login" className="w-full sm:w-auto bg-[#EA580C] hover:bg-[#c2410a] text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-900/40 transition-all hover:-translate-y-1 flex items-center justify-center gap-2">
                 Get Started →
               </Link>
-              <Link to="/dashboard" className="w-full sm:w-auto bg-transparent hover:bg-white/10 border-2 border-white/80 text-white px-8 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+              <Link to="/login" className="w-full sm:w-auto bg-transparent hover:bg-white/10 border-2 border-white/80 text-white px-8 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
                 View Live Dashboard →
               </Link>
             </div>
@@ -142,8 +142,77 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* SECTION 4.5 - ABOUT THE PROJECT */}
+      <section id="about" className="w-full bg-white py-24 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-extrabold text-[#1E3A5F]">About Swachhata Chakra</h3>
+            <p className="text-xl text-gray-500 mt-4">An Offline-First Hybrid Model for Rural India</p>
+          </div>
+          
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            {/* LEFT - Mission statement */}
+            <div className="space-y-6">
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Swachhata Chakra is a zero-friction, tamper-proof waste management 
+                system designed specifically for Gram Panchayats in Chhattisgarh.
+              </p>
+              
+              <div className="space-y-2">
+                <p className="font-bold text-[#1E3A5F]">We solve three ground-level problems:</p>
+                <ul className="space-y-2 text-gray-600">
+                  <li className="flex items-center gap-2"><XCircle className="w-5 h-5 text-red-500 shrink-0" /> Manual data entry fraud by collectors</li>
+                  <li className="flex items-center gap-2"><XCircle className="w-5 h-5 text-red-500 shrink-0" /> Zero internet connectivity in rural areas</li>
+                  <li className="flex items-center gap-2"><XCircle className="w-5 h-5 text-red-500 shrink-0" /> No motivation for citizens to segregate waste</li>
+                </ul>
+              </div>
+              
+              <div className="bg-[#F0FDF4] p-6 rounded-2xl border border-[#16A34A]/20">
+                <p className="font-bold text-[#16A34A] mb-2">Our solution:</p>
+                <p className="text-gray-700 leading-relaxed">
+                  An Offline-First platform where citizens receive a 
+                  physical laminated QR card (Smart Passbook), collectors use a 
+                  smartphone app with Bluetooth IoT scale, and data syncs to the 
+                  cloud when internet is available.
+                </p>
+              </div>
+            </div>
+            
+            {/* RIGHT - 3 Innovation pillars */}
+            <div className="space-y-6">
+              {/* Card 1 */}
+              <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
+                <div className="text-4xl">📡</div>
+                <div>
+                  <h4 className="text-lg font-bold text-[#1E3A5F] mb-1">Asynchronous Offline-First Architecture</h4>
+                  <p className="text-gray-600 text-sm leading-relaxed">Works 100% without internet. Morning download, field collection, afternoon sync — designed for zero-network rural environments.</p>
+                </div>
+              </div>
+              
+              {/* Card 2 */}
+              <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
+                <div className="text-4xl">🔗</div>
+                <div>
+                  <h4 className="text-lg font-bold text-[#1E3A5F] mb-1">Hardware-Software Handshake</h4>
+                  <p className="text-gray-600 text-sm leading-relaxed">ESP32 + Load Cell sends weight directly via BLE to collector app. No manual entry possible — tamper-proof digital ledger.</p>
+                </div>
+              </div>
+              
+              {/* Card 3 */}
+              <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
+                <div className="text-4xl">🎮</div>
+                <div>
+                  <h4 className="text-lg font-bold text-[#1E3A5F] mb-1">Behavioral Engineering</h4>
+                  <p className="text-gray-600 text-sm leading-relaxed">Waste disposal becomes an income stream. 10 grams = 1 Plasti-Dhan Point. Redeem for tax rebates, mobile recharge, local vouchers.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* SECTION 5 - THE PROBLEM */}
-      <section id="about" className="w-full bg-gray-50 py-24">
+      <section className="w-full bg-gray-50 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             
@@ -229,6 +298,74 @@ export default function LandingPage() {
                 <p className="text-gray-600 leading-relaxed">{card.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6.5 - DOWNLOAD MOBILE APP */}
+      <section className="w-full bg-[#F0FDF4] py-24 border-t border-[#16A34A]/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#16A34A]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-extrabold text-[#1E3A5F]">Swachhata Chakra Mobile App</h3>
+            <p className="text-xl text-gray-600 mt-4">For Collectors & SHG Workers — Offline-First Field App</p>
+          </div>
+          
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* LEFT - Features */}
+            <div className="space-y-8">
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3 text-lg text-gray-700">
+                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Works completely offline — no internet needed in field
+                </li>
+                <li className="flex items-center gap-3 text-lg text-gray-700">
+                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> QR scan citizen identity instantly
+                </li>
+                <li className="flex items-center gap-3 text-lg text-gray-700">
+                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Bluetooth IoT scale auto-fills weight
+                </li>
+                <li className="flex items-center gap-3 text-lg text-gray-700">
+                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Hindi + English bilingual interface
+                </li>
+                <li className="flex items-center gap-3 text-lg text-gray-700">
+                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Morning route download + Afternoon sync
+                </li>
+                <li className="flex items-center gap-3 text-lg text-gray-700">
+                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Push notifications for route assignments
+                </li>
+              </ul>
+              
+              <div className="inline-block bg-white border border-gray-200 px-4 py-1.5 rounded-full text-sm font-semibold text-gray-600">
+                v2.4.0 | Android 8.0+ | Free
+              </div>
+              
+              <div>
+                <a 
+                  href="https://github.com/Iamhimanshu008/smartwaste-ai/releases/download/v2.4.0/SmartWasteAI-v2.4.0.apk"
+                  className="inline-flex items-center gap-3 bg-[#16A34A] hover:bg-[#14532D] text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-green-900/20 transition-all hover:-translate-y-1"
+                >
+                  📱 Download APK v2.4.0
+                </a>
+                <p className="text-sm text-gray-500 mt-3 ml-2">Direct APK • No Play Store required • 88 MB</p>
+              </div>
+            </div>
+            
+            {/* RIGHT - Phone Mockup */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="w-[300px] h-[600px] bg-white rounded-[3rem] border-8 border-[#14532D] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-white">
+                {/* Notch */}
+                <div className="absolute top-0 w-32 h-6 bg-[#14532D] rounded-b-xl"></div>
+                
+                <img src="/logo.png" alt="App Logo" className="w-24 h-24 drop-shadow-xl mb-6" />
+                <h4 className="text-2xl font-bold text-[#14532D] text-center px-4 leading-tight">Swachhata<br/>Chakra</h4>
+                <div className="mt-4 bg-[#16A34A] text-white px-4 py-1 rounded-full text-sm font-bold">
+                  v2.4.0
+                </div>
+                
+                {/* Home Indicator */}
+                <div className="absolute bottom-4 w-24 h-1.5 bg-gray-300 rounded-full"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -339,7 +476,7 @@ export default function LandingPage() {
               <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
               <ul className="space-y-3 text-green-200/80">
                 <li><Link to="/public" className="hover:text-white transition-colors">Public Map</Link></li>
-                <li><Link to="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
+                <li><Link to="/login" className="hover:text-white transition-colors">Dashboard</Link></li>
                 <li><Link to="/login" className="hover:text-white transition-colors">Portals Login</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">API Documentation</a></li>
               </ul>
@@ -355,7 +492,7 @@ export default function LandingPage() {
           </div>
           
           <div className="pt-8 border-t border-green-800/50 text-center text-sm text-green-300/60 font-medium">
-            © 2026 Swachhata Chakra Portal | Team CodeX | Kalinga University | Climatathon 2026 — NIT Raipur | SBM Rule 2026 Compliant
+            © 2026 Swachhata Chakra Portal | Team CodeX | Climatathon 2026 — NIT Raipur X Unicef India
           </div>
         </div>
       </footer>

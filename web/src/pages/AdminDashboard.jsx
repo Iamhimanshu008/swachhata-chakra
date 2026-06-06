@@ -47,6 +47,10 @@ export default function AdminDashboard() {
     const [zones, setZones] = useState([]);
 
     useEffect(() => {
+        document.title = "Admin | Swachhata Chakra Portal";
+    }, []);
+
+    useEffect(() => {
         adminApi.getZones()
             .then(setZones)
             .catch((e) => console.error('Failed to load zones', e));
@@ -101,7 +105,7 @@ export default function AdminDashboard() {
                     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(analytics.zone_wise), 'Zone Performance');
                 }
 
-                XLSX.writeFile(wb, `SmartWaste_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+                XLSX.writeFile(wb, `SwachhataChakra_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
                 toast.success('Excel report downloaded!');
             } catch (e) {
                 toast.error('Export failed');
