@@ -15,7 +15,13 @@ import {
   Scale,
   Recycle,
   Star,
-  Landmark
+  Landmark,
+  Bell,
+  FileText,
+  Download,
+  Image as PhotoIcon,
+  ExternalLink,
+  ChevronRight
 } from 'lucide-react';
 
 const MitanCoin = () => (
@@ -48,6 +54,24 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-sw-bg font-sans overflow-x-hidden text-sw-text-secondary">
 
+      {/* SECTION 0 - NOTIFICATION BAR */}
+      <div className="w-full bg-green-600 text-white text-sm relative z-[60] flex items-center overflow-hidden border-b border-green-700">
+        <div className="whitespace-nowrap font-bold px-4 py-1.5 border-r border-green-500 bg-green-600 relative z-10 flex items-center gap-2">
+          📢 Notifications:
+        </div>
+        <div className="overflow-hidden flex-1 relative group h-full">
+          <div className="whitespace-nowrap inline-block animate-[marquee_30s_linear_infinite] group-hover:[animation-play-state:paused] py-1.5">
+            <span className="mx-4">📢 SWM Rules 2026 E-Book now available — Download below</span>
+            <span className="mx-4">|</span>
+            <span className="mx-4">🌱 Swachhata Chakra Portal will officially launched for Chhattisgarh Gram Panchayats</span>
+            <span className="mx-4">|</span>
+            <span className="mx-4">📱 Download Swachhata Chakra App v2.4.1 — Available Now</span>
+            <span className="mx-4">|</span>
+            <span className="mx-4">🏆 Climatathon 2026 — Unicef India X NIT Raipur — Team CodeX</span>
+          </div>
+        </div>
+      </div>
+
       {/* SECTION 1 - TOP GOV BAR */}
       <div className="w-full bg-sw-dark py-2 px-4 flex justify-between items-center text-white text-xs sm:text-sm shadow-sm relative z-50">
         <div className="flex items-center gap-2">
@@ -70,7 +94,7 @@ export default function LandingPage() {
               <img src="/logo.png" alt="Logo" height="48" className="h-12 w-auto" />
               <div className="flex flex-col">
                 <span className="text-xl font-bold text-sw-dark leading-tight">Swachhata Chakra Portal</span>
-                <span className="text-xs font-medium text-gray-500">Digital Waste Management System</span>
+                <span className="text-xs font-medium text-gray-500">Digital Rural Waste Management System</span>
               </div>
             </div>
             <div className="hidden md:flex items-center gap-8 font-medium">
@@ -98,6 +122,10 @@ export default function LandingPage() {
           50% { transform: translateY(-20px) rotate(5deg); }
           100% { transform: translateY(0px) rotate(0deg); }
         }
+        @keyframes marquee { 
+          0% { transform: translateX(100%) } 
+          100% { transform: translateX(-100%) } 
+        }
         .hero-gradient {
           background: linear-gradient(-45deg, #0F3D1A, #1A6B2F, #1A3C8F, #0F3D1A);
           background-size: 400% 400%;
@@ -119,7 +147,7 @@ export default function LandingPage() {
           <div className="flex-1 text-center lg:text-left text-white space-y-6">
             <div className="inline-flex items-center gap-2 bg-sw-orange/20 border border-sw-orange/50 text-sw-light px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide">
               <span className="w-2 h-2 rounded-full bg-sw-orange animate-pulse"></span>
-              Swachhata Chakra Portal
+              Swachhata Chakra Portal for Rural Chhattisgarh
             </div>
 
             <h1 className="text-5xl sm:text-6xl font-bold text-sw-light" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
@@ -455,6 +483,199 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* SECTION 6.6 - EVENTS AND SWM RULES */}
+      <section className="w-full bg-white py-24 border-t border-sw-mid/20 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            
+            {/* LEFT - Events / Notice Board */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-lg p-6">
+              <div className="flex items-center gap-3 mb-6 border-l-4 border-green-600 pl-3">
+                <h3 className="text-2xl font-bold text-sw-dark">Events / Notice Board</h3>
+                <span className="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full">1 New</span>
+              </div>
+              <div className="space-y-4">
+                <div className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50 transition-colors flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                  <div className="space-y-1">
+                    <span className="inline-block bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">22 May 2026</span>
+                    <h4 className="font-bold text-gray-800 text-lg">Review VC on SBMG & SWM Rules with Collectors</h4>
+                  </div>
+                  <button className="shrink-0 border border-green-600 text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">View More</button>
+                </div>
+                <div className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50 transition-colors flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                  <div className="space-y-1">
+                    <span className="inline-block bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">04 Jun 2026</span>
+                    <h4 className="font-bold text-gray-800 text-lg">SWM Rules 2026 Orientation with CEOs ZP</h4>
+                  </div>
+                  <button className="shrink-0 border border-green-600 text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">View More</button>
+                </div>
+                <div className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50 transition-colors flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                  <div className="space-y-1">
+                    <span className="inline-block bg-gray-400 text-white text-xs font-bold px-2 py-1 rounded">Coming Soon</span>
+                    <h4 className="font-bold text-gray-800 text-lg">Ward-level pilot launch — Raipur District</h4>
+                  </div>
+                  <button disabled className="shrink-0 border border-gray-300 text-gray-400 px-4 py-2 rounded-lg text-sm font-semibold cursor-not-allowed">View More</button>
+                </div>
+              </div>
+              <div className="mt-6 border-t border-gray-100 pt-4">
+                <button className="w-full border-2 border-dashed border-gray-300 text-gray-500 hover:border-green-600 hover:text-green-600 hover:bg-green-50 py-3 rounded-lg font-bold transition-colors">
+                  + Add Notice
+                </button>
+              </div>
+            </div>
+
+            {/* RIGHT - SWM Rules 2026 Documents */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-lg p-6">
+              <div className="flex items-center gap-3 mb-6 border-l-4 border-orange-500 pl-3">
+                <h3 className="text-2xl font-bold text-sw-dark">SWM Rules 2026 Related Documents</h3>
+                <span className="bg-orange-100 text-orange-800 text-xs font-bold px-2.5 py-0.5 rounded-full">Official</span>
+              </div>
+              <div className="space-y-3">
+                <a href="https://sbmrural.cgstate.gov.in/uploads/noticefiles/notice_swm_rules_2026_e_book_20260604_175711.pdf" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between p-3 rounded-lg hover:bg-green-50 border border-transparent hover:border-green-100 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-6 h-6 text-green-600 shrink-0" />
+                    <div>
+                      <h4 className="font-bold text-green-700 group-hover:underline text-base">SWM RULES 2026 E-BOOK (Official)</h4>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">NEW</span>
+                    <Download className="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors" />
+                  </div>
+                </a>
+                
+                <a href="#" className="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 border border-transparent transition-colors">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-6 h-6 text-gray-400 shrink-0" />
+                    <h4 className="font-medium text-green-600 text-base">SWM Rules 2026 Orientation PPT — ZP (4 June 2026)</h4>
+                  </div>
+                  <Download className="w-5 h-5 text-gray-400 group-hover:text-sw-dark transition-colors" />
+                </a>
+
+                <a href="#" className="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 border border-transparent transition-colors">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-6 h-6 text-gray-400 shrink-0" />
+                    <h4 className="font-medium text-gray-700 group-hover:text-sw-dark text-base">Municipal Solid Waste Guidelines — 05.02.26</h4>
+                  </div>
+                  <Download className="w-5 h-5 text-gray-400 group-hover:text-sw-dark transition-colors" />
+                </a>
+
+                <a href="#" className="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 border border-transparent transition-colors">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-6 h-6 text-gray-400 shrink-0" />
+                    <h4 className="font-medium text-gray-700 group-hover:text-sw-dark text-base">Waste Management Order — 19.02.26</h4>
+                  </div>
+                  <Download className="w-5 h-5 text-gray-400 group-hover:text-sw-dark transition-colors" />
+                </a>
+
+                <a href="#" className="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 border border-transparent transition-colors">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-6 h-6 text-gray-400 shrink-0" />
+                    <h4 className="font-medium text-gray-700 group-hover:text-sw-dark text-base">Dry Waste Collection Circular — 29.04.26</h4>
+                  </div>
+                  <Download className="w-5 h-5 text-gray-400 group-hover:text-sw-dark transition-colors" />
+                </a>
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end">
+                <a href="#" className="inline-flex items-center gap-2 border border-green-600 text-green-600 hover:bg-green-50 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors">
+                  View All Documents <ChevronRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6.7 - GALLERY */}
+      <section className="w-full bg-[#F0FDF4] py-24 relative z-10 border-t border-green-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h3 className="text-4xl font-extrabold text-green-800">Gallery</h3>
+            <p className="text-xl text-green-600/80 mt-2 font-medium">Field activities and awareness programs</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {/* Card 1 */}
+            <div className="flex flex-col group">
+              <div className="relative h-[220px] rounded-xl overflow-hidden shadow-lg border-2 border-green-200 bg-[#D1FAE5] mb-3">
+                <img 
+                  src="/gallery/gallery1.jpg" 
+                  alt="Gallery 1" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => e.target.style.display='none'} 
+                />
+                <div className="absolute inset-0 flex items-center justify-center -z-10">
+                  <PhotoIcon className="w-12 h-12 text-green-400 opacity-50" />
+                </div>
+                <div className="absolute inset-0 bg-green-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
+                  <p className="text-white font-bold text-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Community waste collection drive</p>
+                </div>
+              </div>
+              <span className="text-center text-green-900 font-bold text-sm">Swachh Bharat Drive</span>
+            </div>
+
+            {/* Card 2 */}
+            <div className="flex flex-col group">
+              <div className="relative h-[220px] rounded-xl overflow-hidden shadow-lg border-2 border-green-200 bg-[#BBF7D0] mb-3">
+                <img 
+                  src="/gallery/gallery2.jpg" 
+                  alt="Gallery 2" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => e.target.style.display='none'} 
+                />
+                <div className="absolute inset-0 flex items-center justify-center -z-10">
+                  <PhotoIcon className="w-12 h-12 text-green-400 opacity-50" />
+                </div>
+                <div className="absolute inset-0 bg-green-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
+                  <p className="text-white font-bold text-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Village cleanliness awareness</p>
+                </div>
+              </div>
+              <span className="text-center text-green-900 font-bold text-sm">Clean Village Campaign</span>
+            </div>
+
+            {/* Card 3 */}
+            <div className="flex flex-col group">
+              <div className="relative h-[220px] rounded-xl overflow-hidden shadow-lg border-2 border-green-200 bg-[#A7F3D0] mb-3">
+                <img 
+                  src="/gallery/gallery3.jpg" 
+                  alt="Gallery 3" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => e.target.style.display='none'} 
+                />
+                <div className="absolute inset-0 flex items-center justify-center -z-10">
+                  <PhotoIcon className="w-12 h-12 text-green-400 opacity-50" />
+                </div>
+                <div className="absolute inset-0 bg-green-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
+                  <p className="text-white font-bold text-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-300">SWM awareness for citizens</p>
+                </div>
+              </div>
+              <span className="text-center text-green-900 font-bold text-sm">Awareness Program</span>
+            </div>
+
+            {/* Card 4 */}
+            <div className="flex flex-col group">
+              <div className="relative h-[220px] rounded-xl overflow-hidden shadow-lg border-2 border-green-200 bg-[#6EE7B7] mb-3">
+                <img 
+                  src="/gallery/gallery4.jpg" 
+                  alt="Gallery 4" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => e.target.style.display='none'} 
+                />
+                <div className="absolute inset-0 flex items-center justify-center -z-10">
+                  <PhotoIcon className="w-12 h-12 text-green-400 opacity-50" />
+                </div>
+                <div className="absolute inset-0 bg-green-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
+                  <p className="text-white font-bold text-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Laminated QR cards for households</p>
+                </div>
+              </div>
+              <span className="text-center text-green-900 font-bold text-sm">QR Card Distribution</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       {/* SECTION 7 - GAMIFICATION */}
       <section className="w-full bg-sw-mid py-24 overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
@@ -544,8 +765,8 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 9 - FOOTER */}
-      <footer className="w-full bg-[#0d361c] text-green-50 pt-16 pb-8 px-4 sm:px-6 lg:px-8 border-t border-green-900/50">
-        <div className="max-w-7xl mx-auto">
+      <footer className="w-full bg-[#0d361c] text-green-50 pt-16 pb-8 border-t border-green-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-12 mb-16">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -575,12 +796,16 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-
-          <div className="pt-8 border-t border-green-800/50 text-center text-sm text-green-300/60 font-medium">
-            © 2026 Swachhata Chakra Portal | Team CodeX | Climatathon 2026 — NIT Raipur X Unicef India
-          </div>
         </div>
       </footer>
+      <div className="w-full bg-[#14532D] text-white text-[12px] py-3 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2 text-center md:text-left">
+        <div>
+          © 2026 Swachhata Chakra Portal | Team CodeX | Kalinga University | Climatathon 2026 — NIT Raipur | SBM Rule 2026 Compliant
+        </div>
+        <div className="md:text-right">
+          Designed & Developed by Team CodeX | NIT Raipur × UNICEF India
+        </div>
+      </div>
     </div>
   );
 }
