@@ -168,7 +168,7 @@ export default function CollectorManagement() {
                     <div className="p-5 border-b border-gray-100 bg-gradient-to-r from-amber-50 to-orange-50">
                         <h3 className="font-bold text-amber-900 font-display flex items-center gap-2">
                             <Trophy className="w-5 h-5 text-amber-500" />
-                            Top Swachhta Mitras
+                            Top Waste Collectors
                         </h3>
                     </div>
                     <div className="p-4 space-y-4">

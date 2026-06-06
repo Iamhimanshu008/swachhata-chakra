@@ -6,6 +6,21 @@ import {
 import { getWardSummary } from '../api/adminApi';
 import KPICard from './cards/KPICard';
 
+const MitanCoin = () => (
+  <span style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '22px',
+    height: '22px',
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #B45309, #D97706)',
+    fontSize: '12px',
+    marginRight: '4px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+  }}>🌾</span>
+);
+
 export default function RuralAnalytics() {
     const [wardNo, setWardNo] = useState(4);
     const [data, setData] = useState(null);
@@ -89,8 +104,8 @@ export default function RuralAnalytics() {
                                 </p>
                             </div>
                             <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
-                                <p className="text-sm text-gray-500 font-medium">Points Distributed</p>
-                                <p className="text-2xl font-bold text-blue-700 mt-1">{data.total_points_issued}</p>
+                                <p className="text-sm text-gray-500 font-medium">Mitan-Mudra Distributed</p>
+                                <p className="text-2xl font-bold text-blue-700 mt-1 flex items-center"><MitanCoin/> {data.total_points_issued}</p>
                             </div>
                         </div>
                     </div>

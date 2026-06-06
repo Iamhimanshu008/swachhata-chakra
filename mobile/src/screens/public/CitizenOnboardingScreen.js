@@ -48,8 +48,8 @@ const CitizenOnboardingScreen = () => {
 
   const handleSkip = async () => {
     Alert.alert(
-      'Skip Profile',
-      'Aap baad mein profile complete kar sakte hain (You can complete your profile later).',
+      'Skip for now?',
+      'You can complete your profile later.',
       [
         { text: 'Cancel', style: 'cancel' },
         { 
@@ -86,7 +86,7 @@ const CitizenOnboardingScreen = () => {
           <Text style={styles.label}>Full Name</Text>
           <TextInput
             style={styles.input}
-            placeholder="Aapka poora naam (Your full name)"
+            placeholder="Your full name"
             value={fullName}
             onChangeText={setFullName}
           />

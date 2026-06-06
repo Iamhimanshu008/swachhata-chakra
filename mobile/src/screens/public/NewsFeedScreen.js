@@ -10,8 +10,8 @@ export default function NewsFeedScreen({ navigation }) {
     const [loading, setLoading] = useState(true);
 
     const staticFallback = [
-      { id: 1, title: 'SmartWaste AI launch in Nava Raipur', 
-        summary: 'SmartWaste AI has made waste collection 40% more efficient',
+      { id: 1, title: 'Swachhata Chakra launch in Nava Raipur', 
+        summary: 'Swachhata Chakra has made waste collection 40% more efficient',
         icon: <MaterialCommunityIcons name="newspaper-variant-outline" size={40} color="#16a34a" />, tag: 'Success Story', 
         tag_color: '#16a34a', created_at: new Date().toISOString() },
     ];

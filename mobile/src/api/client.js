@@ -6,7 +6,7 @@ const BASE_URL = process.env.EXPO_PUBLIC_API_URL
   ? `${process.env.EXPO_PUBLIC_API_URL}/api`
   : 'https://smartwaste-ai-f0i9.onrender.com/api';
 
-console.log('[SmartWaste] API BASE_URL:', BASE_URL);
+console.log('[Swachhata Chakra] API BASE_URL:', BASE_URL);
 
 const client = axios.create({
   baseURL: BASE_URL,

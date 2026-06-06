@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   StyleSheet, Alert, KeyboardAvoidingView,
-  Platform, ScrollView, ActivityIndicator
+  Platform, ScrollView, ActivityIndicator, Image
 } from 'react-native';
 import { login as loginApi, getMe } from '../api/authApi';
 import client from '../api/client';
 import useStore from '../store';
-import { useTranslation } from '../i18n';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const LoginScreen = ({ navigation }) => {
-  const [mode, setMode] = useState('email'); // 'email' | 'phone'
+  const [roleTab, setRoleTab] = useState('collector'); // 'collector' | 'citizen' | 'recycler'
   
   // Email mode state
   const [email, setEmail] = useState('');
@@ -21,14 +20,13 @@ const LoginScreen = ({ navigation }) => {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
-  const [devOtp, setDevOtp] = useState(''); // remove in prod
+  const [devOtp, setDevOtp] = useState('');
   
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
   const [otpLoading, setOtpLoading] = useState(false);
 
   const { login } = useStore();
-  const { t } = useTranslation();
 
   // Email login
   const handleEmailLogin = async () => {
@@ -95,13 +93,8 @@ const LoginScreen = ({ navigation }) => {
       });
       const { access_token, refresh_token } = res.data;
 
-      // Step 1: Store tokens first (same pattern as email login)
       await login(null, access_token, refresh_token);
-
-      // Step 2: Fetch user from /auth/me for consistent role format
       const user = await getMe();
-
-      // Step 3: Store user — AppNavigator reacts to user.role
       await login(user, access_token, refresh_token);
     } catch (err) {
       Alert.alert(
@@ -126,49 +119,45 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.header}>
           <Image source={require('../../assets/logo.png')} style={{ width: 60, height: 60, marginBottom: 8 }} resizeMode="contain" />
           <Text style={styles.title}>Swachhata Chakra</Text>
-          <Text style={styles.subtitle}>{t('staff_login')}</Text>
+          <Text style={styles.subtitle}>Login to your account</Text>
         </View>
 
-        {/* Mode Toggle */}
+        {/* Role Toggle */}
         <View style={styles.toggleRow}>
           <TouchableOpacity
-            style={[styles.toggleBtn, mode === 'email' && styles.toggleActive, { flexDirection: 'row', justifyContent: 'center' }]}
-            onPress={() => setMode('email')}
+            style={[styles.toggleBtn, roleTab === 'collector' && styles.toggleActive]}
+            onPress={() => { setRoleTab('collector'); setOtpSent(false); }}
           >
-            <Ionicons name="mail-outline" size={16} color={mode === 'email' ? 'white' : '#16a34a'} />
-            <Text style={[
-              styles.toggleText,
-              { marginLeft: 6 },
-              mode === 'email' && styles.toggleTextActive
-            ]}>Email</Text>
+            <Text style={[styles.toggleText, roleTab === 'collector' && styles.toggleTextActive]}>Collector / SHG</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.toggleBtn, mode === 'phone' && styles.toggleActive, { flexDirection: 'row', justifyContent: 'center' }]}
-            onPress={() => setMode('phone')}
+            style={[styles.toggleBtn, roleTab === 'citizen' && styles.toggleActive]}
+            onPress={() => { setRoleTab('citizen'); setOtpSent(false); }}
           >
-            <Ionicons name="phone-portrait-outline" size={16} color={mode === 'phone' ? 'white' : '#16a34a'} />
-            <Text style={[
-              styles.toggleText,
-              { marginLeft: 6 },
-              mode === 'phone' && styles.toggleTextActive
-            ]}>{t('phone_otp')}</Text>
+            <Text style={[styles.toggleText, roleTab === 'citizen' && styles.toggleTextActive]}>Citizen</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.toggleBtn, roleTab === 'recycler' && styles.toggleActive]}
+            onPress={() => setRoleTab('recycler')}
+          >
+            <Text style={[styles.toggleText, roleTab === 'recycler' && styles.toggleTextActive]}>Recycler</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Email Mode */}
-        {mode === 'email' && (
+        {/* Email Mode for Recycler */}
+        {roleTab === 'recycler' && (
           <View style={styles.formSection}>
-            <Text style={styles.label}>{t('email')}</Text>
+            <Text style={styles.label}>Email Address</Text>
             <TextInput
               style={styles.input}
-              placeholder="staff@swachhata.ai"
+              placeholder="recycler@swachhata.ai"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
             />
-            <Text style={styles.label}>{t('password')}</Text>
+            <Text style={styles.label}>Password</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter password"
@@ -183,7 +172,7 @@ const LoginScreen = ({ navigation }) => {
             >
               {loading
                 ? <ActivityIndicator color="#fff" />
-                : <Text style={styles.loginBtnText}>{t('login')}</Text>
+                : <Text style={styles.loginBtnText}>Login</Text>
               }
             </TouchableOpacity>
             {statusMsg ? (
@@ -194,8 +183,8 @@ const LoginScreen = ({ navigation }) => {
           </View>
         )}
 
-        {/* Phone OTP Mode */}
-        {mode === 'phone' && (
+        {/* Phone OTP Mode for Collector/SHG and Citizen */}
+        {(roleTab === 'collector' || roleTab === 'citizen') && (
           <View style={styles.formSection}>
             <Text style={styles.label}>Phone Number</Text>
             <View style={styles.phoneRow}>
@@ -220,7 +209,7 @@ const LoginScreen = ({ navigation }) => {
               >
                 {otpLoading
                   ? <ActivityIndicator color="#16a34a" />
-                  : <Text style={styles.otpBtnText}>{t('send_otp')}</Text>
+                  : <Text style={styles.otpBtnText}>Send OTP</Text>
                 }
               </TouchableOpacity>
             ) : (
@@ -252,6 +241,10 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </>
             )}
+
+            <Text style={styles.footerNote}>
+              New user? Just enter your phone number to register.
+            </Text>
           </View>
         )}
 
@@ -260,7 +253,7 @@ const LoginScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Landing')}
           style={styles.backLink}
         >
-          <Text style={styles.backLinkText}>{t('back')}</Text>
+          <Text style={styles.backLinkText}>← Back to Home</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -274,7 +267,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center', minHeight: '100%'
   },
   header: { alignItems: 'center', marginBottom: 28 },
-  logo: { fontSize: 52 },
   title: {
     fontSize: 26, fontWeight: '800',
     color: '#14532d', marginTop: 8
@@ -292,7 +284,7 @@ const styles = StyleSheet.create({
     borderRadius: 10, alignItems: 'center',
   },
   toggleActive: { backgroundColor: '#16a34a' },
-  toggleText: { fontSize: 14, fontWeight: '600', color: '#16a34a' },
+  toggleText: { fontSize: 13, fontWeight: '700', color: '#16a34a' },
   toggleTextActive: { color: '#ffffff' },
   formSection: { gap: 8 },
   label: {
@@ -337,9 +329,13 @@ const styles = StyleSheet.create({
   },
   btnDisabled: { opacity: 0.6 },
   resendLink: { alignSelf: 'flex-end', marginTop: 4 },
-  resendText: { color: '#16a34a', fontSize: 13 },
-  backLink: { alignItems: 'center', marginTop: 24 },
-  backLinkText: { color: '#16a34a', fontSize: 14 },
+  resendText: { color: '#16a34a', fontSize: 13, fontWeight: '600' },
+  footerNote: {
+    textAlign: 'center', marginTop: 24,
+    color: '#15803d', fontSize: 13, fontWeight: '500'
+  },
+  backLink: { alignItems: 'center', marginTop: 30 },
+  backLinkText: { color: '#16a34a', fontSize: 15, fontWeight: '600' },
 });
 
 export default LoginScreen;

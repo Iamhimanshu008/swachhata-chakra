@@ -13,12 +13,12 @@ import AfternoonSyncScreen from '../screens/collector/AfternoonSyncScreen';
 import BleWeightScreen from '../screens/collector/BleWeightScreen';
 import CaptureImageScreen from '../screens/collector/CaptureImageScreen';
 import { COLORS } from '../config';
+import { Ionicons } from '@expo/vector-icons';
+import { View } from 'react-native';
 
-// Inline SVG-style icon component using unicode
-import { Text, View } from 'react-native';
-const TabIcon = ({ emoji, focused }) => (
-    <View style={{ alignItems: 'center' }}>
-        <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.5 }}>{emoji}</Text>
+const TabIcon = ({ name, focused }) => (
+    <View style={{ alignItems: 'center', opacity: focused ? 1 : 0.5 }}>
+        <Ionicons name={name} size={24} color={focused ? COLORS.light : 'rgba(255,255,255,0.4)'} />
     </View>
 );
 
@@ -75,24 +75,23 @@ export default function CollectorNavigator() {
             <Tab.Screen
                 name="Home"
                 component={HomeStackNavigator}
-                options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} />, tabBarLabel: 'Home' }}
+                options={{ tabBarIcon: ({ focused }) => <TabIcon name="home" focused={focused} />, tabBarLabel: 'Home' }}
             />
             <Tab.Screen
                 name="Map"
                 component={MapStackNavigator}
-                options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🗺️" focused={focused} />, tabBarLabel: 'Map' }}
+                options={{ tabBarIcon: ({ focused }) => <TabIcon name="map" focused={focused} />, tabBarLabel: 'Map' }}
             />
             <Tab.Screen
                 name="History"
                 component={HistoryScreen}
-                options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🕐" focused={focused} />, tabBarLabel: 'History' }}
+                options={{ tabBarIcon: ({ focused }) => <TabIcon name="time" focused={focused} />, tabBarLabel: 'History' }}
             />
             <Tab.Screen
                 name="Stats"
                 component={StatsScreen}
-                options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📊" focused={focused} />, tabBarLabel: 'Stats' }}
+                options={{ tabBarIcon: ({ focused }) => <TabIcon name="stats-chart" focused={focused} />, tabBarLabel: 'Stats' }}
             />
         </Tab.Navigator>
     );
 }
-

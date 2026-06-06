@@ -81,7 +81,7 @@ export default function CitizenHomeScreen({ navigation }) {
         <TouchableOpacity onPress={() => setDrawerOpen(true)}>
           <Ionicons name="menu" size={28} color={DARK_GREEN} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>SmartWaste AI</Text>
+        <Text style={styles.headerTitle}>Swachhata Chakra</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity style={{ marginRight: 16 }}>
             <Ionicons name="globe-outline" size={24} color={DARK_GREEN} />

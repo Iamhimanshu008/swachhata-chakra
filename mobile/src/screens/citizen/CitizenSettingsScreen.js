@@ -123,8 +123,8 @@ export default function CitizenSettingsScreen({ navigation }) {
               <Ionicons name="information-circle-outline" size={22} color={DARK_GREEN} />
             </View>
             <View style={styles.settingMiddle}>
-              <Text style={styles.settingTitle}>About SmartWaste AI</Text>
-              <Text style={styles.settingSubtitle}>Version 3.0.0 • Impact Report</Text>
+              <Text style={styles.settingTitle}>About Swachhata Chakra</Text>
+              <Text style={styles.settingSubtitle}>v2.4.0</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#CCCCCC" />
           </TouchableOpacity>

@@ -8,7 +8,7 @@ import { getReportStatus } from '../../api/publicApi';
 import { COLORS } from '../../config';
 
 const STEPS = [
-    { key: 'submitted', label: 'Submitted', subtitle: 'Report received by SmartWaste AI' },
+    { key: 'submitted', label: 'Submitted', subtitle: 'Report received by Swachhata Chakra' },
     { key: 'ai_verified', label: 'AI Verified', subtitle: 'Image analyzed by Gemini Vision' },
     { key: 'supervisor_approved', label: 'Supervisor Approved', subtitle: 'Review by zone supervisor' },
     { key: 'added_to_route', label: 'Added to Route', subtitle: 'Scheduled for collection' },

@@ -18,9 +18,9 @@ class SimpleEventEmitter {
 }
 
 const MOCK_DEVICE = {
-  id: 'WM-RPR-001',
-  name: 'SmartWaste Scale',
-  mac: 'AA:BB:CC:DD:EE:FF',
+  id: '00:11:22:33:44:55',
+  name: 'Swachhata Chakra Scale',
+  serviceUUID: '0000ffe0-0000-1000-8000-00805f9b34fb',
   battery: 85,
 };
 
@@ -35,7 +35,7 @@ class BleService extends SimpleEventEmitter {
   // Simulate scanning for BLE devices
   async scanForScales(timeoutMs = 5000) {
     return new Promise((resolve) => {
-      console.log('[BLE MOCK] Scanning for SmartWaste scales...');
+      console.log('[BLE MOCK] Scanning for Swachhata Chakra scales...');
       setTimeout(() => {
         resolve([MOCK_DEVICE]);
       }, 1500); // Simulate scan delay

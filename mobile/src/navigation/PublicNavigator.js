@@ -22,7 +22,7 @@ export default function PublicNavigator() {
                 name="PublicMap"
                 component={PublicMapScreen}
                 options={({ navigation }) => ({
-                    title: 'SmartWaste - Public',
+                    title: 'Swachhata Chakra',
                     headerLeft: () => (
                         <TouchableOpacity 
                             onPress={() => navigation.navigate('Landing')}

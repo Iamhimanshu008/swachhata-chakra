@@ -1,105 +1,48 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  Image, StatusBar, Dimensions
+  Image, StatusBar, Dimensions, SafeAreaView
 } from 'react-native';
-import AutoText from '../components/AutoText';
-import LanguagePickerModal from '../components/LanguagePickerModal';
-import { useTranslation } from '../i18n';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
 const LandingScreen = ({ navigation }) => {
-  const [showLangPicker, setShowLangPicker] = useState(false);
-  const { t } = useTranslation();
-
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#052e16" />
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#14532D" />
       
       {/* Background gradient effect */}
-      <View style={styles.bgTop} />
+      <View style={styles.bgGradient} />
       
-      <View style={styles.topBar}>
-        <TouchableOpacity
-          style={styles.langBtn}
-          onPress={() => setShowLangPicker(true)}
-        >
-          <Ionicons name="language-outline" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-
-      <LanguagePickerModal 
-        visible={showLangPicker}
-        onClose={() => setShowLangPicker(false)}
-      />
-      
-      {/* Logo + Title */}
-      <View style={styles.heroSection}>
+      {/* Header Section */}
+      <View style={styles.headerSection}>
         <View style={styles.logoContainer}>
-          <Image source={require('../../assets/logo.png')} style={{ width: 60, height: 60 }} resizeMode="contain" />
+          <Image source={require('../../assets/logo.png')} style={{ width: 100, height: 100 }} resizeMode="contain" />
         </View>
-        <AutoText style={styles.appName}>Swachhata Chakra</AutoText>
-        <AutoText style={styles.tagline}>
-          Revolutionizing Rural{'\n'}Waste Management
-        </AutoText>
-        <AutoText style={styles.subtitle}>
-          AI-powered collection routes • Real-time bin tracking{'\n'}
-          Community reporting • Recycler marketplace
-        </AutoText>
+        <Text style={styles.appName}>Swachhata Chakra</Text>
+        <Text style={styles.slogan}>स्वच्छ छत्तीसगढ़, समृद्ध छत्तीसगढ़</Text>
+        <Text style={styles.subtitle}>Plastic Waste Management Platform</Text>
       </View>
       
-      {/* Feature Pills */}
-      <View style={styles.pillsRow}>
-        <View style={styles.pill}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="eye-outline" size={14} color="#86efac" />
-            <AutoText style={[styles.pillText, { marginLeft: 4 }]}>AI Vision</AutoText>
-          </View>
-        </View>
-        <View style={styles.pill}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <MaterialCommunityIcons name="map-marker-path" size={14} color="#86efac" />
-            <AutoText style={[styles.pillText, { marginLeft: 4 }]}>GPS Routes</AutoText>
-          </View>
-        </View>
-        <View style={styles.pill}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="stats-chart" size={14} color="#86efac" />
-            <AutoText style={[styles.pillText, { marginLeft: 4 }]}>Analytics</AutoText>
-          </View>
-        </View>
-      </View>
-
       {/* Stats Row */}
       <View style={styles.statsRow}>
-        <View style={styles.statItem}>
-          <Text style={styles.statNum}>100+</Text>
-          <AutoText style={styles.statLabel}>Bins Tracked</AutoText>
-        </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statNum}>Multiple</Text>
-          <AutoText style={styles.statLabel}>Zones</AutoText>
-        </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statNum}>AI</Text>
-          <AutoText style={styles.statLabel}>Powered</AutoText>
-        </View>
+        <View style={styles.statPill}><Text style={styles.statText}>♻️ 5 MT Processed</Text></View>
+        <View style={styles.statPill}><Text style={styles.statText}>👥 110+ Collectors</Text></View>
+        <View style={styles.statPill}><Text style={styles.statText}>⭐ 10 pts/100g</Text></View>
       </View>
 
-      {/* CTA Buttons */}
-      <View style={styles.ctaSection}>
+      {/* Main Action Buttons */}
+      <View style={styles.actionSection}>
         <TouchableOpacity
           style={styles.primaryBtn}
           onPress={() => navigation.navigate('Login')}
           activeOpacity={0.85}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="arrow-forward" size={20} color="white" />
-            <Text style={[styles.primaryBtnText, { marginLeft: 8 }]}>{t('get_started')}</Text>
+          <Ionicons name="log-in-outline" size={28} color="white" />
+          <View style={styles.btnTextContainer}>
+            <Text style={styles.primaryBtnTitle}>Login / Register</Text>
+            <Text style={styles.primaryBtnSub}>Collectors, SHG Workers, Citizens</Text>
           </View>
         </TouchableOpacity>
 
@@ -108,199 +51,196 @@ const LandingScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('PublicStack')}
           activeOpacity={0.8}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="camera-outline" size={20} color="#4ade80" />
-            <Text style={[styles.secondaryBtnText, { marginLeft: 8 }]}>
-              {t('report_bin')}
-            </Text>
+          <Ionicons name="map-outline" size={28} color="#16A34A" />
+          <View style={styles.btnTextContainer}>
+            <Text style={styles.secondaryBtnTitle}>Public Map & Report</Text>
+            <Text style={styles.secondaryBtnSub}>Report a bin — no login needed</Text>
           </View>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.guideBtn}
-          onPress={() => navigation.navigate('PublicStack', { screen: 'SegregationGuide' })}
-          activeOpacity={0.8}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <MaterialCommunityIcons name="recycle" size={20} color="#60a5fa" />
-            <Text style={[styles.guideBtnText, { marginLeft: 8 }]}>Kachra Alag Karna Seekhein</Text>
-          </View>
-        </TouchableOpacity>
-        
-        <Text style={styles.footerNote}>
-          {t('authorized_only')}
-        </Text>
       </View>
-    </View>
+
+      {/* Features Pills */}
+      <View style={styles.featuresRow}>
+        <View style={styles.featurePill}><Text style={styles.featureText}>📵 Works Offline</Text></View>
+        <View style={styles.featurePill}><Text style={styles.featureText}>🔒 Fraud-Proof</Text></View>
+        <View style={styles.featurePill}><Text style={styles.featureText}>🌱 SBM 2026</Text></View>
+      </View>
+
+      {/* Bottom Section */}
+      <View style={styles.bottomSection}>
+        <Text style={styles.portalText}>Swachhata Chakra Portal</Text>
+        <Text style={styles.urlText}>smartwaste-ai-omega.vercel.app</Text>
+        <View style={styles.govtRow}>
+          <Image source={require('../../assets/cg-govt-logo.png')} style={{ width: 40, height: 40 }} resizeMode="contain" />
+          <Text style={styles.govtText}>Govt. of Chhattisgarh | UNICEF Supported</Text>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#052e16',
+    backgroundColor: '#166534',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 60,
-    paddingHorizontal: 24,
   },
-  bgTop: {
+  bgGradient: {
     position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: height * 0.5,
-    backgroundColor: '#14532d',
-    borderBottomLeftRadius: 60,
-    borderBottomRightRadius: 60,
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: '#14532D',
   },
-  topBar: {
-    position: 'absolute', top: 50, right: 20,
-    zIndex: 10,
-  },
-  langBtn: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center', alignItems: 'center',
-  },
-  langBtnText: { fontSize: 22 },
-  heroSection: {
+  headerSection: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 60,
   },
   logoContainer: {
-    width: 90, height: 90,
-    borderRadius: 45,
+    width: 120, height: 120,
+    borderRadius: 60,
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
-    shadowColor: '#16a34a',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.5,
-    shadowRadius: 16,
-    elevation: 12,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
   },
-  logoEmoji: { fontSize: 44 },
   appName: {
-    fontSize: 32,
-    fontWeight: '800',
+    fontSize: 34,
+    fontWeight: '900',
     color: '#ffffff',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
     marginBottom: 8,
   },
-  tagline: {
+  slogan: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#86efac',
-    textAlign: 'center',
-    lineHeight: 26,
-    marginBottom: 12,
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#bbf7d0',
-    textAlign: 'center',
-    lineHeight: 20,
-    opacity: 0.85,
-  },
-  pillsRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  pill: {
-    backgroundColor: 'rgba(22,163,74,0.3)',
-    borderWidth: 1,
-    borderColor: '#16a34a',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  pillText: {
-    color: '#86efac',
-    fontSize: 12,
-    fontWeight: '600',
+    opacity: 0.9,
   },
   statsRow: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    width: '100%',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    gap: 8,
+    marginTop: 20,
+    paddingHorizontal: 20,
   },
-  statItem: { alignItems: 'center' },
-  statNum: {
-    fontSize: 24,
-    fontWeight: '800',
+  statPill: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  statText: {
     color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '600',
   },
-  statLabel: {
-    fontSize: 11,
-    color: '#86efac',
-    marginTop: 2,
-  },
-  statDivider: {
-    width: 1, height: 40,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  ctaSection: {
+  actionSection: {
     width: '100%',
-    alignItems: 'center',
-    gap: 12,
+    paddingHorizontal: 24,
+    gap: 16,
+    marginTop: 40,
   },
   primaryBtn: {
-    backgroundColor: '#16a34a',
-    paddingVertical: 16,
-    borderRadius: 14,
-    width: '100%',
+    backgroundColor: '#16A34A',
+    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#16a34a',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
+    padding: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
   },
-  primaryBtnText: {
+  btnTextContainer: {
+    marginLeft: 16,
+  },
+  primaryBtnTitle: {
     color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: 0.5,
+    fontSize: 20,
+    fontWeight: '800',
   },
-  footerNote: {
-    fontSize: 11,
-    color: '#4ade80',
-    opacity: 0.7,
-    textAlign: 'center',
+  primaryBtnSub: {
+    color: '#bbf7d0',
+    fontSize: 13,
+    marginTop: 2,
   },
   secondaryBtn: {
-    borderWidth: 1.5,
-    borderColor: '#4ade80',
-    paddingVertical: 13,
-    borderRadius: 14,
-    width: '100%',
+    backgroundColor: '#ffffff',
+    borderWidth: 2,
+    borderColor: '#16A34A',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    padding: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  secondaryBtnText: {
-    color: '#4ade80',
-    fontSize: 15,
+  secondaryBtnTitle: {
+    color: '#16A34A',
+    fontSize: 20,
+    fontWeight: '800',
+  },
+  secondaryBtnSub: {
+    color: '#15803d',
+    fontSize: 13,
+    marginTop: 2,
+  },
+  featuresRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 40,
+  },
+  featurePill: {
+    backgroundColor: 'transparent',
+  },
+  featureText: {
+    color: '#86efac',
+    fontSize: 13,
     fontWeight: '600',
   },
-  guideBtn: {
-    borderWidth: 1.5,
-    borderColor: '#3b82f6',
-    backgroundColor: 'rgba(59,130,246,0.1)',
-    paddingVertical: 13,
-    borderRadius: 14,
-    width: '100%',
+  bottomSection: {
     alignItems: 'center',
-    marginTop: 4,
+    paddingBottom: 30,
+    marginTop: 'auto',
   },
-  guideBtnText: {
-    color: '#60a5fa',
-    fontSize: 15,
+  portalText: {
+    color: '#9ca3af',
+    fontSize: 12,
     fontWeight: '600',
+  },
+  urlText: {
+    color: '#9ca3af',
+    fontSize: 11,
+    marginBottom: 16,
+  },
+  govtRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 24,
+  },
+  govtText: {
+    color: '#d1fae5',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 12,
   },
 });
 

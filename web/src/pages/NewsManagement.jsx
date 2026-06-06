@@ -136,8 +136,8 @@ export default function NewsManagement() {
                             onClick={() => handleOpenModal()}
                             className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium shadow-lg shadow-emerald-600/20 transition-all"
                         >
-                            <Plus className="w-5 h-5" />
-                            Post Karo
+                            <Send className="w-4 h-4" />
+                            Post News
                         </button>
                     </div>
 

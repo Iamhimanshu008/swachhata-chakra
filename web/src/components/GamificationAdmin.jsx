@@ -2,6 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { getGamificationStats, getGamificationLeaderboard, configureGamificationMultiplier } from '../api/adminApi';
 import { Coins, Trophy, Settings, TrendingUp, Award } from 'lucide-react';
 
+const MitanCoin = () => (
+  <span style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '22px',
+    height: '22px',
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #B45309, #D97706)',
+    fontSize: '12px',
+    marginRight: '4px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+  }}>🌾</span>
+);
+
 const GamificationAdmin = () => {
   const [stats, setStats] = useState({
     total_circulating: 0,
@@ -82,7 +97,7 @@ const GamificationAdmin = () => {
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Gamification & Rewards</h2>
-          <p className="text-gray-500 text-sm">Manage Green Points, leaderboard, and reward mechanics.</p>
+          <p className="text-gray-500 text-sm">Manage Mitan-Mudra, leaderboard, and reward mechanics.</p>
         </div>
       </div>
 
@@ -90,8 +105,8 @@ const GamificationAdmin = () => {
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-500 text-sm font-medium">Points in Circulation</p>
-              <h3 className="text-3xl font-bold text-gray-800 mt-2">{stats.total_circulating.toLocaleString()}</h3>
+              <p className="text-gray-500 text-sm font-medium">Mitan-Mudra in Circulation</p>
+              <h3 className="text-3xl font-bold text-gray-800 mt-2 flex items-center"><MitanCoin/> {stats.total_circulating.toLocaleString()}</h3>
             </div>
             <div className="p-3 bg-blue-50 rounded-lg">
               <Coins className="w-6 h-6 text-blue-500" />
@@ -102,8 +117,8 @@ const GamificationAdmin = () => {
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-500 text-sm font-medium">Total Points Awarded</p>
-              <h3 className="text-3xl font-bold text-green-600 mt-2">{stats.total_awarded.toLocaleString()}</h3>
+              <p className="text-gray-500 text-sm font-medium">Total Mitan-Mudra Awarded</p>
+              <h3 className="text-3xl font-bold text-green-600 mt-2 flex items-center"><MitanCoin/> {stats.total_awarded.toLocaleString()}</h3>
             </div>
             <div className="p-3 bg-green-50 rounded-lg">
               <TrendingUp className="w-6 h-6 text-green-500" />
@@ -114,8 +129,8 @@ const GamificationAdmin = () => {
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-500 text-sm font-medium">Total Points Redeemed</p>
-              <h3 className="text-3xl font-bold text-purple-600 mt-2">{stats.total_redeemed.toLocaleString()}</h3>
+              <p className="text-gray-500 text-sm font-medium">Total Mitan-Mudra Redeemed</p>
+              <h3 className="text-3xl font-bold text-purple-600 mt-2 flex items-center"><MitanCoin/> {stats.total_redeemed.toLocaleString()}</h3>
             </div>
             <div className="p-3 bg-purple-50 rounded-lg">
               <Coins className="w-6 h-6 text-purple-500" />
@@ -154,8 +169,8 @@ const GamificationAdmin = () => {
                       </td>
                       <td className="px-6 py-4 font-medium text-gray-800">{citizen.name}</td>
                       <td className="px-6 py-4 text-gray-500">{citizen.house_id}</td>
-                      <td className="px-6 py-4 text-right font-medium text-blue-600">{citizen.balance.toLocaleString()} pts</td>
-                      <td className="px-6 py-4 text-right font-medium text-green-600">{citizen.total_earned.toLocaleString()} pts</td>
+                      <td className="px-6 py-4 text-right font-medium text-blue-600"><span className="flex items-center justify-end"><MitanCoin/> {citizen.balance.toLocaleString()}</span></td>
+                      <td className="px-6 py-4 text-right font-medium text-green-600"><span className="flex items-center justify-end"><MitanCoin/> {citizen.total_earned.toLocaleString()}</span></td>
                     </tr>
                   ))
                 )}
@@ -185,7 +200,7 @@ const GamificationAdmin = () => {
                   <span className="text-gray-500 sm:text-sm">x</span>
                 </div>
               </div>
-              <p className="text-xs text-gray-500 mt-1">Points per kg for High quality plastic.</p>
+              <p className="text-xs text-gray-500 mt-1">Mitan-Mudra per kg for High quality plastic.</p>
             </div>
             
             <div>

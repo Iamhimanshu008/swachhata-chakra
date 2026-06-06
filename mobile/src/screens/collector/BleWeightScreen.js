@@ -97,7 +97,10 @@ export default function BleWeightScreen() {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.header}>SmartWaste Scale</Text>
+        <View style={styles.headerRow}>
+          <MaterialCommunityIcons name="scale-bluetooth" size={32} color="#10B981" />
+          <Text style={styles.header}>Swachhata Chakra Scale</Text>
+        </View>
         <Text style={styles.status}>Status: {status}</Text>
 
         {!device && !isScanning && (

@@ -2,8 +2,8 @@ export const translations = {
   en: {
     // Landing
     get_started: "Get Started",
-    report_bin: "Report a Bin (No Login Required)",
-    authorized_only: "For authorized staff only • SmartWaste AI V2",
+    report_bin: "Report Bin",
+    authorized_only: "For authorized staff only • Swachhata Chakra",
     
     // Login
     staff_login: "Staff Login",

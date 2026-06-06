@@ -1225,7 +1225,7 @@ export default function AdminDashboard() {
         { key: 'qrmanager', label: 'Household & QR', icon: UserCheck },
         { key: 'bins', label: 'Bins', icon: Trash2 },
         { key: 'users', label: 'Users', icon: Users },
-        { key: 'swachhta', label: 'Swachhta Mitras', icon: Users },
+        { key: 'collectors', label: 'Waste Collectors', icon: Users },
         { key: 'routes', label: 'Routes', icon: Zap },
         { key: 'iot', label: 'IoT Telemetry', icon: Cpu },
         { key: 'ai', label: 'AI Plastic Grading', icon: BrainCircuit },
@@ -1249,7 +1249,7 @@ export default function AdminDashboard() {
                     {tab === 'qrmanager' && <QRManager />}
                     {tab === 'bins' && <BinsManagement />}
                     {tab === 'users' && <UsersManagement />}
-                    {tab === 'swachhta' && <CollectorManagement />}
+                    {tab === 'collectors' && <CollectorManagement />}
                     {tab === 'routes' && <RouteGeneration />}
                     {tab === 'iot' && <IoTDashboard />}
                     {tab === 'ai' && <AIAnalytics />}

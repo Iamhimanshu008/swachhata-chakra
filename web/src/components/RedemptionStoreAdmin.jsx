@@ -2,6 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Gift, CheckCircle, Package, PlusCircle, AlertCircle } from 'lucide-react';
 import { getStoreItems, addStoreItem, getStoreRedemptions, fulfillRedemption } from '../api/adminApi';
 
+const MitanCoin = () => (
+  <span style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '22px',
+    height: '22px',
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #B45309, #D97706)',
+    fontSize: '12px',
+    marginRight: '4px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+  }}>🌾</span>
+);
+
 const RedemptionStoreAdmin = () => {
   const [items, setItems] = useState([]);
   const [redemptions, setRedemptions] = useState([]);
@@ -223,7 +238,7 @@ const RedemptionStoreAdmin = () => {
                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Order ID</th>
                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Citizen</th>
                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Reward Item</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Points Spent</th>
+                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mitan-Mudra Spent</th>
                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Action</th>
                   </tr>
@@ -252,7 +267,7 @@ const RedemptionStoreAdmin = () => {
                         </td>
                         <td className="px-6 py-4">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
-                            {order.points_spent} pts
+                            <MitanCoin/> {order.points_spent}
                           </span>
                         </td>
                         <td className="px-6 py-4">

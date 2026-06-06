@@ -18,6 +18,21 @@ import {
   Landmark
 } from 'lucide-react';
 
+const MitanCoin = () => (
+  <span style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '22px',
+    height: '22px',
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #B45309, #D97706)',
+    fontSize: '12px',
+    marginRight: '4px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+  }}>🌾</span>
+);
+
 export default function LandingPage() {
   useEffect(() => {
     // Load Noto Sans Devanagari font
@@ -193,66 +208,94 @@ export default function LandingPage() {
       <section id="about" className="w-full bg-white py-24 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-4xl font-extrabold text-sw-text-secondary">About Swachhata Chakra</h3>
-            <p className="text-xl text-gray-500 mt-4">An Offline-First Hybrid Model for Rural Chhattisgarh</p>
+            <h3 className="text-4xl font-extrabold text-sw-text-secondary" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
+              Swachhata Chakra Kaise Kaam Karta Hai?
+            </h3>
+            <p className="text-xl text-gray-500 mt-4 font-medium">How Swachhata Chakra Works — Simple. Transparent. Rewarding.</p>
           </div>
           
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* LEFT - Mission statement */}
-            <div className="space-y-6">
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Swachhata Chakra is a zero-friction, tamper-proof waste management 
-                system designed specifically for Gram Panchayats in Chhattisgarh.
-              </p>
-              
-              <div className="space-y-2">
-                <p className="font-bold text-sw-text-secondary">We solve three ground-level problems:</p>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2"><XCircle className="w-5 h-5 text-red-500 shrink-0" /> Manual data entry fraud by collectors</li>
-                  <li className="flex items-center gap-2"><XCircle className="w-5 h-5 text-red-500 shrink-0" /> Zero internet connectivity in rural areas</li>
-                  <li className="flex items-center gap-2"><XCircle className="w-5 h-5 text-red-500 shrink-0" /> No motivation for citizens to segregate waste</li>
-                </ul>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-20 relative">
+            {/* Step 1 */}
+            <div className="flex flex-col items-center text-center z-10 w-full md:w-1/5">
+              <div className="w-24 h-24 rounded-full bg-sw-mid flex items-center justify-center mb-4 shadow-lg border-4 border-white">
+                <span className="text-4xl">🏠</span>
               </div>
-              
-              <div className="bg-sw-bg p-6 rounded-2xl border border-sw-mid/20">
-                <p className="font-bold text-sw-mid mb-2">Our solution:</p>
-                <p className="text-gray-700 leading-relaxed">
-                  An Offline-First platform where citizens receive a 
-                  physical laminated QR card (Smart Passbook), collectors use a 
-                  smartphone app with Bluetooth IoT scale, and data syncs to the 
-                  cloud when internet is available.
-                </p>
-              </div>
+              <h4 className="font-bold text-lg text-sw-dark mb-1">From Home</h4>
+              <p className="font-semibold text-gray-800 text-sm mb-1">Citizen brings plastic waste</p>
+              <p className="text-xs text-gray-500 px-2">With their laminated QR Smart Card to the collection point</p>
             </div>
             
-            {/* RIGHT - 3 Innovation pillars */}
-            <div className="space-y-6">
-              {/* Card 1 */}
-              <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-                <div className="text-4xl">📡</div>
-                <div>
-                  <h4 className="text-lg font-bold text-sw-text-secondary mb-1">Asynchronous Offline-First Architecture</h4>
-                  <p className="text-gray-600 text-sm leading-relaxed">Works 100% without internet. Morning download, field collection, afternoon sync — designed for zero-network rural environments.</p>
-                </div>
+            <div className="md:hidden text-sw-mid my-2 font-bold text-xl">↓</div>
+            <div className="hidden md:block text-sw-mid font-bold text-2xl -mt-20">→</div>
+            
+            {/* Step 2 */}
+            <div className="flex flex-col items-center text-center z-10 w-full md:w-1/5">
+              <div className="w-24 h-24 rounded-full bg-sw-orange flex items-center justify-center mb-4 shadow-lg border-4 border-white">
+                <span className="text-4xl">⚖️</span>
               </div>
-              
-              {/* Card 2 */}
-              <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-                <div className="text-4xl">🔗</div>
-                <div>
-                  <h4 className="text-lg font-bold text-sw-text-secondary mb-1">Hardware-Software Handshake</h4>
-                  <p className="text-gray-600 text-sm leading-relaxed">ESP32 + Load Cell sends weight directly via BLE to collector app. No manual entry possible — tamper-proof digital ledger.</p>
-                </div>
+              <h4 className="font-bold text-lg text-sw-dark mb-1">Auto-Weighing</h4>
+              <p className="font-semibold text-gray-800 text-sm mb-1">IoT Scale measures weight automatically</p>
+              <p className="text-xs text-gray-500 px-2">No manual entry. Bluetooth sends exact weight directly to collector's app. Fraud impossible.</p>
+            </div>
+
+            <div className="md:hidden text-sw-mid my-2 font-bold text-xl">↓</div>
+            <div className="hidden md:block text-sw-mid font-bold text-2xl -mt-20">→</div>
+
+            {/* Step 3 */}
+            <div className="flex flex-col items-center text-center z-10 w-full md:w-1/5">
+              <div className="w-24 h-24 rounded-full bg-sw-blue flex items-center justify-center mb-4 shadow-lg border-4 border-white">
+                <span className="text-4xl">🤖</span>
               </div>
-              
-              {/* Card 3 */}
-              <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-                <div className="text-4xl">🎮</div>
-                <div>
-                  <h4 className="text-lg font-bold text-sw-text-secondary mb-1">Behavioral Engineering</h4>
-                  <p className="text-gray-600 text-sm leading-relaxed">Waste disposal becomes an income stream. 10 grams = 1 Plasti-Dhan Point. Redeem for tax rebates, mobile recharge, local vouchers.</p>
-                </div>
+              <h4 className="font-bold text-lg text-sw-dark mb-1">AI Quality Check</h4>
+              <p className="font-semibold text-gray-800 text-sm mb-1">Gemini AI analyzes plastic photo in seconds</p>
+              <p className="text-xs text-gray-500 px-2">Detects type (PET/HDPE/PP), contamination %, Grade A/B/C</p>
+            </div>
+
+            <div className="md:hidden text-sw-mid my-2 font-bold text-xl">↓</div>
+            <div className="hidden md:block text-sw-mid font-bold text-2xl -mt-20">→</div>
+
+            {/* Step 4 */}
+            <div className="flex flex-col items-center text-center z-10 w-full md:w-1/5">
+              <div className="w-24 h-24 rounded-full bg-[#B45309] flex items-center justify-center mb-4 shadow-lg border-4 border-white">
+                <span className="text-4xl">🪙</span>
               </div>
+              <h4 className="font-bold text-lg text-sw-dark mb-1">Mitan-Mudra Credited</h4>
+              <p className="font-semibold text-gray-800 text-sm mb-1">10 grams = 1 <MitanCoin/> Mitan-Mudra</p>
+              <p className="text-xs text-gray-500 px-2">850g Grade A plastic = 127 <MitanCoin/> instantly!</p>
+            </div>
+
+            <div className="md:hidden text-sw-mid my-2 font-bold text-xl">↓</div>
+            <div className="hidden md:block text-sw-mid font-bold text-2xl -mt-20">→</div>
+
+            {/* Step 5 */}
+            <div className="flex flex-col items-center text-center z-10 w-full md:w-1/5">
+              <div className="w-24 h-24 rounded-full bg-[#7C3AED] flex items-center justify-center mb-4 shadow-lg border-4 border-white">
+                <span className="text-4xl">🏪</span>
+              </div>
+              <h4 className="font-bold text-lg text-sw-dark mb-1">Redeem Benefits</h4>
+              <p className="font-semibold text-gray-800 text-sm mb-1">Redeem Mitan-Mudra for real local benefits</p>
+              <p className="text-xs text-gray-500 px-2">Tax rebate, mobile recharge, grocery vouchers</p>
+            </div>
+          </div>
+          
+          {/* Below the 5 steps — 3 "Why it's different" cards */}
+          <div className="grid md:grid-cols-3 gap-8 mt-12">
+            <div className="bg-sw-light p-8 rounded-2xl border border-sw-mid/20 shadow-sm hover:shadow-md transition-shadow">
+              <div className="text-3xl mb-4">📵</div>
+              <h4 className="text-xl font-bold text-sw-dark mb-2">Zero Internet Needed</h4>
+              <p className="text-gray-700">Collectors work all day without mobile data.<br/>Data syncs when they return to Panchayat Office.</p>
+            </div>
+            
+            <div className="bg-[#FFF7ED] p-8 rounded-2xl border border-orange-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="text-3xl mb-4">🔒</div>
+              <h4 className="text-xl font-bold text-sw-dark mb-2">100% Fraud-Proof</h4>
+              <p className="text-gray-700">Weight comes directly from IoT scale via Bluetooth.<br/>No collector can type a fake number.</p>
+            </div>
+            
+            <div className="bg-[#F0F9FF] p-8 rounded-2xl border border-blue-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="text-3xl mb-4">🌱</div>
+              <h4 className="text-xl font-bold text-sw-dark mb-2">SBM 2026 Compliant</h4>
+              <p className="text-gray-700">Every transaction creates an audit trail for<br/>Swachh Bharat Mission reporting — automatically.</p>
             </div>
           </div>
         </div>
@@ -425,17 +468,17 @@ export default function LandingPage() {
             
             <div className="text-white space-y-8">
               <div>
-                <h3 className="text-5xl font-black mb-4">Plasti-Dhan Wallet</h3>
+                <h3 className="text-5xl font-black mb-4">Mitan-Mudra Wallet</h3>
                 <p className="text-2xl text-green-100 font-medium">Wealth out of Waste — SBM 2026 Aligned</p>
               </div>
               
               <div className="bg-sw-dark p-6 rounded-2xl border border-green-500/30 shadow-2xl inline-block">
                 <div className="text-xl font-bold mb-2 flex items-center gap-3">
-                  <Zap className="w-6 h-6 text-yellow-400" /> Points Formula
+                  <Zap className="w-6 h-6 text-yellow-400" /> Mitan-Mudra Formula
                 </div>
                 <div className="text-green-50 space-y-1">
-                  <p className="text-lg">10 grams = <span className="font-bold text-white">1 Point</span></p>
-                  <p className="text-lg">Grade A waste = <span className="font-bold text-white bg-green-600 px-2 py-0.5 rounded">1.5× Bonus</span></p>
+                  <p className="text-lg">10 grams dry waste = <span className="font-bold text-white">1 <MitanCoin/> Mitan-Mudra</span></p>
+                  <p className="text-lg">Grade A waste = <span className="font-bold text-white bg-green-600 px-2 py-0.5 rounded">1.5× Bonus Mitan-Mudra</span></p>
                 </div>
               </div>
               
@@ -444,21 +487,21 @@ export default function LandingPage() {
                 <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
                   <span className="text-3xl">🏛️</span>
                   <div>
-                    <div className="font-bold text-xl">5000 pts</div>
+                    <div className="font-bold text-xl flex items-center"><MitanCoin/> 5,000</div>
                     <div className="text-green-100">₹50 Panchayat Tax Rebate</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
                   <span className="text-3xl">📱</span>
                   <div>
-                    <div className="font-bold text-xl">2000 pts</div>
+                    <div className="font-bold text-xl flex items-center"><MitanCoin/> 2,000</div>
                     <div className="text-green-100">1GB Mobile Recharge</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
                   <span className="text-3xl">🛒</span>
                   <div>
-                    <div className="font-bold text-xl">500 pts</div>
+                    <div className="font-bold text-xl flex items-center"><MitanCoin/> 500</div>
                     <div className="text-green-100">Local Store Voucher</div>
                   </div>
                 </div>
@@ -470,7 +513,7 @@ export default function LandingPage() {
                 <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Award className="w-12 h-12 text-sw-orange" />
                 </div>
-                <div className="text-6xl font-black text-sw-dark mb-2">85 Points</div>
+                <div className="text-5xl font-black text-sw-dark mb-2 flex items-center justify-center">85 <MitanCoin/> Mitan-Mudra</div>
                 <p className="text-lg text-gray-500 font-medium mb-10">Earned by depositing 850g Grade A plastic</p>
                 
                 <div className="space-y-3">

@@ -13,9 +13,9 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const wakeUpServer = async () => {
     try {
         await axios.get(WAKE_URL, { timeout: 10000 });
-        console.log('[SmartWaste] Server wake-up ping: OK');
+        console.log('[Swachhata Chakra] Server wake-up ping: OK');
     } catch (e) {
-        console.log('[SmartWaste] Server wake-up ping failed, waiting 5s before login...');
+        console.log('[Swachhata Chakra] Server wake-up ping failed, waiting 5s before login...');
         await wait(5000);
     }
 };
@@ -43,7 +43,7 @@ export const login = async (email, password, role, onRetry) => {
             return res.data;
         } catch (err) {
             lastError = err;
-            console.error(`[SmartWaste] Login attempt ${attempt + 1} failed:`, err.code, err.message);
+            console.error(`[Swachhata Chakra] Login attempt ${attempt + 1} failed:`, err.code, err.message);
 
             // Don't retry non-retryable errors
             if (!isRetryable(err)) break;
@@ -51,7 +51,7 @@ export const login = async (email, password, role, onRetry) => {
             // Don't wait after final attempt
             if (attempt < MAX_RETRIES) {
                 if (onRetry) onRetry(attempt + 1);
-                console.log(`[SmartWaste] Retrying in ${RETRY_DELAY_MS / 1000}s...`);
+                console.log(`[Swachhata Chakra] Retrying in ${RETRY_DELAY_MS / 1000}s...`);
                 await wait(RETRY_DELAY_MS);
             }
         }

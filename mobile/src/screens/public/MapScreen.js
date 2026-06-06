@@ -206,9 +206,9 @@ export default function PublicMapScreen({ navigation }) {
             <View style={styles.header} pointerEvents="none">
                 <View style={styles.headerCard}>
                     <Text style={styles.headerEmoji}>♻️</Text>
-                    <View>
-                        <AutoText style={styles.headerTitle}>SmartWaste AI</AutoText>
-                        <AutoText style={styles.headerSub}>{bins.length} bins tracked in Raipur</AutoText>
+                    <View style={styles.header}>
+                        <AutoText style={styles.headerTitle}>Swachhata Chakra</AutoText>
+                        <AutoText style={styles.headerSubtitle}>Find public bins & recyclers</AutoText>
                     </View>
                 </View>
             </View>

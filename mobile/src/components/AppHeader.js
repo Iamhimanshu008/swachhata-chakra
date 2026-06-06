@@ -26,7 +26,7 @@ const AppHeader = ({ title, onMenuPress, notificationCount = 0, navigation }) =>
 
         {/* Center — Title */}
         <Text style={styles.title} numberOfLines={1}>
-          {title || 'SmartWaste AI'}
+          {title || 'Swachhata Chakra'}
         </Text>
 
         {/* Right — Lang + Bell */}
@@ -63,12 +63,12 @@ const AppHeader = ({ title, onMenuPress, notificationCount = 0, navigation }) =>
 };
 
 const styles = StyleSheet.create({
-  safeArea: { backgroundColor: '#052e16' },
+  safeArea: { backgroundColor: '#14532D' },
   header: {
     flexDirection: 'row', alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16, paddingVertical: 12,
-    backgroundColor: '#052e16',
+    backgroundColor: '#14532D',
   },
   iconBtn: {
     width: 40, height: 40,

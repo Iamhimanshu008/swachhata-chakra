@@ -106,7 +106,7 @@ const useStore = create(
             setCitizenWallet: (wallet) => set({ citizenWallet: wallet }),
         }),
         {
-            name: 'smartwaste-mobile-storage',
+            name: 'swachhata-chakra-mobile-storage',
             storage: createJSONStorage(() => AsyncStorage),
             partialize: (state) => ({
                 token: state.token,
