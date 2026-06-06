@@ -48,7 +48,7 @@ export default function PublicView() {
                 <div className="bg-white p-4 rounded-t-2xl border border-b-0 border-gray-100 flex gap-4">
                     <div className="flex items-center gap-2 text-sm"><span className="w-3 h-3 rounded-full bg-green-500"></span> Empty/Low</div>
                     <div className="flex items-center gap-2 text-sm"><span className="w-3 h-3 rounded-full bg-yellow-500"></span> Medium</div>
-                    <div className="flex items-center gap-2 text-sm"><span className="w-3 h-3 rounded-full bg-red-500"></span> Full/Overflowing</div>
+                    <div className="flex items-center gap-2 text-sm"><span className="w-3 h-3 rounded-full bg-sw-orange"></span> Full/Overflowing</div>
                 </div>
                 <div style={{ height: '600px' }} className="rounded-b-2xl overflow-hidden border border-gray-100 relative z-0">
                     <MapBase>
@@ -69,7 +69,7 @@ export default function PublicView() {
                                 pathOptions={{ color: '#3B82F6', fillColor: '#3B82F6', fillOpacity: 0.8, weight: 3 }}
                             >
                                 <Tooltip permanent direction="top" offset={[0, -10]}>
-                                    <span className="font-bold text-blue-700">🚚 Collector</span>
+                                    <span className="font-bold text-sw-blue">🚚 Collector</span>
                                 </Tooltip>
                             </CircleMarker>
                         )}
@@ -144,7 +144,7 @@ export default function PublicView() {
         return (
             <div className="max-w-md mx-auto animate-fade-in">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <h2 className="text-xl font-bold text-gray-900 mb-2 font-display">Report Litter / Full Bin</h2>
+                    <h2 className="text-xl font-bold text-sw-dark mb-2 font-display">Report Litter / Full Bin</h2>
                     <p className="text-sm text-gray-500 mb-6">Help keep Chhattisgarh clean by reporting overflowing bins or illegal dumping.</p>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -154,7 +154,7 @@ export default function PublicView() {
                             {preview ? (
                                 <div className="relative">
                                     <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded-xl border border-gray-100" />
-                                    <button type="button" onClick={() => { setPhoto(null); setPreview(null); }} className="absolute top-2 right-2 p-1.5 bg-black/60 rounded-full text-white hover:bg-red-500 transition-colors">
+                                    <button type="button" onClick={() => { setPhoto(null); setPreview(null); }} className="absolute top-2 right-2 p-1.5 bg-black/60 rounded-full text-white hover:bg-sw-orange transition-colors">
                                         Remove
                                     </button>
                                 </div>
@@ -184,7 +184,7 @@ export default function PublicView() {
                             <textarea rows={3} value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="E.g., Bin is broken, or illegal plastic dump on the corner..." className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-sw-light resize-none"></textarea>
                         </div>
 
-                        <button type="submit" disabled={submitting} className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex justify-center items-center gap-2 transition-colors shadow-lg shadow-emerald-600/20 disabled:opacity-50">
+                        <button type="submit" disabled={submitting} className="w-full py-3.5 bg-sw-mid hover:bg-sw-dark text-white font-bold rounded-xl flex justify-center items-center gap-2 transition-colors shadow-lg shadow-sw-mid/20 disabled:opacity-50">
                             {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-5 h-5" /> Submit Report</>}
                         </button>
                     </form>
@@ -205,10 +205,10 @@ export default function PublicView() {
 
         return (
             <div className="animate-fade-in max-w-4xl mx-auto">
-                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 rounded-2xl border border-emerald-100 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="bg-gradient-to-r from-sw-light/50 to-sw-light/30 p-6 rounded-2xl border border-sw-light mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div>
-                        <h2 className="text-lg font-bold text-emerald-900 mb-1">Sell your plastic waste! 💰</h2>
-                        <p className="text-sm text-emerald-700">Find local recycling facilities that pay for sorted plastic waste.</p>
+                        <h2 className="text-lg font-bold text-sw-dark mb-1">Sell your plastic waste! 💰</h2>
+                        <p className="text-sm text-sw-mid">Find local recycling facilities that pay for sorted plastic waste.</p>
                     </div>
                 </div>
 
@@ -217,7 +217,7 @@ export default function PublicView() {
                         <div key={r.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover">
                             <div className="flex justify-between items-start mb-3">
                                 <div>
-                                    <h3 className="font-bold text-lg text-gray-900">{r.name}</h3>
+                                    <h3 className="font-bold text-lg text-sw-dark">{r.name}</h3>
                                     <p className="text-sm text-gray-500">{r.contact_person}</p>
                                 </div>
                                 <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold font-mono-data">₹{r.price_per_kg}/kg</span>
@@ -252,12 +252,12 @@ export default function PublicView() {
                             <img src="/logo.png" className="h-10 w-auto" alt="Logo" />
                         </div>
                         <div className="flex flex-col justify-center">
-                            <span className="font-bold text-lg tracking-tight text-gray-900 leading-tight">Swachhata Chakra</span>
-                            <span className="text-[10px] w-fit px-1.5 py-0.5 bg-[#16A34A]/10 rounded text-[#16A34A] font-bold uppercase mt-0.5">Public</span>
+                            <span className="font-bold text-lg tracking-tight text-sw-dark leading-tight">Swachhata Chakra</span>
+                            <span className="text-[10px] w-fit px-1.5 py-0.5 bg-sw-mid/10 rounded text-sw-mid font-bold uppercase mt-0.5">Public</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <a href="/recyclers" className="px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 rounded-xl transition-colors hidden sm:block">
+                        <a href="/recyclers" className="px-4 py-2 text-sm font-semibold text-sw-mid hover:bg-sw-bg rounded-xl transition-colors hidden sm:block">
                             Recycler Marketplace
                         </a>
                         <a href="/login" className="px-5 py-2 text-sm font-semibold text-sw-dark hover:bg-sw-bg rounded-xl transition-colors">

@@ -123,22 +123,22 @@ export default function AdminDashboard() {
             <div className="space-y-6 animate-fade-in">
                 {/* KPI Cards - 6 columns */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <KPICard title="Total Bins" value={stats?.active_bins || 0} icon={Trash2} color="blue" />
+                    <KPICard title="Total Bins" value={stats?.active_bins || 0} icon={Trash2} color="sw-blue" />
                     <KPICard title="Reports This Week" value={stats?.reports_this_week || analytics?.daily_collections?.reduce((s,d)=>s+d.count,0) || 0} icon={ClipboardCheck} color="sw-gold" />
                     <KPICard title="Kg Collected" value={stats?.total_plastic_kg || 0} unit="kg" icon={Package} color="sw-light" />
                     <KPICard title="CO₂ Saved" value={co2Saved} unit="kg" icon={Wind} color="sw-mid" trend="up" trendValue="×1.5 multiplier" />
-                    <KPICard title="Active Collectors" value={stats?.active_collectors || analytics?.zone_wise?.length || 0} icon={UserCheck} color="purple" />
-                    <KPICard title="Pending Reports" value={stats?.pending_reports || 0} icon={ClipboardCheck} color="red" />
+                    <KPICard title="Active Collectors" value={stats?.active_collectors || analytics?.zone_wise?.length || 0} icon={UserCheck} color="sw-orange" />
+                    <KPICard title="Pending Reports" value={stats?.pending_reports || 0} icon={ClipboardCheck} color="sw-orange" />
                 </div>
 
                 {/* Action Row */}
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg font-bold text-gray-900 font-display">Analytics Overview</h2>
                     <div className="flex items-center gap-2">
-                        <button onClick={() => setShowAI(true)} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-emerald-500/20 transition-all">
+                        <button onClick={() => setShowAI(true)} className="flex items-center gap-2 px-4 py-2 bg-sw-mid text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-sw-mid/20 transition-all">
                             <Sparkles className="w-4 h-4" /> AI Analyze
                         </button>
-                        <button onClick={handleExcelExport} className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors">
+                        <button onClick={handleExcelExport} className="flex items-center gap-2 px-4 py-2 bg-sw-blue text-white text-sm font-medium rounded-xl hover:bg-sw-dark transition-colors">
                             <FileSpreadsheet className="w-4 h-4" /> Export Excel
                         </button>
                     </div>
@@ -252,28 +252,28 @@ export default function AdminDashboard() {
                 <div className="mt-8 mb-6">
                     <h2 className="text-lg font-bold text-gray-900 font-display mb-4">Environmental Impact</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
+                        <div className="bg-sw-bg rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
                             <span className="text-3xl">🌳</span>
                             <div>
                                 <p className="text-sm font-medium text-emerald-800">Trees Saved</p>
                                 <p className="text-2xl font-bold text-emerald-900">{((stats?.total_plastic_kg || 0) * 0.017).toFixed(1)}</p>
                             </div>
                         </div>
-                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
+                        <div className="bg-sw-bg rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
                             <span className="text-3xl">🌍</span>
                             <div>
                                 <p className="text-sm font-medium text-emerald-800">CO₂ Reduced</p>
                                 <p className="text-2xl font-bold text-emerald-900">{((stats?.total_plastic_kg || 0) * 2.5).toFixed(1)} <span className="text-base font-medium">kg</span></p>
                             </div>
                         </div>
-                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
+                        <div className="bg-sw-bg rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
                             <span className="text-3xl">💧</span>
                             <div>
                                 <p className="text-sm font-medium text-emerald-800">Water Saved</p>
                                 <p className="text-2xl font-bold text-emerald-900">{((stats?.total_plastic_kg || 0) * 6).toFixed(0)} <span className="text-base font-medium">L</span></p>
                             </div>
                         </div>
-                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
+                        <div className="bg-sw-bg rounded-2xl p-6 border border-emerald-100 flex items-center gap-4">
                             <span className="text-3xl">♻️</span>
                             <div>
                                 <p className="text-sm font-medium text-emerald-800">Waste Diverted</p>
@@ -635,7 +635,7 @@ export default function AdminDashboard() {
                                 <input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="Email" type="email" className="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" />
                                 <input value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Password" type="password" className="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" />
                                 <div>
-                                    <input required type="tel" value={form.phone_number} onChange={(e) => setForm({ ...form, phone_number: e.target.value.replace(/\D/g, '').slice(0, 10) })} placeholder="Phone Number (10 digits) *" className="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" maxLength={10} />
+                                    <input required type="tel" value={form.phone_number} onChange={(e) => setForm({ ...form, phone_number: e.target.value.replace(/sw-dark/g, '').slice(0, 10) })} placeholder="Phone Number (10 digits) *" className="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" maxLength={10} />
                                     <p className="text-xs text-gray-400 mt-1">Required for OTP login. 10 digits only.</p>
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
@@ -698,7 +698,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number (for OTP login) *</label>
-                                    <input required type="tel" placeholder="10-digit phone number" value={editUser.phone_number || ''} onChange={(e) => setEditUser({ ...editUser, phone_number: e.target.value.replace(/\D/g, '').slice(0, 10) })} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" maxLength={10} />
+                                    <input required type="tel" placeholder="10-digit phone number" value={editUser.phone_number || ''} onChange={(e) => setEditUser({ ...editUser, phone_number: e.target.value.replace(/sw-dark/g, '').slice(0, 10) })} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none" maxLength={10} />
                                     <p className="text-xs text-gray-400 mt-1">Staff can use this number to login via OTP. 10 digits.</p>
                                 </div>
                             </div>
@@ -1115,7 +1115,7 @@ export default function AdminDashboard() {
         return (
             <div className="space-y-6 animate-fade-in">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <KPICard title="Total Recyclers" value={stats?.total_active_recyclers || 0} icon={Building} color="blue" />
+                    <KPICard title="Total Recyclers" value={stats?.total_active_recyclers || 0} icon={Building} color="sw-blue" />
                     <KPICard title="Plastic Sold" value={stats?.plastic_sold_this_month_kg || 0} unit="kg" icon={Package} color="sw-light" />
                     <KPICard title="Revenue" value={`₹${stats?.revenue_generated_this_month || 0}`} icon={DollarSign} color="sw-gold" />
                     <KPICard title="Avg Price" value={`₹${stats?.average_price_per_kg || 0}/kg`} icon={TrendingUp} color="sw-mid" />
@@ -1158,7 +1158,7 @@ export default function AdminDashboard() {
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                        <Building className="text-purple-600 w-5 h-5"/> {r.name}
+                                        <Building className="text-sw-blue w-5 h-5"/> {r.name}
                                     </h3>
                                     <p className="text-sm text-gray-500 mt-0.5">{r.contact_person}</p>
                                 </div>
@@ -1176,7 +1176,7 @@ export default function AdminDashboard() {
                             <div className="flex gap-3 border-t border-gray-100 pt-4">
                                 {r.is_active ? (
                                     <>
-                                        <button onClick={() => setShowPickup(r.id)} className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-xl transition-colors">Request Pickup</button>
+                                        <button onClick={() => setShowPickup(r.id)} className="flex-1 bg-sw-blue hover:bg-sw-dark text-white font-medium py-2 rounded-xl transition-colors">Request Pickup</button>
                                         <button onClick={() => handleDelete(r.id)} className="px-4 py-2 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors">Disable</button>
                                     </>
                                 ) : (
@@ -1207,7 +1207,7 @@ export default function AdminDashboard() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
                                     <textarea rows={3} value={pickupForm.notes} onChange={(e) => setPickupForm({...pickupForm, notes: e.target.value})} className="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 resize-none" placeholder="E.g. Mostly PET bottles, ready at front gate." />
                                 </div>
-                                <button disabled={pickupSubmitting} type="submit" className="w-full py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white font-bold rounded-xl flex justify-center items-center shadow-lg shadow-purple-600/20">
+                                <button disabled={pickupSubmitting} type="submit" className="w-full py-3 bg-sw-blue hover:bg-sw-dark disabled:bg-gray-400 text-white font-bold rounded-xl flex justify-center items-center shadow-lg shadow-sw-blue/20">
                                     {pickupSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : 'Send Request to Recycler'}
                                 </button>
                             </form>

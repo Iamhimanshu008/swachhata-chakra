@@ -53,12 +53,12 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
         <>
             {/* Desktop Sidebar */}
             <aside
-                className={`sidebar-desktop fixed left-0 top-0 h-full bg-[#14532D] text-white z-40 transition-all duration-300 flex flex-col ${
+                className={`sidebar-desktop fixed left-0 top-0 h-full bg-sw-dark text-white z-40 transition-all duration-300 flex flex-col ${
                     sidebarOpen ? 'w-64' : 'w-20'
                 }`}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-white/10">
+                <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/5">
                     {sidebarOpen && (
                         <div className="flex items-center gap-2.5">
                             <div className="flex items-center justify-center">
@@ -89,8 +89,8 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                                 className={({ isActive }) =>
                                     `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
                                         isActive
-                                            ? 'bg-[#16A34A] text-white font-semibold shadow-lg shadow-[#16A34A]/20'
-                                            : 'text-[#D1FAE5] hover:text-white hover:bg-white/10'
+                                            ? 'bg-sw-mid text-white font-semibold shadow-lg shadow-sw-mid/20'
+                                            : 'text-sw-light hover:text-white hover:bg-white/10'
                                     }`
                                 }
                             >
@@ -104,7 +104,7 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                     {isAdminDashboard && tabs && tabs.length > 0 && (
                         <>
                             {sidebarOpen && (
-                                <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest px-3 mt-5 mb-2">
+                                <p className="text-[10px] font-bold text-sw-orange uppercase tracking-widest px-3 mt-5 mb-2">
                                     Dashboard
                                 </p>
                             )}
@@ -122,8 +122,8 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                                             title={!sidebarOpen ? t.label : undefined}
                                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 w-full text-left ${
                                                 isActive
-                                                    ? 'bg-[#16A34A] text-white font-semibold shadow-lg shadow-[#16A34A]/20'
-                                                    : 'text-[#D1FAE5] hover:text-white hover:bg-white/10'
+                                                    ? 'bg-sw-mid text-white font-semibold shadow-lg shadow-sw-mid/20'
+                                                    : 'text-sw-light hover:text-white hover:bg-white/10'
                                             }`}
                                         >
                                             <Icon className="w-5 h-5 flex-shrink-0" />

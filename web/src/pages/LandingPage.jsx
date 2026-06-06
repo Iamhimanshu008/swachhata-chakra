@@ -10,7 +10,12 @@ import {
   UserPlus,
   ClipboardList,
   Activity,
-  Award
+  Award,
+  QrCode,
+  Scale,
+  Recycle,
+  Star,
+  Landmark
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -26,10 +31,10 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F0FDF4] font-sans overflow-x-hidden text-[#1E3A5F]">
+    <div className="min-h-screen bg-sw-bg font-sans overflow-x-hidden text-sw-text-secondary">
       
       {/* SECTION 1 - TOP GOV BAR */}
-      <div className="w-full bg-[#14532D] py-2 px-4 flex justify-between items-center text-white text-xs sm:text-sm shadow-sm relative z-50">
+      <div className="w-full bg-sw-dark py-2 px-4 flex justify-between items-center text-white text-xs sm:text-sm shadow-sm relative z-50">
         <div className="flex items-center gap-2">
           <img src="/cg-govt-logo.png" alt="CG Govt Logo" height="36" className="h-9 w-auto" />
           <span className="hidden sm:inline font-semibold">Government of Chhattisgarh | छत्तीसगढ़ शासन</span>
@@ -43,23 +48,23 @@ export default function LandingPage() {
       </div>
 
       {/* SECTION 2 - NAVBAR */}
-      <nav className="w-full bg-white sticky top-0 z-40 border-b-2 border-[#16A34A] shadow-sm">
+      <nav className="w-full bg-white sticky top-0 z-40 border-b-2 border-sw-mid shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <div className="flex items-center gap-3">
               <img src="/logo.png" alt="Logo" height="48" className="h-12 w-auto" />
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-[#14532D] leading-tight">Swachhata Chakra Portal</span>
+                <span className="text-xl font-bold text-sw-dark leading-tight">Swachhata Chakra Portal</span>
                 <span className="text-xs font-medium text-gray-500">Digital Waste Management System</span>
               </div>
             </div>
             <div className="hidden md:flex items-center gap-8 font-medium">
-              <Link to="/" className="text-[#16A34A] hover:text-[#14532D] transition-colors border-b-2 border-[#16A34A] py-1">Home</Link>
-              <a href="#about" className="text-gray-600 hover:text-[#16A34A] transition-colors">About</a>
-              <Link to="/login" className="text-gray-600 hover:text-[#16A34A] transition-colors">Dashboard</Link>
-              <Link to="/public" className="text-gray-600 hover:text-[#16A34A] transition-colors">Public Map</Link>
-              <Link to="/login" className="text-gray-600 hover:text-[#16A34A] transition-colors">Login</Link>
-              <Link to="/login" className="bg-[#EA580C] hover:bg-[#c2410a] text-white px-6 py-2.5 rounded-full font-bold shadow-md shadow-orange-500/20 transition-all hover:-translate-y-0.5">
+              <Link to="/" className="text-sw-mid hover:text-sw-dark transition-colors border-b-2 border-sw-mid py-1">Home</Link>
+              <a href="#about" className="text-gray-600 hover:text-sw-mid transition-colors">About</a>
+              <Link to="/login" className="text-gray-600 hover:text-sw-mid transition-colors">Dashboard</Link>
+              <Link to="/public" className="text-gray-600 hover:text-sw-mid transition-colors">Public Map</Link>
+              <Link to="/login" className="text-gray-600 hover:text-sw-mid transition-colors">Login</Link>
+              <Link to="/login" className="bg-sw-orange hover:bg-[#c2410a] text-white px-6 py-2.5 rounded-full font-bold shadow-md shadow-orange-500/20 transition-all hover:-translate-y-0.5">
                 Register →
               </Link>
             </div>
@@ -67,18 +72,42 @@ export default function LandingPage() {
         </div>
       </nav>
 
+      <style>{`
+        @keyframes heroFlow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes float {
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .hero-gradient {
+          background: linear-gradient(-45deg, #0F3D1A, #1A6B2F, #1A3C8F, #0F3D1A);
+          background-size: 400% 400%;
+          animation: heroFlow 15s ease infinite;
+        }
+        .floating-icon {
+          animation: float 6s ease-in-out infinite;
+        }
+        .delay-1 { animation-delay: 1s; }
+        .delay-2 { animation-delay: 2s; }
+        .delay-3 { animation-delay: 3s; }
+        .delay-4 { animation-delay: 4s; }
+      `}</style>
       {/* SECTION 3 - HERO SECTION */}
-      <section className="w-full bg-gradient-to-br from-[#14532D] to-[#166534] py-20 px-4 sm:px-6 lg:px-8 overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#16A34A]/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3"></div>
+      <section className="w-full hero-gradient py-20 px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-sw-mid/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3"></div>
         <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-12 relative z-10">
           
           <div className="flex-1 text-center lg:text-left text-white space-y-6">
-            <div className="inline-flex items-center gap-2 bg-[#EA580C]/20 border border-[#EA580C]/50 text-[#FFF7ED] px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide">
-              <span className="w-2 h-2 rounded-full bg-[#EA580C] animate-pulse"></span>
+            <div className="inline-flex items-center gap-2 bg-sw-orange/20 border border-sw-orange/50 text-sw-light px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide">
+              <span className="w-2 h-2 rounded-full bg-sw-orange animate-pulse"></span>
               Swachhata Chakra Portal
             </div>
             
-            <h1 className="text-5xl sm:text-6xl font-bold text-[#FFF7ED]" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
+            <h1 className="text-5xl sm:text-6xl font-bold text-sw-light" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
               स्वच्छ छत्तीसगढ़, समृद्ध छत्तीसगढ़
             </h1>
             
@@ -92,7 +121,7 @@ export default function LandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 justify-center lg:justify-start">
-              <Link to="/login" className="w-full sm:w-auto bg-[#EA580C] hover:bg-[#c2410a] text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-900/40 transition-all hover:-translate-y-1 flex items-center justify-center gap-2">
+              <Link to="/login" className="w-full sm:w-auto bg-sw-orange hover:bg-[#c2410a] text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-900/40 transition-all hover:-translate-y-1 flex items-center justify-center gap-2">
                 Get Started →
               </Link>
               <Link to="/login" className="w-full sm:w-auto bg-transparent hover:bg-white/10 border-2 border-white/80 text-white px-8 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
@@ -101,9 +130,27 @@ export default function LandingPage() {
             </div>
           </div>
           
-          <div className="flex-1 flex justify-center lg:justify-end">
+          <div className="flex-1 flex justify-center lg:justify-end relative">
             <div className="relative group">
-              <div className="absolute inset-0 bg-[#16A34A] rounded-full blur-[80px] opacity-40 group-hover:opacity-60 transition-opacity duration-1000"></div>
+              <div className="absolute inset-0 bg-sw-mid rounded-full blur-[80px] opacity-40 group-hover:opacity-60 transition-opacity duration-1000"></div>
+              
+              {/* Floating Icons */}
+              <div className="absolute -top-10 -left-10 bg-white p-3 rounded-2xl shadow-xl floating-icon delay-1 z-20 hidden md:block border-2 border-sw-gold">
+                <QrCode className="w-8 h-8 text-sw-dark" />
+              </div>
+              <div className="absolute top-20 -right-12 bg-white p-3 rounded-2xl shadow-xl floating-icon delay-2 z-20 hidden md:block border-2 border-sw-blue">
+                <Scale className="w-8 h-8 text-sw-orange" />
+              </div>
+              <div className="absolute bottom-10 -left-8 bg-white p-3 rounded-2xl shadow-xl floating-icon delay-3 z-20 hidden md:block border-2 border-sw-mid">
+                <Recycle className="w-8 h-8 text-sw-bright" />
+              </div>
+              <div className="absolute -bottom-10 right-10 bg-white p-3 rounded-2xl shadow-xl floating-icon delay-4 z-20 hidden md:block border-2 border-sw-gold">
+                <Star className="w-8 h-8 text-sw-gold" />
+              </div>
+              <div className="absolute top-0 right-10 bg-white p-3 rounded-2xl shadow-xl floating-icon z-20 hidden md:block border-2 border-sw-dark">
+                <Landmark className="w-8 h-8 text-sw-dark" />
+              </div>
+
               <img 
                 src="/logo.png" 
                 alt="Swachhata Chakra Logo" 
@@ -117,26 +164,26 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 4 - STATS BAR */}
-      <div className="w-full bg-white border-t-4 border-[#16A34A] shadow-md relative z-20 -mt-6 rounded-t-3xl max-w-6xl mx-auto overflow-hidden">
+      <div className="w-full bg-white border-t-4 border-sw-mid shadow-md relative z-20 -mt-6 rounded-t-3xl max-w-6xl mx-auto overflow-hidden">
         <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100">
           <div className="p-6 text-center">
             <div className="text-3xl mb-2">♻️</div>
-            <div className="text-2xl font-bold text-[#14532D]">5 MT</div>
+            <div className="text-2xl font-bold text-sw-dark">5 MT</div>
             <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-1">Waste Processed This Month</div>
           </div>
           <div className="p-6 text-center">
             <div className="text-3xl mb-2">📊</div>
-            <div className="text-2xl font-bold text-[#14532D]">110+</div>
+            <div className="text-2xl font-bold text-sw-dark">110+</div>
             <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-1">Active Collectors Online</div>
           </div>
           <div className="p-6 text-center">
             <div className="text-3xl mb-2">₹</div>
-            <div className="text-2xl font-bold text-[#14532D]">1.5 Lakh</div>
+            <div className="text-2xl font-bold text-sw-dark">1.5 Lakh</div>
             <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-1">Revenue Generated</div>
           </div>
           <div className="p-6 text-center">
             <div className="text-3xl mb-2">✅</div>
-            <div className="text-2xl font-bold text-[#14532D]">100%</div>
+            <div className="text-2xl font-bold text-sw-dark">100%</div>
             <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-1">Machine Functional</div>
           </div>
         </div>
@@ -146,7 +193,7 @@ export default function LandingPage() {
       <section id="about" className="w-full bg-white py-24 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-4xl font-extrabold text-[#1E3A5F]">About Swachhata Chakra</h3>
+            <h3 className="text-4xl font-extrabold text-sw-text-secondary">About Swachhata Chakra</h3>
             <p className="text-xl text-gray-500 mt-4">An Offline-First Hybrid Model for Rural Chhattisgarh</p>
           </div>
           
@@ -159,7 +206,7 @@ export default function LandingPage() {
               </p>
               
               <div className="space-y-2">
-                <p className="font-bold text-[#1E3A5F]">We solve three ground-level problems:</p>
+                <p className="font-bold text-sw-text-secondary">We solve three ground-level problems:</p>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-center gap-2"><XCircle className="w-5 h-5 text-red-500 shrink-0" /> Manual data entry fraud by collectors</li>
                   <li className="flex items-center gap-2"><XCircle className="w-5 h-5 text-red-500 shrink-0" /> Zero internet connectivity in rural areas</li>
@@ -167,8 +214,8 @@ export default function LandingPage() {
                 </ul>
               </div>
               
-              <div className="bg-[#F0FDF4] p-6 rounded-2xl border border-[#16A34A]/20">
-                <p className="font-bold text-[#16A34A] mb-2">Our solution:</p>
+              <div className="bg-sw-bg p-6 rounded-2xl border border-sw-mid/20">
+                <p className="font-bold text-sw-mid mb-2">Our solution:</p>
                 <p className="text-gray-700 leading-relaxed">
                   An Offline-First platform where citizens receive a 
                   physical laminated QR card (Smart Passbook), collectors use a 
@@ -184,7 +231,7 @@ export default function LandingPage() {
               <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
                 <div className="text-4xl">📡</div>
                 <div>
-                  <h4 className="text-lg font-bold text-[#1E3A5F] mb-1">Asynchronous Offline-First Architecture</h4>
+                  <h4 className="text-lg font-bold text-sw-text-secondary mb-1">Asynchronous Offline-First Architecture</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">Works 100% without internet. Morning download, field collection, afternoon sync — designed for zero-network rural environments.</p>
                 </div>
               </div>
@@ -193,7 +240,7 @@ export default function LandingPage() {
               <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
                 <div className="text-4xl">🔗</div>
                 <div>
-                  <h4 className="text-lg font-bold text-[#1E3A5F] mb-1">Hardware-Software Handshake</h4>
+                  <h4 className="text-lg font-bold text-sw-text-secondary mb-1">Hardware-Software Handshake</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">ESP32 + Load Cell sends weight directly via BLE to collector app. No manual entry possible — tamper-proof digital ledger.</p>
                 </div>
               </div>
@@ -202,7 +249,7 @@ export default function LandingPage() {
               <div className="flex gap-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
                 <div className="text-4xl">🎮</div>
                 <div>
-                  <h4 className="text-lg font-bold text-[#1E3A5F] mb-1">Behavioral Engineering</h4>
+                  <h4 className="text-lg font-bold text-sw-text-secondary mb-1">Behavioral Engineering</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">Waste disposal becomes an income stream. 10 grams = 1 Plasti-Dhan Point. Redeem for tax rebates, mobile recharge, local vouchers.</p>
                 </div>
               </div>
@@ -218,7 +265,7 @@ export default function LandingPage() {
             
             <div className="space-y-6">
               <span className="text-sm font-bold text-red-600 tracking-widest uppercase">The Reality</span>
-              <h3 className="text-4xl font-extrabold text-[#1E3A5F] leading-tight">
+              <h3 className="text-4xl font-extrabold text-sw-text-secondary leading-tight">
                 Fragmented infrastructure limits true potential.
               </h3>
               <ul className="space-y-4 mt-8">
@@ -241,32 +288,32 @@ export default function LandingPage() {
               </ul>
             </div>
             
-            <div className="bg-white rounded-3xl p-10 shadow-2xl shadow-[#16A34A]/10 border border-[#16A34A]/20">
-              <span className="text-sm font-bold text-[#16A34A] tracking-widest uppercase">The Digital Solution</span>
+            <div className="bg-white rounded-3xl p-10 shadow-2xl shadow-sw-mid/10 border border-sw-mid/20">
+              <span className="text-sm font-bold text-sw-mid tracking-widest uppercase">The Digital Solution</span>
               <ul className="space-y-6 mt-8">
-                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-[#F0FDF4] transition-colors border border-transparent hover:border-[#16A34A]/30">
-                  <div className="w-12 h-12 rounded-full bg-[#16A34A]/10 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-7 h-7 text-[#16A34A]" />
+                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-sw-bg transition-colors border border-transparent hover:border-sw-mid/30">
+                  <div className="w-12 h-12 rounded-full bg-sw-mid/10 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-7 h-7 text-sw-mid" />
                   </div>
-                  <span className="text-lg font-semibold text-[#1E3A5F]">Real-time automated reporting</span>
+                  <span className="text-lg font-semibold text-sw-text-secondary">Real-time automated reporting</span>
                 </li>
-                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-[#F0FDF4] transition-colors border border-transparent hover:border-[#16A34A]/30">
-                  <div className="w-12 h-12 rounded-full bg-[#16A34A]/10 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-7 h-7 text-[#16A34A]" />
+                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-sw-bg transition-colors border border-transparent hover:border-sw-mid/30">
+                  <div className="w-12 h-12 rounded-full bg-sw-mid/10 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-7 h-7 text-sw-mid" />
                   </div>
-                  <span className="text-lg font-semibold text-[#1E3A5F]">District & Block level drilldown</span>
+                  <span className="text-lg font-semibold text-sw-text-secondary">District & Block level drilldown</span>
                 </li>
-                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-[#F0FDF4] transition-colors border border-transparent hover:border-[#16A34A]/30">
-                  <div className="w-12 h-12 rounded-full bg-[#16A34A]/10 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-7 h-7 text-[#16A34A]" />
+                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-sw-bg transition-colors border border-transparent hover:border-sw-mid/30">
+                  <div className="w-12 h-12 rounded-full bg-sw-mid/10 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-7 h-7 text-sw-mid" />
                   </div>
-                  <span className="text-lg font-semibold text-[#1E3A5F]">Machine health & usage intelligence</span>
+                  <span className="text-lg font-semibold text-sw-text-secondary">Machine health & usage intelligence</span>
                 </li>
-                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-[#F0FDF4] transition-colors border border-transparent hover:border-[#16A34A]/30">
-                  <div className="w-12 h-12 rounded-full bg-[#16A34A]/10 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-7 h-7 text-[#16A34A]" />
+                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-sw-bg transition-colors border border-transparent hover:border-sw-mid/30">
+                  <div className="w-12 h-12 rounded-full bg-sw-mid/10 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-7 h-7 text-sw-mid" />
                   </div>
-                  <span className="text-lg font-semibold text-[#1E3A5F]">End-to-end financial transparency</span>
+                  <span className="text-lg font-semibold text-sw-text-secondary">End-to-end financial transparency</span>
                 </li>
               </ul>
             </div>
@@ -278,7 +325,7 @@ export default function LandingPage() {
       {/* SECTION 6 - INTEGRATED WORKFLOW */}
       <section className="w-full bg-white py-24 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-4xl font-extrabold text-[#1E3A5F] mb-4">Integrated Digital Workflow</h3>
+          <h3 className="text-4xl font-extrabold text-sw-text-secondary mb-4">Integrated Digital Workflow</h3>
           <p className="text-xl text-gray-500 max-w-3xl mx-auto mb-16">
             Four integrated portals ensuring seamless accountability from source to disposal.
           </p>
@@ -290,11 +337,11 @@ export default function LandingPage() {
               { icon: Activity, title: "Monitoring Portal", desc: "IoT weight machine compliance, collector route tracking, and fraud detection" },
               { icon: BarChart3, title: "Analytics Dashboard", desc: "State-level insights, ward analytics, and Swachh Bharat compliance exports" },
             ].map((card, i) => (
-              <div key={i} className="bg-white rounded-2xl p-8 shadow-xl shadow-gray-200/50 border-t-4 border-t-[#16A34A] border-l border-r border-b border-gray-100 hover:-translate-y-2 transition-transform duration-300">
-                <div className="w-14 h-14 bg-[#F0FDF4] rounded-xl flex items-center justify-center mb-6 text-[#16A34A]">
+              <div key={i} className="bg-white rounded-2xl p-8 shadow-xl shadow-gray-200/50 border-t-4 border-t-sw-mid border-l border-r border-b border-gray-100 hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-14 h-14 bg-sw-bg rounded-xl flex items-center justify-center mb-6 text-sw-mid">
                   <card.icon className="w-7 h-7" />
                 </div>
-                <h4 className="text-xl font-bold text-[#1E3A5F] mb-3">{card.title}</h4>
+                <h4 className="text-xl font-bold text-sw-text-secondary mb-3">{card.title}</h4>
                 <p className="text-gray-600 leading-relaxed">{card.desc}</p>
               </div>
             ))}
@@ -303,11 +350,11 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 6.5 - DOWNLOAD MOBILE APP */}
-      <section className="w-full bg-[#F0FDF4] py-24 border-t border-[#16A34A]/20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#16A34A]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+      <section className="w-full bg-sw-bg py-24 border-t border-sw-mid/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-sw-mid/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h3 className="text-4xl font-extrabold text-[#1E3A5F]">Swachhata Chakra Mobile App</h3>
+            <h3 className="text-4xl font-extrabold text-sw-text-secondary">Swachhata Chakra Mobile App</h3>
             <p className="text-xl text-gray-600 mt-4">For Collectors & SHG Workers — Offline-First Field App</p>
           </div>
           
@@ -316,22 +363,22 @@ export default function LandingPage() {
             <div className="space-y-8">
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-lg text-gray-700">
-                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Works completely offline — no internet needed in field
+                  <CheckCircle2 className="w-6 h-6 text-sw-mid shrink-0" /> Works completely offline — no internet needed in field
                 </li>
                 <li className="flex items-center gap-3 text-lg text-gray-700">
-                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> QR scan citizen identity instantly
+                  <CheckCircle2 className="w-6 h-6 text-sw-mid shrink-0" /> QR scan citizen identity instantly
                 </li>
                 <li className="flex items-center gap-3 text-lg text-gray-700">
-                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Bluetooth IoT scale auto-fills weight
+                  <CheckCircle2 className="w-6 h-6 text-sw-mid shrink-0" /> Bluetooth IoT scale auto-fills weight
                 </li>
                 <li className="flex items-center gap-3 text-lg text-gray-700">
-                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Hindi + English bilingual interface
+                  <CheckCircle2 className="w-6 h-6 text-sw-mid shrink-0" /> Hindi + English bilingual interface
                 </li>
                 <li className="flex items-center gap-3 text-lg text-gray-700">
-                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Morning route download + Afternoon sync
+                  <CheckCircle2 className="w-6 h-6 text-sw-mid shrink-0" /> Morning route download + Afternoon sync
                 </li>
                 <li className="flex items-center gap-3 text-lg text-gray-700">
-                  <CheckCircle2 className="w-6 h-6 text-[#16A34A] shrink-0" /> Push notifications for route assignments
+                  <CheckCircle2 className="w-6 h-6 text-sw-mid shrink-0" /> Push notifications for route assignments
                 </li>
               </ul>
               
@@ -342,7 +389,7 @@ export default function LandingPage() {
               <div>
                 <a 
                   href="https://github.com/Iamhimanshu008/smartwaste-ai/releases/download/v2.4.0/SmartWasteAI-v2.4.0.apk"
-                  className="inline-flex items-center gap-3 bg-[#16A34A] hover:bg-[#14532D] text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-green-900/20 transition-all hover:-translate-y-1"
+                  className="inline-flex items-center gap-3 bg-sw-mid hover:bg-sw-dark text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-green-900/20 transition-all hover:-translate-y-1"
                 >
                   📱 Download APK v2.4.0
                 </a>
@@ -352,13 +399,13 @@ export default function LandingPage() {
             
             {/* RIGHT - Phone Mockup */}
             <div className="flex justify-center lg:justify-end">
-              <div className="w-[300px] h-[600px] bg-white rounded-[3rem] border-8 border-[#14532D] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-white">
+              <div className="w-[300px] h-[600px] bg-white rounded-[3rem] border-8 border-sw-dark shadow-2xl relative overflow-hidden flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-white">
                 {/* Notch */}
-                <div className="absolute top-0 w-32 h-6 bg-[#14532D] rounded-b-xl"></div>
+                <div className="absolute top-0 w-32 h-6 bg-sw-dark rounded-b-xl"></div>
                 
                 <img src="/logo.png" alt="App Logo" className="w-24 h-24 drop-shadow-xl mb-6" />
-                <h4 className="text-2xl font-bold text-[#14532D] text-center px-4 leading-tight">Swachhata<br/>Chakra</h4>
-                <div className="mt-4 bg-[#16A34A] text-white px-4 py-1 rounded-full text-sm font-bold">
+                <h4 className="text-2xl font-bold text-sw-dark text-center px-4 leading-tight">Swachhata<br/>Chakra</h4>
+                <div className="mt-4 bg-sw-mid text-white px-4 py-1 rounded-full text-sm font-bold">
                   v2.4.0
                 </div>
                 
@@ -371,7 +418,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 7 - GAMIFICATION */}
-      <section className="w-full bg-[#16A34A] py-24 overflow-hidden relative">
+      <section className="w-full bg-sw-mid py-24 overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -382,7 +429,7 @@ export default function LandingPage() {
                 <p className="text-2xl text-green-100 font-medium">Wealth out of Waste — SBM 2026 Aligned</p>
               </div>
               
-              <div className="bg-[#14532D] p-6 rounded-2xl border border-green-500/30 shadow-2xl inline-block">
+              <div className="bg-sw-dark p-6 rounded-2xl border border-green-500/30 shadow-2xl inline-block">
                 <div className="text-xl font-bold mb-2 flex items-center gap-3">
                   <Zap className="w-6 h-6 text-yellow-400" /> Points Formula
                 </div>
@@ -421,18 +468,18 @@ export default function LandingPage() {
             <div className="bg-white rounded-3xl p-10 shadow-2xl">
               <div className="text-center">
                 <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Award className="w-12 h-12 text-[#EA580C]" />
+                  <Award className="w-12 h-12 text-sw-orange" />
                 </div>
-                <div className="text-6xl font-black text-[#14532D] mb-2">85 Points</div>
+                <div className="text-6xl font-black text-sw-dark mb-2">85 Points</div>
                 <p className="text-lg text-gray-500 font-medium mb-10">Earned by depositing 850g Grade A plastic</p>
                 
                 <div className="space-y-3">
-                  <div className="flex justify-between text-sm font-bold text-[#1E3A5F]">
+                  <div className="flex justify-between text-sm font-bold text-sw-text-secondary">
                     <span>Current Tier: Bronze</span>
                     <span>15 pts to Silver</span>
                   </div>
                   <div className="w-full h-4 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-[#16A34A] to-[#EA580C] w-[85%] rounded-full"></div>
+                    <div className="h-full bg-gradient-to-r from-sw-mid to-sw-orange w-[85%] rounded-full"></div>
                   </div>
                 </div>
               </div>
@@ -443,17 +490,17 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 8 - CTA / REGISTER */}
-      <section className="w-full bg-[#14532D] py-24 text-center px-4">
+      <section className="w-full bg-sw-dark py-24 text-center px-4">
         <h3 className="text-4xl sm:text-5xl font-extrabold text-white mb-6">Register your unit today</h3>
         <p className="text-xl text-green-100 max-w-2xl mx-auto mb-12">
           Join the central network for transparent, efficient plastic waste management.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-6">
-          <Link to="/login" className="bg-white text-[#14532D] hover:bg-gray-100 px-10 py-4 rounded-xl font-bold text-lg shadow-xl transition-transform hover:-translate-y-1">
-            Register as Collector
+          <Link to="/recyclers" className="bg-white text-sw-dark hover:bg-gray-100 px-10 py-4 rounded-xl font-bold text-lg shadow-xl transition-transform hover:-translate-y-1">
+            Register as Recycler
           </Link>
-          <Link to="/login" className="bg-[#EA580C] text-white hover:bg-[#c2410a] px-10 py-4 rounded-xl font-bold text-lg shadow-xl transition-transform hover:-translate-y-1">
-            Register as Citizen
+          <Link to="/login" className="bg-sw-orange text-white hover:bg-[#c2410a] px-10 py-4 rounded-xl font-bold text-lg shadow-xl transition-transform hover:-translate-y-1">
+            Register as Household
           </Link>
         </div>
       </section>

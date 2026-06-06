@@ -26,26 +26,26 @@ export default function RecyclerPortal() {
             <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
                 {/* Stats Header */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100 flex items-center justify-between">
+                    <div className="bg-sw-light/50 p-6 rounded-2xl border border-sw-light flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-semibold text-purple-700 uppercase">Total Volume</p>
-                            <p className="text-2xl font-bold font-mono-data text-purple-900 mt-1">{stats?.plastic_sold_this_month_kg || 0} <span className="text-lg text-purple-600">kg</span></p>
+                            <p className="text-sm font-semibold text-sw-mid uppercase">Total Volume</p>
+                            <p className="text-2xl font-bold font-mono-data text-sw-dark mt-1">{stats?.plastic_sold_this_month_kg || 0} <span className="text-lg text-sw-blue">kg</span></p>
                         </div>
-                        <Package className="w-10 h-10 text-purple-200" />
+                        <Package className="w-10 h-10 text-sw-mid/50" />
                     </div>
-                    <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 flex items-center justify-between">
+                    <div className="bg-sw-bg p-6 rounded-2xl border border-sw-light flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-semibold text-emerald-700 uppercase">Avg Price/kg</p>
-                            <p className="text-2xl font-bold font-mono-data text-emerald-900 mt-1">₹{stats?.average_price_per_kg || 0}</p>
+                            <p className="text-sm font-semibold text-sw-mid uppercase">Avg Price/kg</p>
+                            <p className="text-2xl font-bold font-mono-data text-sw-dark mt-1">₹{stats?.average_price_per_kg || 0}</p>
                         </div>
-                        <IndianRupee className="w-10 h-10 text-emerald-200" />
+                        <IndianRupee className="w-10 h-10 text-sw-mid/50" />
                     </div>
-                    <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 flex items-center justify-between">
+                    <div className="bg-sw-light/50 p-6 rounded-2xl border border-sw-light flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-semibold text-blue-700 uppercase">Active Buyers</p>
-                            <p className="text-2xl font-bold font-mono-data text-blue-900 mt-1">{stats?.total_active_recyclers || 0}</p>
+                            <p className="text-sm font-semibold text-sw-mid uppercase">Active Buyers</p>
+                            <p className="text-2xl font-bold font-mono-data text-sw-dark mt-1">{stats?.total_active_recyclers || 0}</p>
                         </div>
-                        <Building className="w-10 h-10 text-blue-200" />
+                        <Building className="w-10 h-10 text-sw-mid/50" />
                     </div>
                 </div>
 
@@ -55,8 +55,8 @@ export default function RecyclerPortal() {
                         <div key={r.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
                             <div className="flex justify-between items-start mb-4">
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                        <Building className="text-purple-600 w-5 h-5"/> {r.name}
+                                    <h3 className="text-lg font-bold text-sw-dark flex items-center gap-2">
+                                        <Building className="text-sw-blue w-5 h-5"/> {r.name}
                                     </h3>
                                     <p className="text-sm text-gray-500 mt-0.5">{r.contact_person}</p>
                                 </div>
@@ -98,7 +98,7 @@ export default function RecyclerPortal() {
             <div className="space-y-8 max-w-5xl mx-auto animate-fade-in">
                 {/* How it Works / Payment Flow Visualization */}
                 <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 overflow-hidden">
-                    <h2 className="text-xl font-bold text-gray-900 mb-8 font-display text-center">Swachhata Chakra Partnership Flow</h2>
+                    <h2 className="text-xl font-bold text-sw-dark mb-8 font-display text-center">Swachhata Chakra Partnership Flow</h2>
                     
                     {/* Desktop Flow */}
                     <div className="hidden md:flex items-center justify-between gap-4 relative">
@@ -131,31 +131,31 @@ export default function RecyclerPortal() {
 
                 {/* Application Form */}
                 <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                    <h3 className="font-bold text-lg mb-6 flex items-center gap-2"><FileCheck className="w-5 h-5 text-purple-600"/> Submit Facility Application</h3>
+                    <h3 className="font-bold text-lg mb-6 flex items-center gap-2"><FileCheck className="w-5 h-5 text-sw-blue"/> Submit Facility Application</h3>
                     <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <input required value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Facility/Business Name *" className="px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" />
-                        <input required value={form.contact_person} onChange={e => setForm({...form, contact_person: e.target.value})} placeholder="Contact Person Name *" className="px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" />
-                        <input required value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="Phone Number *" className="px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" />
-                        <input required value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Full Facility Address *" className="px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 md:col-span-2" />
+                        <input required value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Facility/Business Name *" className="px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-sw-mid" />
+                        <input required value={form.contact_person} onChange={e => setForm({...form, contact_person: e.target.value})} placeholder="Contact Person Name *" className="px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-sw-mid" />
+                        <input required value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="Phone Number *" className="px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-sw-mid" />
+                        <input required value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Full Facility Address *" className="px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-sw-mid md:col-span-2" />
                         
                         <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-5">
                             <div>
                                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1 px-1">Buying Price (₹/kg)</label>
-                                <input required type="number" value={form.price_per_kg} onChange={e => setForm({...form, price_per_kg: e.target.value})} placeholder="e.g. 15" className="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 font-mono-data" />
+                                <input required type="number" value={form.price_per_kg} onChange={e => setForm({...form, price_per_kg: e.target.value})} placeholder="e.g. 15" className="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-sw-mid font-mono-data" />
                             </div>
                             <div>
                                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1 px-1">Min Pickup Qty (kg)</label>
-                                <input required type="number" value={form.min_quantity_kg} onChange={e => setForm({...form, min_quantity_kg: e.target.value})} placeholder="e.g. 500" className="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 font-mono-data" />
+                                <input required type="number" value={form.min_quantity_kg} onChange={e => setForm({...form, min_quantity_kg: e.target.value})} placeholder="e.g. 500" className="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-sw-mid font-mono-data" />
                             </div>
                         </div>
 
                         <div className="col-span-1 md:col-span-2">
                             <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1 px-1">Accepted Plastic Types</label>
-                            <input required value={form.accepted_types} onChange={e => setForm({...form, accepted_types: e.target.value})} placeholder="e.g. PET, HDPE, Mixed" className="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" />
+                            <input required value={form.accepted_types} onChange={e => setForm({...form, accepted_types: e.target.value})} placeholder="e.g. PET, HDPE, Mixed" className="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-sw-mid" />
                         </div>
 
                         <div className="col-span-1 md:col-span-2 mt-4">
-                            <button type="submit" disabled={submitting} className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl flex justify-center items-center shadow-lg shadow-purple-600/20 disabled:opacity-50 transition-all">
+                            <button type="submit" disabled={submitting} className="w-full py-3.5 bg-sw-mid hover:bg-sw-dark text-white font-bold rounded-xl flex justify-center items-center shadow-lg shadow-sw-mid/20 disabled:opacity-50 transition-all">
                                 {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Partnership Application'}
                             </button>
                         </div>
@@ -170,12 +170,12 @@ export default function RecyclerPortal() {
             <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
                 <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center shadow-sm">
+                        <div className="w-10 h-10 rounded-xl bg-sw-blue flex items-center justify-center shadow-sm">
                             <Building className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <span className="font-bold text-lg tracking-tight text-gray-900">Recycler</span>
-                            <span className="font-bold text-lg tracking-tight text-purple-600 ml-1">Portal</span>
+                            <span className="font-bold text-lg tracking-tight text-sw-dark">Recycler</span>
+                            <span className="font-bold text-lg tracking-tight text-sw-blue ml-1">Portal</span>
                         </div>
                     </div>
                     {user ? (
@@ -186,7 +186,7 @@ export default function RecyclerPortal() {
                             </button>
                         </div>
                     ) : (
-                        <a href="/login" className="px-4 py-2 text-sm font-semibold text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors">
+                        <a href="/login" className="px-4 py-2 text-sm font-semibold text-sw-blue bg-sw-light/50 hover:bg-sw-light rounded-xl transition-colors">
                             Admin Login
                         </a>
                     )}
@@ -197,11 +197,11 @@ export default function RecyclerPortal() {
                 {/* Tabs */}
                 <div className="flex flex-wrap items-center justify-center gap-2 mb-8 mt-2">
                     <button onClick={() => setTab('marketplace')}
-                        className={`min-w-[160px] flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all shadow-sm ${tab === 'marketplace' ? 'bg-purple-600 text-white shadow-purple-200 ring-2 ring-purple-600 ring-offset-2' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'}`}>
+                        className={`min-w-[160px] flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all shadow-sm ${tab === 'marketplace' ? 'bg-sw-blue text-white shadow-sw-light ring-2 ring-sw-mid ring-offset-2' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'}`}>
                         <Building className="w-4 h-4" /> B2B Marketplace
                     </button>
                     <button onClick={() => setTab('partner')}
-                        className={`min-w-[160px] flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all shadow-sm ${tab === 'partner' ? 'bg-purple-600 text-white shadow-purple-200 ring-2 ring-purple-600 ring-offset-2' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'}`}>
+                        className={`min-w-[160px] flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all shadow-sm ${tab === 'partner' ? 'bg-sw-blue text-white shadow-sw-light ring-2 ring-sw-mid ring-offset-2' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'}`}>
                         <ShieldCheck className="w-4 h-4" /> Become a Partner
                     </button>
                 </div>
@@ -219,8 +219,8 @@ export default function RecyclerPortal() {
 function FlowStep({ num, icon: Icon, title, desc, color, vertical }) {
     const colorMap = {
         blue: 'bg-blue-100 text-blue-600 ring-blue-50 border-blue-200',
-        purple: 'bg-purple-100 text-purple-600 ring-purple-50 border-purple-200',
-        emerald: 'bg-emerald-100 text-emerald-600 ring-emerald-50 border-emerald-200',
+        purple: 'bg-sw-light text-sw-blue ring-purple-50 border-purple-200',
+        emerald: 'bg-emerald-100 text-sw-mid ring-emerald-50 border-emerald-200',
         orange: 'bg-orange-100 text-orange-600 ring-orange-50 border-orange-200',
     };
     const c = colorMap[color];
@@ -233,7 +233,7 @@ function FlowStep({ num, icon: Icon, title, desc, color, vertical }) {
                     {num}
                 </div>
             </div>
-            <h4 className="font-bold text-gray-900 text-sm mb-1">{title}</h4>
+            <h4 className="font-bold text-sw-dark text-sm mb-1">{title}</h4>
             <p className="text-xs text-gray-500 leading-tight">{desc}</p>
         </div>
     );
