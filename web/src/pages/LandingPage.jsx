@@ -800,10 +800,10 @@ export default function LandingPage() {
       </footer>
       <div className="w-full bg-[#14532D] text-white text-[12px] py-3 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2 text-center md:text-left">
         <div>
-          © 2026 Swachhata Chakra Portal | Team CodeX | Kalinga University | Climatathon 2026 — NIT Raipur | SBM Rule 2026 Compliant
+          © 2026 Swachhata Chakra Portal
         </div>
         <div className="md:text-right">
-          Designed & Developed by Team CodeX | NIT Raipur × UNICEF India
+          Designed & Developed by Team CodeX | NIT Raipur × Unicef India
         </div>
       </div>
     </div>
