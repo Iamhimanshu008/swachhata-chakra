@@ -426,7 +426,7 @@ export default function LandingPage() {
 
               <div>
                 <a
-                  href="https://github.com/Iamhimanshu008/smartwaste-ai/releases/download/v2.4.1/SmartWasteAI-v2.4.1.apk"
+                  href="https://github.com/Iamhimanshu008/swachhata-chakra/releases/download/v2.4.1/Swachhata.Chakra.v2.4.1.apk"
                   className="inline-flex items-center gap-3 bg-sw-mid hover:bg-sw-dark text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-green-900/20 transition-all hover:-translate-y-1"
                 >
                   📱 Download APK v2.4.1
