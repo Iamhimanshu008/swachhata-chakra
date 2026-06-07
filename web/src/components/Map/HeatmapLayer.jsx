@@ -1,8 +1,12 @@
+const HeatmapLegend = () => null;
+
+export { HeatmapLegend };
+
 export default function HeatmapLayer({ data }) {
   return (
     <div style={{
       padding: '20px',
-      textAlign: 'center', 
+      textAlign: 'center',
       color: '#666',
       border: '1px dashed #ccc',
       borderRadius: '8px',
