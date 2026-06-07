@@ -12,7 +12,7 @@
     },
     "android": {
       "package": "com.swachhatachakra.mobile",
-      "versionCode": 11,
+      "versionCode": 12,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#1A6B2F"
