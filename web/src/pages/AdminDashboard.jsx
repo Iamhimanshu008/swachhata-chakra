@@ -28,6 +28,7 @@ import WasteOpsTab from './admin-tabs/WasteOpsTab';
 import ComplianceTab from './admin-tabs/ComplianceTab';
 import FinancialTab from './admin-tabs/FinancialTab';
 import AlertsTab from './admin-tabs/AlertsTab';
+import CitizenTab from './admin-tabs/CitizenTab';
 import * as adminApi from '../api/adminApi';
 import * as recyclerApi from '../api/recyclerApi';
 import {
@@ -106,9 +107,9 @@ export default function AdminDashboard() {
                     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dc), 'Daily Collections');
                 }
 
-                // Zone wise sheet
+                // Ward wise sheet
                 if (analytics?.zone_wise) {
-                    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(analytics.zone_wise), 'Zone Performance');
+                    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(analytics.zone_wise), 'Ward Performance');
                 }
 
                 XLSX.writeFile(wb, `SwachhataChakra_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
@@ -172,9 +173,9 @@ export default function AdminDashboard() {
                         </ResponsiveContainer>
                     </div>
 
-                    {/* Zone-wise Performance - Bar Chart */}
+                    {/* Ward-wise Performance - Bar Chart */}
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
-                        <h3 className="font-semibold text-gray-900 mb-4 font-display">Zone Comparison</h3>
+                        <h3 className="font-semibold text-gray-900 mb-4 font-display">Ward Comparison</h3>
                         <ResponsiveContainer width="100%" height={280}>
                             <BarChart data={analytics?.zone_performance || []}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -205,9 +206,9 @@ export default function AdminDashboard() {
                         </ResponsiveContainer>
                     </div>
 
-                    {/* Zone Collection Progress */}
+                    {/* Ward Collection Progress */}
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
-                        <h3 className="font-semibold text-gray-900 mb-4 font-display">Zone Collection Rate</h3>
+                        <h3 className="font-semibold text-gray-900 mb-4 font-display">Ward Collection Rate</h3>
                         <div className="space-y-4">
                             {(analytics?.zone_performance || []).map((zone, i) => {
                                 const rate = zone.total_bins > 0 ? Math.round((zone.collections_this_month / zone.total_bins) * 100) : 0;
@@ -232,7 +233,7 @@ export default function AdminDashboard() {
                             {(!analytics?.zone_performance || analytics.zone_performance.length === 0) && (
                                 <div className="text-center py-8 text-gray-400">
                                     <Leaf className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                                    <p className="text-sm">No zone data available</p>
+                                    <p className="text-sm">No ward data available</p>
                                 </div>
                             )}
                         </div>
@@ -385,7 +386,7 @@ export default function AdminDashboard() {
                         <thead className="bg-gray-50/80">
                             <tr>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Zone</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Ward</th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Fill %</th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
@@ -395,7 +396,7 @@ export default function AdminDashboard() {
                             {filtered.map((bin) => (
                                 <tr key={bin.id} className="hover:bg-gray-50/50 transition-colors">
                                     <td className="px-4 py-3 font-medium text-gray-900">{bin.label}</td>
-                                    <td className="px-4 py-3 text-gray-600">Zone {bin.zone_id}</td>
+                                    <td className="px-4 py-3 text-gray-600">Ward {bin.zone_id}</td>
                                     <td className="px-4 py-3"><StatusBadge status={bin.status} /></td>
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-2">
@@ -473,7 +474,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Zone</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Ward</label>
                                         <select value={editForm.zone_id} onChange={(e) => setEditForm({ ...editForm, zone_id: parseInt(e.target.value) })} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sw-light outline-none">
                                             {zones.map(z => <option key={z.id} value={z.id}>{z.name}</option>)}
                                         </select>
@@ -536,7 +537,7 @@ export default function AdminDashboard() {
                 return;
             }
             if (!form.zone_id) {
-                toast.error('Please select a valid zone');
+                toast.error('Please select a valid ward');
                 return;
             }
             try {
@@ -593,7 +594,7 @@ export default function AdminDashboard() {
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Role</th>
-                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Zone</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Ward</th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
                             </tr>
@@ -898,25 +899,25 @@ export default function AdminDashboard() {
                 if (!payload.depot_lat) delete payload.depot_lat;
                 if (!payload.depot_lng) delete payload.depot_lng;
                 await adminApi.updateZone(editZone.id, payload);
-                toast.success('Zone updated!');
+                toast.success('Ward updated!');
                 setEditZone(null);
                 loadLocalZones();
             } catch (e) {
-                console.error('Zone update error:', e);
-                toast.error(e.response?.data?.detail || 'Failed to update zone');
+                console.error('Ward update error:', e);
+                toast.error(e.response?.data?.detail || 'Failed to update ward');
             }
             setZoneSaving(false);
         };
 
         const handleDeleteZone = async (zoneId, zoneName) => {
-            if (!confirm(`Delete "${zoneName}"? Bins and users in this zone will be unassigned.`)) return;
+            if (!confirm(`Delete "${zoneName}"? Bins and users in this ward will be unassigned.`)) return;
             try {
                 await adminApi.deleteZone(zoneId);
-                toast.success('Zone deleted');
+                toast.success('Ward deleted');
                 loadLocalZones();
             } catch (e) {
-                console.error('Zone delete error:', e);
-                toast.error(e.response?.data?.detail || 'Failed to delete zone');
+                console.error('Ward delete error:', e);
+                toast.error(e.response?.data?.detail || 'Failed to delete ward');
             }
         };
 
@@ -930,7 +931,7 @@ export default function AdminDashboard() {
                             <button onClick={() => handleGenerate(null)} disabled={generating}
                                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-sw-mid text-white font-medium rounded-xl hover:bg-sw-dark disabled:opacity-50 transition-colors">
                                 {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-                                Generate for All Zones
+                                Generate for All Wards
                             </button>
                             <div className="grid grid-cols-2 gap-3">
                                 {localZones.map(z => (
@@ -946,7 +947,7 @@ export default function AdminDashboard() {
                                 {result.error ? result.error : (
                                     <div>
                                         <p className="font-semibold mb-1">✓ Route Generated!</p>
-                                        <p>Collector: {result.collector || 'Unassigned'} | Zone: {result.zone_name || 'All Zones'}</p>
+                                        <p>Collector: {result.collector || 'Unassigned'} | Ward: {result.zone_name || 'All Wards'}</p>
                                         <p className="font-mono-data">Bins: {result.bins_count || (result.stops?.length) || 0} | Distance: {result.total_distance_km || 0} km | Time: {result.estimated_duration_min || 0} min</p>
                                     </div>
                                 )}
@@ -954,17 +955,17 @@ export default function AdminDashboard() {
                         )}
                     </div>
 
-                    {/* Zone Management Card */}
+                    {/* Ward Management Card */}
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="font-semibold text-gray-900 font-display">Zone Management</h3>
+                            <h3 className="font-semibold text-gray-900 font-display">Ward Management</h3>
                         </div>
-                        <p className="text-xs text-gray-500 mb-3">Configure zones, depot locations, and collection boundaries.</p>
+                        <p className="text-xs text-gray-500 mb-3">Configure wards, depot locations, and collection boundaries.</p>
 
-                        {/* Add New Zone */}
+                        {/* Add New Ward */}
                         <AddZoneFeature onZoneAdded={loadLocalZones} />
 
-                        {/* Zone List */}
+                        {/* Ward List */}
                         <div className="space-y-2 mt-4">
                             {localZones.map(zone => (
                                 <div key={zone.id} className="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:bg-gray-50/50 transition-colors">
@@ -979,10 +980,10 @@ export default function AdminDashboard() {
                                         </p>
                                     </div>
                                     <div className="flex gap-1 ml-2">
-                                        <button onClick={() => handleEditZone(zone)} className="text-green-600 hover:text-green-700 hover:bg-green-100 p-1.5 rounded-md transition-colors" title="Edit Zone">
+                                        <button onClick={() => handleEditZone(zone)} className="text-green-600 hover:text-green-700 hover:bg-green-100 p-1.5 rounded-md transition-colors" title="Edit Ward">
                                             <Pencil className="w-3.5 h-3.5" />
                                         </button>
-                                        <button onClick={() => handleDeleteZone(zone.id, zone.name)} className="text-red-500 hover:text-red-700 hover:bg-red-100 p-1.5 rounded-md transition-colors" title="Delete Zone">
+                                        <button onClick={() => handleDeleteZone(zone.id, zone.name)} className="text-red-500 hover:text-red-700 hover:bg-red-100 p-1.5 rounded-md transition-colors" title="Delete Ward">
                                             <Trash2 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
@@ -991,7 +992,7 @@ export default function AdminDashboard() {
                             {localZones.length === 0 && (
                                 <div className="text-center py-6 text-gray-400">
                                     <Building className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                                    <p className="text-sm">No zones configured</p>
+                                    <p className="text-sm">No wards configured</p>
                                 </div>
                             )}
                         </div>
@@ -1271,7 +1272,8 @@ export default function AdminDashboard() {
                     {tab === 'revenue' && <FinancialTab />}
                     {tab === 'alerts' && <AlertsTab />}
                     {/* Reusing existing components for other sections */}
-                    {(tab === 'citizen' || tab === 'users') && <UsersManagement />}
+                    {(tab === 'citizen' || tab === 'household') && <CitizenTab />}
+                    {tab === 'users' && <UsersManagement />}
                     {tab === 'ai_insights' && <AIAnalytics />}
                     {tab === 'settings' && <SettingsTab />}
 

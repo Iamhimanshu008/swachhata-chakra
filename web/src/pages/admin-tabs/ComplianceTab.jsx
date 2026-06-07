@@ -11,7 +11,7 @@ const MOCK_COMPLIANCE = [
 ];
 
 const MOCK_REPORTS = [
-    { id: 'REP-2023-11', name: 'Monthly Zone Operations Report', date: '01 Nov 2023', type: 'Operations', size: '2.4 MB' },
+    { id: 'REP-2023-11', name: 'Monthly Ward Operations Report', date: '01 Nov 2023', type: 'Operations', size: '2.4 MB' },
     { id: 'REP-2023-10', name: 'Annual Environmental Impact', date: '15 Oct 2023', type: 'Environmental', size: '5.1 MB' },
     { id: 'REP-2023-09', name: 'Q3 Financial Sustainability', date: '01 Oct 2023', type: 'Financial', size: '1.8 MB' },
     { id: 'REP-2023-08', name: 'Swachh Survekshan Prep Data', date: '20 Sep 2023', type: 'Compliance', size: '8.4 MB' },

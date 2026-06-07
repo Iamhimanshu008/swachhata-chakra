@@ -3,19 +3,19 @@ import { Truck, Trash2, Cpu, CheckCircle2, XCircle, AlertCircle, PackageSearch, 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const MOCK_STREAM_DATA = [
-    { type: 'Organic', volume: '450 Tons', purity: '92%', destination: 'Composting Plant A' },
-    { type: 'Plastic', volume: '280 Tons', purity: '85%', destination: 'Recycling Facility B' },
-    { type: 'Paper/Cardboard', volume: '150 Tons', purity: '88%', destination: 'Paper Mill C' },
-    { type: 'Glass', volume: '80 Tons', purity: '95%', destination: 'Glass Works D' },
-    { type: 'Hazardous/E-Waste', volume: '45 Tons', purity: '100%', destination: 'Safe Disposal E' }
+    { type: '🟢 Wet/Organic Waste', volume: '7,914 kg', purity: '37.5%', status: '✅ On Target', note: '' },
+    { type: '🔵 Dry Waste (Plastic/Paper/Metal)', volume: '10,020 kg', purity: '47.5%', status: '✅ On Target', note: '' },
+    { type: '🟡 Sanitary Waste', volume: '1,578 kg', purity: '7.5%', status: '⚠️ Monitor', note: 'Requires separate disposal — not recyclable' },
+    { type: '🔴 Special Care/Hazardous Waste', volume: '822 kg', purity: '3.9%', status: '⚠️ Handle carefully', note: 'PWMU center required for disposal' },
+    { type: '🟣 E-Waste (E-Waste Rules 2022)', volume: '348 kg', purity: '1.6%', status: 'ℹ️ Separate rules apply', note: 'Collect & send to authorized e-waste recycler' }
 ];
 
 const MOCK_COLLECTOR_DATA = [
-    { id: 'C-001', name: 'Rajesh Kumar', zone: 'North Zone', binsCollected: 145, efficiency: '96%', status: 'Active' },
-    { id: 'C-002', name: 'Suresh Singh', zone: 'South Zone', binsCollected: 132, efficiency: '92%', status: 'Active' },
-    { id: 'C-003', name: 'Amit Patel', zone: 'East Zone', binsCollected: 98, efficiency: '85%', status: 'Delayed' },
-    { id: 'C-004', name: 'Vikram Sharma', zone: 'West Zone', binsCollected: 156, efficiency: '98%', status: 'Active' },
-    { id: 'C-005', name: 'Deepak Verma', zone: 'Central Zone', binsCollected: 0, efficiency: '-', status: 'Off Duty' }
+    { id: 'C-001', name: 'Rajesh Kumar', zone: 'Ward 1', binsCollected: 145, efficiency: '96%', status: 'Active' },
+    { id: 'C-002', name: 'Suresh Singh', zone: 'Ward 2', binsCollected: 132, efficiency: '92%', status: 'Active' },
+    { id: 'C-003', name: 'Amit Patel', zone: 'Ward 3', binsCollected: 98, efficiency: '85%', status: 'Delayed' },
+    { id: 'C-004', name: 'Vikram Sharma', zone: 'Ward 4', binsCollected: 156, efficiency: '98%', status: 'Active' },
+    { id: 'C-005', name: 'Deepak Verma', zone: 'Ward 5', binsCollected: 0, efficiency: '-', status: 'Off Duty' }
 ];
 
 const MOCK_IOT_DEVICES = [
@@ -76,9 +76,9 @@ export default function WasteOpsTab() {
                             <thead>
                                 <tr className="bg-gray-50 border-y border-gray-100">
                                     <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Stream Type</th>
-                                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Volume</th>
-                                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Purity</th>
-                                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Destination</th>
+                                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Quantity</th>
+                                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Percentage</th>
+                                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Status & Notes</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
@@ -87,7 +87,10 @@ export default function WasteOpsTab() {
                                         <td className="px-4 py-3 text-sm font-medium text-gray-900">{row.type}</td>
                                         <td className="px-4 py-3 text-sm text-gray-600">{row.volume}</td>
                                         <td className="px-4 py-3 text-sm text-[#16A34A] font-semibold">{row.purity}</td>
-                                        <td className="px-4 py-3 text-sm text-gray-500">{row.destination}</td>
+                                        <td className="px-4 py-3 text-sm">
+                                            <div className="text-gray-900">{row.status}</div>
+                                            {row.note && <div className="text-xs text-gray-500 mt-1">{row.note}</div>}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -140,7 +143,7 @@ export default function WasteOpsTab() {
                             <tr className="bg-gray-50 border-y border-gray-100">
                                 <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">ID</th>
                                 <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Name</th>
-                                <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Zone</th>
+                                <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Ward</th>
                                 <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Bins Collected</th>
                                 <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Efficiency</th>
                                 <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>

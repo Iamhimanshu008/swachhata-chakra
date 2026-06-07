@@ -24,19 +24,19 @@ const MOCK_PERFORMANCE = [
 ];
 
 const MOCK_ALERTS = [
-    { type: "critical", msg: "3 Bins overflowed in Zone North", time: "10 mins ago" },
+    { type: "critical", msg: "3 Bins overflowed in Ward 1", time: "10 mins ago" },
     { type: "warning", msg: "Collector truck BR-01 delayed", time: "1 hr ago" },
     { type: "info", msg: "New SHG group onboarded", time: "2 hrs ago" },
 ];
 
 const MOCK_DAILY_DATA = [
-    { name: 'Mon', organic: 400, recyclable: 240, hazardous: 20 },
-    { name: 'Tue', organic: 300, recyclable: 139, hazardous: 25 },
-    { name: 'Wed', organic: 200, recyclable: 980, hazardous: 15 },
-    { name: 'Thu', organic: 278, recyclable: 390, hazardous: 30 },
-    { name: 'Fri', organic: 189, recyclable: 480, hazardous: 10 },
-    { name: 'Sat', organic: 239, recyclable: 380, hazardous: 12 },
-    { name: 'Sun', organic: 349, recyclable: 430, hazardous: 8 },
+    { name: 'Mon', organic: 400, recyclable: 240, sanitary: 45, hazardous: 20, ewaste: 10 },
+    { name: 'Tue', organic: 300, recyclable: 139, sanitary: 30, hazardous: 25, ewaste: 5 },
+    { name: 'Wed', organic: 200, recyclable: 980, sanitary: 150, hazardous: 15, ewaste: 2 },
+    { name: 'Thu', organic: 278, recyclable: 390, sanitary: 60, hazardous: 30, ewaste: 8 },
+    { name: 'Fri', organic: 189, recyclable: 480, sanitary: 50, hazardous: 10, ewaste: 15 },
+    { name: 'Sat', organic: 239, recyclable: 380, sanitary: 40, hazardous: 12, ewaste: 6 },
+    { name: 'Sun', organic: 349, recyclable: 430, sanitary: 55, hazardous: 8, ewaste: 4 },
 ];
 
 const MOCK_VALUE_CHAIN = [
@@ -155,28 +155,38 @@ export default function OverviewTab({ stats, analytics }) {
                                             <stop offset="5%" stopColor="#0284C7" stopOpacity={0.2}/>
                                             <stop offset="95%" stopColor="#0284C7" stopOpacity={0}/>
                                         </linearGradient>
+                                        <linearGradient id="colorSan" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#EAB308" stopOpacity={0.2}/>
+                                            <stop offset="95%" stopColor="#EAB308" stopOpacity={0}/>
+                                        </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
                                     <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6B7C6E' }} axisLine={false} tickLine={false} />
                                     <YAxis tick={{ fontSize: 11, fill: '#6B7C6E' }} axisLine={false} tickLine={false} />
                                     <Tooltip contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-                                    <Area type="monotone" dataKey="organic" stroke="#16A34A" fill="url(#colorOrg)" strokeWidth={2} />
-                                    <Area type="monotone" dataKey="recyclable" stroke="#0284C7" fill="url(#colorRec)" strokeWidth={2} />
+                                    <Area type="monotone" dataKey="organic" stroke="#16A34A" fill="url(#colorOrg)" strokeWidth={2} name="Wet/Organic" />
+                                    <Area type="monotone" dataKey="recyclable" stroke="#0284C7" fill="url(#colorRec)" strokeWidth={2} name="Dry Waste" />
+                                    <Area type="monotone" dataKey="sanitary" stroke="#EAB308" fill="url(#colorSan)" strokeWidth={2} name="Sanitary" />
+                                    <Area type="monotone" dataKey="hazardous" stroke="#DC2626" fill="none" strokeWidth={2} name="Hazardous" />
+                                    <Area type="monotone" dataKey="ewaste" stroke="#9333EA" fill="none" strokeWidth={2} name="E-Waste" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>
                         
                         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                            <h3 className="font-semibold text-gray-900 mb-4 font-display">Collection by Zone</h3>
+                            <h3 className="font-semibold text-gray-900 mb-4 font-display">Collection by Ward</h3>
                             <ResponsiveContainer width="100%" height={240}>
                                 <BarChart data={MOCK_DAILY_DATA}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
                                     <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6B7C6E' }} axisLine={false} tickLine={false} />
                                     <YAxis tick={{ fontSize: 11, fill: '#6B7C6E' }} axisLine={false} tickLine={false} />
                                     <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-                                    <Bar dataKey="organic" stackId="a" fill="#14532D" radius={[0, 0, 4, 4]} />
-                                    <Bar dataKey="recyclable" stackId="a" fill="#16A34A" />
-                                    <Bar dataKey="hazardous" stackId="a" fill="#EA580C" radius={[4, 4, 0, 0]} />
+                                    <Legend />
+                                    <Bar dataKey="organic" stackId="a" fill="#16A34A" name="Wet/Organic" />
+                                    <Bar dataKey="recyclable" stackId="a" fill="#0284C7" name="Dry Waste" />
+                                    <Bar dataKey="sanitary" stackId="a" fill="#EAB308" name="Sanitary" />
+                                    <Bar dataKey="hazardous" stackId="a" fill="#DC2626" name="Hazardous" />
+                                    <Bar dataKey="ewaste" stackId="a" fill="#9333EA" radius={[4, 4, 0, 0]} name="E-Waste" />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>

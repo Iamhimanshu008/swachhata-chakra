@@ -28,6 +28,7 @@ export default function CollectionScreen({ navigation, route }) {
   const [isManualOverride, setIsManualOverride] = useState(false);
   const [isBLEVerified, setIsBLEVerified] = useState(false);
   const [aiGrade, setAiGrade] = useState(null);
+  const [wasteType, setWasteType] = useState('plastic');
 
   // Stats state
   const [todayStats, setTodayStats] = useState({ total_collections: 0, total_grams: 0, manual_count: 0 });
@@ -129,13 +130,14 @@ export default function CollectionScreen({ navigation, route }) {
         weight_grams: grams,
         is_manual_override: isManualOverride,
         is_ble_verified: isBLEVerified,
-        waste_type: 'plastic',
+        waste_type: wasteType,
         collected_at: new Date().toISOString(),
       });
       // Reset for next scan
       setSelectedCitizen(null);
       setWeightInput('');
       setAiGrade(null);
+      setWasteType('plastic');
       setScanned(false);
       setIsManualOverride(false);
       await refreshStats();
@@ -305,6 +307,39 @@ export default function CollectionScreen({ navigation, route }) {
                 onPress={() => setWeightInput(String(w))}
               >
                 <Text style={styles.quickWeightText}>{w >= 1000 ? `${w/1000}kg` : `${w}g`}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Waste Type Selection */}
+          <Text style={[styles.cardTitle, { marginTop: 16, marginBottom: 8, fontSize: 14 }]}>Step 3 — Waste Type</Text>
+          <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+            {[
+              { id: 'plastic', label: 'Plastic', icon: '🟢' },
+              { id: 'organic', label: 'Organic', icon: '🟡' },
+              { id: 'paper', label: 'Paper', icon: '🔵' },
+              { id: 'other', label: 'Other', icon: '⚪' }
+            ].map(type => (
+              <TouchableOpacity
+                key={type.id}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: 20,
+                  borderWidth: 1,
+                  borderColor: wasteType === type.id ? '#16a34a' : '#e5e7eb',
+                  backgroundColor: wasteType === type.id ? '#f0fdf4' : '#ffffff',
+                }}
+                onPress={() => setWasteType(type.id)}
+              >
+                <Text style={{ marginRight: 4 }}>{type.icon}</Text>
+                <Text style={{
+                  color: wasteType === type.id ? '#15803d' : '#4b5563',
+                  fontWeight: wasteType === type.id ? '600' : '400',
+                  fontSize: 13
+                }}>{type.label}</Text>
               </TouchableOpacity>
             ))}
           </View>

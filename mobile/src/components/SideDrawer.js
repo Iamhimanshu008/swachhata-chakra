@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  Modal, Dimensions, ScrollView, Alert
+  Modal, Dimensions, ScrollView, Alert, Image
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from '../i18n';
@@ -34,7 +34,7 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
       { icon: <Ionicons name="stats-chart-outline" size={22} color="#16a34a" />, key: 'stats', screen: 'Stats' },
       { icon: <MaterialCommunityIcons name="clipboard-list-outline" size={22} color="#16a34a" />, key: 'history', screen: 'History' },
       { icon: <MaterialCommunityIcons name="shield-check-outline" size={22} color="#16a34a" />, key: 'Safety Checklist', screen: 'SafetyChecklist' },
-      { icon: <MaterialCommunityIcons name="newspaper-variant-outline" size={22} color="#16a34a" />, key: 'Swachhta Samachar', screen: 'NewsFeed' },
+      { icon: <MaterialCommunityIcons name="newspaper-variant-outline" size={22} color="#16a34a" />, key: 'News & Updates', screen: 'NewsFeed' },
     ];
   };
 
@@ -84,6 +84,7 @@ const SideDrawer = ({ visible, onClose, user, navigation }) => {
           activeOpacity={1}
         />
         <View style={styles.drawer}>
+          <Image source={require('../../assets/logo.png')} style={{ width: 60, height: 60, alignSelf: 'center', marginTop: 10, marginBottom: 5 }} resizeMode="contain" />
           {/* User Profile Section */}
           <View style={styles.profileSection}>
             <View style={user?.role === 'citizen' ? styles.avatarCitizen : styles.avatar}>

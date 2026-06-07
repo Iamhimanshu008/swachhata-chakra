@@ -236,7 +236,7 @@ export default function CollectorDashboard() {
                                 </td>
                                 <td className="px-6 py-4">
                                     <p className="font-semibold text-gray-900">{h.bin_label || 'Unknown Bin'}</p>
-                                    <p className="text-xs text-gray-500 mt-0.5">{h.address || `Zone ${h.zone_id || '?'}`}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{h.address || `Ward ${h.zone_id || '?'}`}</p>
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-lg font-bold font-mono-data border border-emerald-100">

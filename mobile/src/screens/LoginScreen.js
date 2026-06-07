@@ -119,7 +119,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.header}>
           <Image source={require('../../assets/logo.png')} style={{ width: 60, height: 60, marginBottom: 8 }} resizeMode="contain" />
           <Text style={styles.title}>Swachhata Chakra</Text>
-          <Text style={styles.subtitle}>Login to your account</Text>
+          <Text style={styles.subtitle}>Digital Waste Management</Text>
         </View>
 
         {/* Role Toggle */}

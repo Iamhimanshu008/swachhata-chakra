@@ -68,7 +68,7 @@ export default function RecyclerPortal() {
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-y-3 gap-x-4 mb-5 text-sm">
-                                <p className="text-gray-600 flex items-center gap-2"><MapPin className="w-4 h-4"/> Zone {r.zone_id} | {r.address}</p>
+                                <p className="text-gray-600 flex items-center gap-2"><MapPin className="w-4 h-4"/> Ward {r.zone_id} | {r.address}</p>
                                 <p className="text-gray-600 flex items-center gap-2">Accepts: <span className="capitalize">{r.accepted_types?.join(', ')}</span></p>
                             </div>
                         </div>

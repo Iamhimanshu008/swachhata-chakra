@@ -18,18 +18,18 @@ const LandingScreen = ({ navigation }) => {
       {/* Header Section */}
       <View style={styles.headerSection}>
         <View style={styles.logoContainer}>
-          <Image source={require('../../assets/logo.png')} style={{ width: 100, height: 100 }} resizeMode="contain" />
+          <Image source={require('../../assets/logo.png')} style={{ width: 120, height: 120, borderRadius: 60 }} resizeMode="contain" />
         </View>
         <Text style={styles.appName}>Swachhata Chakra</Text>
         <Text style={styles.slogan}>स्वच्छ छत्तीसगढ़, समृद्ध छत्तीसगढ़</Text>
-        <Text style={styles.subtitle}>Plastic Waste Management Platform</Text>
+        <Text style={styles.subtitle}>Digital Waste Management System</Text>
       </View>
       
       {/* Stats Row */}
       <View style={styles.statsRow}>
-        <View style={styles.statPill}><Text style={styles.statText}>♻️ 5 MT Processed</Text></View>
-        <View style={styles.statPill}><Text style={styles.statText}>👥 110+ Collectors</Text></View>
-        <View style={styles.statPill}><Text style={styles.statText}>⭐ 10 pts/100g</Text></View>
+        <View style={styles.statPill}><Text style={styles.statText}>🚪 Door-to-Door Collection</Text></View>
+        <View style={styles.statPill}><Text style={styles.statText}>🏘️ Gram Panchayats</Text></View>
+        <View style={styles.statPill}><Text style={styles.statText}>🤖 IoT + AI Enabled</Text></View>
       </View>
 
       {/* Main Action Buttons */}
@@ -53,7 +53,7 @@ const LandingScreen = ({ navigation }) => {
         >
           <Ionicons name="map-outline" size={28} color="#16A34A" />
           <View style={styles.btnTextContainer}>
-            <Text style={styles.secondaryBtnTitle}>Public Map & Report</Text>
+            <Text style={styles.secondaryBtnTitle}>Public Map & Updates</Text>
             <Text style={styles.secondaryBtnSub}>Report a bin — no login needed</Text>
           </View>
         </TouchableOpacity>
@@ -69,7 +69,7 @@ const LandingScreen = ({ navigation }) => {
       {/* Bottom Section */}
       <View style={styles.bottomSection}>
         <Text style={styles.portalText}>Swachhata Chakra Portal</Text>
-        <Text style={styles.urlText}>smartwaste-ai-omega.vercel.app</Text>
+        <Text style={styles.urlText}>swachhata-chakra.vercel.app</Text>
         <View style={styles.govtRow}>
           <Image source={require('../../assets/cg-govt-logo.png')} style={{ width: 40, height: 40 }} resizeMode="contain" />
           <Text style={styles.govtText}>Govt. of Chhattisgarh | UNICEF Supported</Text>

@@ -124,7 +124,7 @@ export default function SHGDashboard() {
                         <div className="col-span-3 text-center py-16">
                             <Leaf className="w-16 h-16 text-sw-accent mx-auto mb-4" />
                             <h3 className="text-xl font-semibold mb-2">No bins assigned</h3>
-                            <p className="text-gray-500">Contact your zone manager to assign bins.</p>
+                            <p className="text-gray-500">Contact your ward manager to assign bins.</p>
                         </div>
                     )}
                 </div>
