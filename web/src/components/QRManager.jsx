@@ -176,7 +176,7 @@ const QRManager = () => {
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${getStatusBadgeClass(citizen.qr_status)}`}>
                                             {getStatusIcon(citizen.qr_status)}
-                                            {citizen.qr_status.charAt(0).toUpperCase() + citizen.qr_status.slice(1)}
+                                            {(citizen.qr_status || '').charAt(0).toUpperCase() + (citizen.qr_status || '').slice(1)}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

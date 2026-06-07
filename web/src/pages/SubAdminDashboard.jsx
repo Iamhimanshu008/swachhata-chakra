@@ -129,7 +129,7 @@ export default function SubAdminDashboard() {
                 </div>
 
                 <div className="flex items-center gap-2 mb-4">
-                    <h2 className="text-lg font-semibold text-gray-900 font-display">{status.charAt(0).toUpperCase() + status.slice(1)} Reports</h2>
+                    <h2 className="text-lg font-semibold text-gray-900 font-display">{(status || '').charAt(0).toUpperCase() + (status || '').slice(1)} Reports</h2>
                     <span className="px-2.5 py-0.5 bg-sw-gold text-white text-xs font-bold rounded-full">{filteredReports.length}</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -165,7 +165,7 @@ export default function RecyclerDashboard() {
                                                     bid.status === 'accepted' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                                                     'bg-green-50 text-green-700 border-green-200'
                                                 }`}>
-                                                    {bid.status.toUpperCase()}
+                                                    {(bid.status || '').toUpperCase()}
                                                 </span>
                                             </td>
                                             <td className="py-4 px-6 text-right space-x-2">

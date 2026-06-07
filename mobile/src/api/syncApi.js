@@ -1,17 +1,16 @@
 import client from './client';
 
-// Backend router: prefix="/api/v1/sync" (sync.py)
-// client.js baseURL already includes "/api", so paths here start from /v1/sync/
-// Confirmed correct — no change needed from V1 paths.
+export const downloadRoute = async (wardId) => {
+  const response = await client.get(`/sync/download_route?ward_id=${wardId}`);
+  return response.data;
+};
 
-export const syncApi = {
-  // Morning: download citizen list for ward
-  // GET /api/v1/sync/download_route?ward_no=4
-  downloadRoute: (ward_no) =>
-    client.get('/v1/sync/download_route', { params: { ward_no } }),
+export const uploadBatch = async (transactions) => {
+  const response = await client.post('/sync/upload_batch', { transactions });
+  return response.data;
+};
 
-  // Afternoon: upload batch of offline transactions
-  // POST /api/v1/sync/upload_batch
-  uploadBatch: (ward_no, transactions) =>
-    client.post('/v1/sync/upload_batch', { ward_no, transactions }),
+export const getRouteStatus = async () => {
+  const response = await client.get('/sync/route_status');
+  return response.data;
 };

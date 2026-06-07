@@ -226,7 +226,7 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                         <div className="mb-3 px-2">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: 'rgba(22,163,74,0.3)', color: '#D1FAE5' }}>
-                                    {(user.full_name || user.name || 'U')[0].toUpperCase()}
+                                    {((user.full_name || user.name || 'U')[0] || 'U').toUpperCase()}
                                 </div>
                                 <div className="min-w-0">
                                     <p className="text-sm font-medium truncate text-white">{user.full_name || user.name}</p>
