@@ -80,9 +80,8 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
         <>
             {/* Desktop Sidebar */}
             <aside
-                className={`sidebar-desktop fixed left-0 top-0 h-full z-40 transition-all duration-300 flex flex-col ${
-                    sidebarOpen ? 'w-[260px]' : 'w-20'
-                }`}
+                className={`sidebar-desktop fixed left-0 top-0 h-full z-40 transition-all duration-300 flex flex-col ${sidebarOpen ? 'w-[260px]' : 'w-20'
+                    }`}
                 style={{ background: '#14532D' }}
             >
                 {/* Header / Logo */}
@@ -93,7 +92,7 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                                 <img src="/logo.png" className="h-10 w-auto" alt="Logo" />
                             </div>
                             <div>
-                                <span className="font-bold text-sm leading-tight block text-white">Swachhata<br/>Chakra</span>
+                                <span className="font-bold text-sm leading-tight block text-white">Swachhata<br />Chakra</span>
                             </div>
                         </div>
                     )}
@@ -116,10 +115,9 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                                     to={item.to}
                                     end={item.end}
                                     className={({ isActive }) =>
-                                        `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
-                                            isActive
-                                                ? 'text-white font-semibold shadow-lg'
-                                                : 'hover:text-white hover:bg-white/10'
+                                        `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${isActive
+                                            ? 'text-white font-semibold shadow-lg'
+                                            : 'hover:text-white hover:bg-white/10'
                                         }`
                                     }
                                     style={({ isActive }) => isActive ? { background: '#16A34A', color: '#fff' } : { color: '#D1FAE5' }}
@@ -153,9 +151,8 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                                                     key={item.key}
                                                     onClick={() => onTabChange && onTabChange(item.key)}
                                                     title={!sidebarOpen ? item.label : undefined}
-                                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 w-full text-left relative ${
-                                                        isActive ? 'font-semibold shadow-lg' : 'hover:bg-white/10'
-                                                    }`}
+                                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 w-full text-left relative ${isActive ? 'font-semibold shadow-lg' : 'hover:bg-white/10'
+                                                        }`}
                                                     style={
                                                         isActive
                                                             ? { background: '#16A34A', color: '#fff', borderLeft: '3px solid #fff' }
@@ -198,9 +195,8 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                                                         key={t.key}
                                                         onClick={() => onTabChange && onTabChange(t.key)}
                                                         title={!sidebarOpen ? t.label : undefined}
-                                                        className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 w-full text-left ${
-                                                            isActive ? 'font-semibold shadow-lg' : 'hover:bg-white/10'
-                                                        }`}
+                                                        className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 w-full text-left ${isActive ? 'font-semibold shadow-lg' : 'hover:bg-white/10'
+                                                            }`}
                                                         style={
                                                             isActive
                                                                 ? { background: '#16A34A', color: '#fff', borderLeft: '3px solid #fff' }
@@ -248,7 +244,7 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                     {sidebarOpen && (
                         <div className="mt-3 pt-3 border-t border-white/10 text-center">
                             <span className="inline-block text-[10px] font-bold px-3 py-1 rounded-full" style={{ background: 'rgba(22,163,74,0.2)', color: '#86EFAC' }}>
-                                v2.4.1
+                                v2.4.2
                             </span>
                             <p className="text-[10px] mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
                                 Powered by Team CodeX
@@ -266,10 +262,9 @@ export default function Sidebar({ activeTab, onTabChange, tabs }) {
                         to={item.to}
                         end={item.end}
                         className={({ isActive }) =>
-                            `flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-colors min-w-[48px] ${
-                                isActive
-                                    ? 'text-sw-mid font-semibold'
-                                    : 'text-gray-400'
+                            `flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-colors min-w-[48px] ${isActive
+                                ? 'text-sw-mid font-semibold'
+                                : 'text-gray-400'
                             }`
                         }
                     >
